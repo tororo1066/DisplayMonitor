@@ -1,4 +1,7 @@
-name: PluginName
-main: MainClass
+name: DisplayMonitor
+main: tororo1066.displaymonitor.DisplayMonitor
 version: 1.0
-api-version: 1.17
+api-version: 1.20
+
+depend:
+  - NMSUtils

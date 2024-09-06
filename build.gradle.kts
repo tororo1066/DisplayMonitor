@@ -57,9 +57,9 @@ tasks.register("shadowNormal", ShadowJar::class) {
     exclude("org/intellij/lang/annotations/**")
     exclude("org/jetbrains/annotations/**")
 
-    relocate("kotlin", "tororo1066.libs.${projectName}.kotlin")
-    relocate("org.intellij.lang.annotations", "tororo1066.libs.${projectName}.org.intellij.lang.annotations")
-    relocate("org.jetbrains.annotations", "tororo1066.libs.${projectName}.org.jetbrains.annotations")
+    relocate("kotlin", "tororo1066.libs.kotlin")
+    relocate("org.intellij.lang.annotations", "tororo1066.libs.org.intellij.lang.annotations")
+    relocate("org.jetbrains.annotations", "tororo1066.libs.org.jetbrains.annotations")
     relocate("org.mongodb", "tororo1066.libs.${projectName}.org.mongodb")
     relocate("com.ezylang", "tororo1066.libs.${projectName}.com.ezylang")
 }

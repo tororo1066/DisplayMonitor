@@ -1,0 +1,25 @@
+package tororo1066.displaymonitor.actions
+
+import org.bukkit.Bukkit
+import org.bukkit.scheduler.BukkitTask
+import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
+import tororo1066.tororopluginapi.SJavaPlugin
+import java.util.function.Consumer
+
+abstract class AbstractAction {
+
+    abstract fun run(context: ActionContext)
+
+    abstract fun prepare(section: AdvancedConfigurationSection)
+
+    protected fun threadBlockingRunTask(run: (BukkitTask) -> Unit) {
+        var lock = true
+        Bukkit.getScheduler().runTask(SJavaPlugin.plugin, Consumer {
+            run(it)
+            lock = false
+        })
+        while (lock) {
+            Thread.sleep(50)
+        }
+    }
+}
