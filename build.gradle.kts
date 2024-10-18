@@ -105,7 +105,7 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("https://maven.pkg.github.com/tororo1066/TororoPluginAPI")
+            url = uri("https://maven.pkg.github.com/tororo1066/DisplayMonitor")
             credentials {
                 username = System.getenv("GITHUB_USERNAME")
                 password = System.getenv("GITHUB_TOKEN")
