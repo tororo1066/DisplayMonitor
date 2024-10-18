@@ -1,82 +1,43 @@
 package tororo1066.displaymonitor
 
 import org.bukkit.Color
+import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
-import org.bukkit.util.Vector
+import org.joml.Matrix4f
+import org.joml.Quaternionf
 import org.joml.Vector3f
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 
 class OBB {
-    var center: Vector // OBBの中心
+    var center: Vector3f // OBBの中心
         private set
-    var axes: Array<Vector> // OBBの3つの軸（ベクトル）
+    var axes: Array<Vector3f> // OBBの3つの軸（ベクトル）
         private set
-    var halfWidths: DoubleArray // 各軸に沿った半径（スケール）
+    var halfWidths: Vector3f // 各軸に沿った半径（スケール）
         private set
 
-    constructor(center: Vector, axes: Array<Vector>, halfWidths: DoubleArray) {
+    constructor(center: Vector3f, axes: Array<Vector3f>, halfWidths: Vector3f) {
         this.center = center
         this.axes = axes
         this.halfWidths = halfWidths
     }
 
-    constructor(min: Vector, max: Vector) {
+    constructor(min: Vector3f, max: Vector3f) {
         // AABBの中心を求める
-        this.center = min.clone().add(max).multiply(0.5)
+        this.center = Vector3f((max.x + min.x) / 2f, (max.y + min.y) / 2f, (max.z + min.z) / 2f)
 
         // 軸のベクトルを求める
-        this.axes = arrayOf(Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1))
+        this.axes = arrayOf(Vector3f(1f, 0f, 0f), Vector3f(0f, 1f, 0f), Vector3f(0f, 0f, 1f))
 
         // 半径は各軸に沿った幅の半分
-        this.halfWidths = DoubleArray(3)
-        halfWidths[0] = (max.x - min.x) / 2.0
-        halfWidths[1] = (max.y - min.y) / 2.0
-        halfWidths[2] = (max.z - min.z) / 2.0
-    }
-
-    // AABBからOBBを作成するコンストラクタ
-    constructor(min: Vector, max: Vector, yaw: Double, pitch: Double) {
-        // AABBの中心を求める
-        this.center = min.clone().add(max).multiply(0.5)
-
-        // 軸のベクトルを回転させる
-        this.axes = arrayOf(Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1))
-
-        for (i in 0..2) {
-            axes[i] = axes[i].rotateAroundX(pitch)
-            axes[i] = axes[i].rotateAroundY(yaw)
-            axes[i] = axes[i].normalize()
-        }
-
-        // 半径は各軸に沿った幅の半分
-        this.halfWidths = DoubleArray(3)
-        halfWidths[0] = (max.x - min.x) / 2.0
-        halfWidths[1] = (max.y - min.y) / 2.0
-        halfWidths[2] = (max.z - min.z) / 2.0
-    }
-
-    constructor(min: Vector, max: Vector, rotationAxis: Vector, rotationAngle: Double) {
-        // AABBの中心を求める
-        this.center = min.clone().add(max).multiply(0.5)
-
-        // 軸のベクトルを回転させる
-        this.axes = arrayOf(Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1))
-
-        for (i in 0..2) {
-            axes[i] = axes[i].rotateAroundAxis(rotationAxis, rotationAngle)
-            axes[i] = axes[i].normalize()
-        }
-
-        // 半径は各軸に沿った幅の半分
-        this.halfWidths = DoubleArray(3)
-        halfWidths[0] = (max.x - min.x) / 2.0
-        halfWidths[1] = (max.y - min.y) / 2.0
-        halfWidths[2] = (max.z - min.z) / 2.0
+        this.halfWidths = Vector3f((max.x - min.x) / 2f, (max.y - min.y) / 2f, (max.z - min.z) / 2f)
     }
 
     fun scale(vector3f: Vector3f) {
@@ -85,78 +46,110 @@ class OBB {
         }
     }
 
-    fun rotate(yaw: Double, pitch: Double) {
-        for (i in 0..2) {
-            axes[i] = axes[i].rotateAroundX(pitch)
-            axes[i] = axes[i].rotateAroundY(yaw)
-            axes[i] = axes[i].normalize()
+    private operator fun Vector3f.set(i: Int, value: Float) {
+        when (i) {
+            0 -> this.x = value
+            1 -> this.y = value
+            2 -> this.z = value
         }
     }
 
-    fun rotate(rotationAxis: Vector, rotationAngle: Double) {
-        if (rotationAngle == 0.0) return
-        if (rotationAxis.lengthSquared() == 0.0) return
+    fun rotate(quaternionf: Quaternionf) {
         for (i in 0..2) {
-            axes[i] = axes[i].rotateAroundAxis(rotationAxis, rotationAngle)
-            axes[i] = axes[i].normalize()
+            axes[i] = axes[i].rotate(quaternionf)
+        }
+    }
+
+    fun rotateY(yaw: Float) {
+        for (i in 0..2) {
+            axes[i] = axes[i].rotateY(yaw)
+        }
+    }
+
+    fun rotateX(pitch: Float) {
+        for (i in 0..2) {
+            axes[i] = axes[i].rotateX(pitch)
         }
     }
 
     fun modifyBy(p: Player, display: Display) {
-        val rightQuaternion = display.transformation.rightRotation
-        val rightRotation = Vector(rightQuaternion.x.toDouble(), rightQuaternion.y.toDouble(), rightQuaternion.z.toDouble())
-        val rightRotationAngle = rightQuaternion.w.toDouble()
-        rotate(rightRotation, rightRotationAngle)
+        //ここでOBBを編集する
+
+        rotate(display.transformation.rightRotation)
         scale(display.transformation.scale)
-        val leftQuaternion = display.transformation.leftRotation
-        val leftRotation = Vector(leftQuaternion.x.toDouble(), leftQuaternion.y.toDouble(), leftQuaternion.z.toDouble())
-        val leftRotationAngle = leftQuaternion.w.toDouble()
-        rotate(leftRotation, leftRotationAngle)
+        rotate(display.transformation.leftRotation)
 
         //相対的に移動する
-        center.add(
-            Vector.fromJOML(display.transformation.translation)
-                .rotateAroundY(Math.toRadians(-p.eyeLocation.yaw.toDouble()))
-                .multiply(Vector(-1.0, 1.0, -1.0))
-        )
+
+        val translation = display.transformation.translation.cloneVector()
+
 
         when (display.billboard) {
-            Display.Billboard.FIXED -> {}
-            Display.Billboard.CENTER -> {
-                val yaw = Math.toRadians(-p.eyeLocation.yaw.toDouble())
-                val pitch = Math.toRadians(p.eyeLocation.pitch.toDouble())
-                rotate(yaw, pitch)
+            //固定
+            Display.Billboard.FIXED -> {
+                center.add(
+                    translation
+                        .rotateX(Math.toRadians(display.location.pitch.toDouble()).toFloat())
+                        .rotateY(Math.toRadians(-display.location.yaw.toDouble()).toFloat())
+                )
+                val x = Math.toRadians(display.location.pitch.toDouble()).toFloat()
+                rotateX(x)
+                val y = Math.toRadians(-display.location.yaw.toDouble()).toFloat()
+                rotateY(y)
             }
+            //プレイヤーの視線方向に合わせる(横方向のみ)
             Display.Billboard.VERTICAL -> {
-                val yaw = Math.toRadians(-p.eyeLocation.yaw.toDouble())
-                rotate(yaw, 0.0)
+                center.add(
+                    translation
+                        .rotateX(Math.toRadians(display.location.pitch.toDouble()).toFloat())
+                        .rotateY(Math.toRadians(-p.eyeLocation.yaw.toDouble()).toFloat() - Math.toRadians(180.0).toFloat())
+                )
+                val x = Math.toRadians(display.location.pitch.toDouble()).toFloat()
+                rotateX(x)
+                val y = Math.toRadians(-p.eyeLocation.yaw.toDouble()).toFloat() - Math.toRadians(180.0).toFloat()
+                rotateY(y)
             }
+            //プレイヤーの視線方向に合わせる(縦方向のみ)
             Display.Billboard.HORIZONTAL -> {
-                val pitch = Math.toRadians(p.eyeLocation.pitch.toDouble())
-                rotate(0.0, pitch)
+                center.add(
+                    translation
+                        .rotateX(Math.toRadians(-p.eyeLocation.pitch.toDouble()).toFloat())
+                        .rotateY(Math.toRadians(-display.location.yaw.toDouble()).toFloat())
+                )
+                val x = Math.toRadians(-p.eyeLocation.pitch.toDouble()).toFloat()
+                rotateX(x)
+                val y = Math.toRadians(-display.location.yaw.toDouble()).toFloat()
+                rotateY(y)
+            }
+            //プレイヤーの視線方向に合わせる(全方向)
+            Display.Billboard.CENTER -> {
+                center.add(
+                    translation
+                        .rotateX(Math.toRadians(-p.eyeLocation.pitch.toDouble()).toFloat())
+                        .rotateY(Math.toRadians(-p.eyeLocation.yaw.toDouble()).toFloat() - Math.toRadians(180.0).toFloat())
+                )
+                val x = Math.toRadians(-p.eyeLocation.pitch.toDouble()).toFloat()
+                rotateX(x)
+                val y = Math.toRadians(-p.eyeLocation.yaw.toDouble()).toFloat() - Math.toRadians(180.0).toFloat()
+                rotateY(y)
             }
         }
 
         //テキストディスプレイの場合は中央が一番下にあるので、中心をy軸方向に半分上げる
         if (display is TextDisplay) {
-            center.y += halfWidths[1]
+            center.y += halfWidths[1].toFloat()
         }
     }
 
-    private operator fun Vector.get(i: Int): Double {
-        return when (i) {
-            0 -> x
-            1 -> y
-            2 -> z
-            else -> throw IndexOutOfBoundsException()
-        }
+    private fun Vector3f.cloneVector(): Vector3f {
+        return Vector3f(this.x, this.y, this.z)
     }
 
     // OBBとレイの交差判定
-    fun rayTrace(start: Vector, direction: Vector, maxDistance: Double): Boolean {
-        val t = center.clone().subtract(start)
-        val p = Vector(t.dot(axes[0]), t.dot(axes[1]), t.dot(axes[2]))
-        val d = Vector(direction.dot(axes[0]), direction.dot(axes[1]), direction.dot(axes[2]))
+    fun rayTrace(start: Vector3f, direction: Vector3f, maxDistance: Double): Boolean {
+        val t = Vector3f(center.x - start.x, center.y - start.y, center.z - start.z)
+        val p = Vector3f(t.dot(axes[0]), t.dot(axes[1]), t.dot(axes[2]))
+        val d = Vector3f(direction.dot(axes[0]), direction.dot(axes[1]), direction.dot(axes[2]))
 
         var tMin = -maxDistance
         var tMax = maxDistance
@@ -190,20 +183,13 @@ class OBB {
     }
 
     fun showParticle(player: Player) {
-        val corners = arrayOfNulls<Vector>(8)
+        val corners = arrayOfNulls<Vector3f>(8)
         for (i in 0..7) {
-            corners[i] = center.clone()
+            corners[i] = center.cloneVector()
             for (j in 0..2) {
                 val sign = if ((i and (1 shl j)) == 0) -1 else 1
-                corners[i]!!.add(axes[j].clone().multiply(sign * halfWidths[j]))
+                corners[i]!!.add(axes[j].cloneVector().mul((halfWidths[j] * sign).toFloat()))
             }
-        }
-
-        for (corner in corners) {
-            val loc = player.world.getBlockAt(
-                corner!!.blockX, corner.blockY, corner.blockZ
-            ).location
-            player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
         }
 
         for (i in 0..7) {
@@ -215,14 +201,14 @@ class OBB {
         }
     }
 
-    private fun drawLine(player: Player, start: Vector?, end: Vector?) {
+    private fun drawLine(player: Player, start: Vector3f?, end: Vector3f?) {
         val distance = start!!.distance(end!!)
-        val step = end.clone().subtract(start).normalize().multiply(0.2) // 線の分解能
-        val current = start.clone()
+        val step = end.cloneVector().sub(start).normalize().mul(0.2f) // 線の分解能
+        val current = start.cloneVector()
 
         var i = 0.0
         while (i < distance) {
-            val loc = current.toLocation(player.world)
+            val loc = Location(player.world, current.x.toDouble(), current.y.toDouble(), current.z.toDouble())
             player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
             current.add(step)
             i += 0.2

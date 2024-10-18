@@ -19,7 +19,21 @@ abstract class AbstractAction {
             lock = false
         })
         while (lock) {
-            Thread.sleep(50)
+            Thread.sleep(1)
+        }
+    }
+
+    protected fun runTask(run: (BukkitTask) -> Unit) {
+        Bukkit.getScheduler().runTask(SJavaPlugin.plugin, Consumer {
+            run(it)
+        })
+    }
+
+    protected fun Boolean.orBlockingTask(run: (BukkitTask) -> Unit) {
+        if (this) {
+            threadBlockingRunTask(run)
+        } else {
+            runTask(run)
         }
     }
 }

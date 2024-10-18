@@ -46,6 +46,7 @@ dependencies {
     shadowAll("tororo1066:base:$apiVersion")
     shadowImplementation("tororo1066:tororopluginapi:$apiVersion")
     compileOnly("com.mojang:brigadier:1.0.18")
+    compileOnly("com.ezylang:EvalEx:3.1.2")
 }
 
 tasks.register("shadowNormal", ShadowJar::class) {
@@ -60,8 +61,6 @@ tasks.register("shadowNormal", ShadowJar::class) {
     relocate("kotlin", "tororo1066.libs.kotlin")
     relocate("org.intellij.lang.annotations", "tororo1066.libs.org.intellij.lang.annotations")
     relocate("org.jetbrains.annotations", "tororo1066.libs.org.jetbrains.annotations")
-    relocate("org.mongodb", "tororo1066.libs.${projectName}.org.mongodb")
-    relocate("com.ezylang", "tororo1066.libs.${projectName}.com.ezylang")
 }
 
 tasks.register("shadowAll", ShadowJar::class) {
@@ -78,10 +77,6 @@ tasks.register("shadowAll", ShadowJar::class) {
     relocate("org.jetbrains.annotations", "tororo1066.libs.${projectName}.org.jetbrains.annotations")
     relocate("org.mongodb", "tororo1066.libs.${projectName}.org.mongodb")
     relocate("com.ezylang", "tororo1066.libs.${projectName}.com.ezylang")
-}
-
-tasks.named("build") {
-    dependsOn("shadowJar")
 }
 
 task<LaunchMinecraftServerTask>("buildAndLaunchServer") {

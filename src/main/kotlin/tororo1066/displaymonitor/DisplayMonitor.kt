@@ -1,45 +1,84 @@
 package tororo1066.displaymonitor
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
 import net.kyori.adventure.translation.Translator
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.commands.DisplayCommands
+import tororo1066.displaymonitor.storage.ActionStorage
+import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
+import java.util.Locale
 import java.util.PropertyResourceBundle
 import java.util.jar.JarFile
 
 class DisplayMonitor: SJavaPlugin(UseOption.SConfig) {
 
+    companion object {
+        fun log(context: String, message: String) {
+            plugin.logger.info("[$context] $message")
+        }
+
+        fun warn(context: String, message: String) {
+            plugin.logger.warning("[$context] $message")
+        }
+
+        fun error(context: String, message: String) {
+            plugin.logger.severe("[$context] $message")
+        }
+
+        fun translate(key: String, locale: Locale, vararg args: Any?): String {
+            return GlobalTranslator.translator().translate(key, locale)?.format(args, StringBuffer(), null)?.toString() ?: key
+        }
+
+        fun translate(key: String, vararg args: Any?): String {
+            return translate(key, Locale.getDefault(), *args)
+        }
+    }
+
+    override fun onLoad() {
+        plugin = this
+        ActionStorage
+    }
+
     override fun onStart() {
+        Config.load()
         registerBundle()
+        ElementStorage
         DisplayCommands()
     }
 
     private fun registerBundle() {
+
+        val context = "RegisterTranslation"
         val registry = TranslationRegistry.create(Key.key("displaymonitor:translation"))
+        GlobalTranslator.translator().removeSource(registry)
+        registry.defaultLocale(Locale.getDefault())
         val jarFile = JarFile(file)
         jarFile.use { jar ->
             val entry = jar.getEntry("config.yml")
             if (entry == null) {
-                logger.warning("config.yml not found in jar")
+                warn(context, "config.yml not found in jar")
                 return@registerBundle
             }
             val stream = jar.getInputStream(entry)
             val config = YamlConfiguration.loadConfiguration(stream.reader())
+            val serverConfig = this.config
             val version = config.getInt("translation.version")
 
-            val serverTranslationVersion = config.getInt("translation.version")
+            val serverTranslationVersion = serverConfig.getInt("translation.version")
 
-            if (!config.getBoolean("translation.initialized") || version > serverTranslationVersion) {
+            if (!serverConfig.getBoolean("translation.initialized") || version > serverTranslationVersion) {
+                log(context, "Initializing translations")
                 File(dataFolder, "translations").mkdirs()
                 val streams = jar.entries().asSequence()
                     .filter { it.name.startsWith("translations/") && !it.isDirectory }
                     .map { it.name to jar.getInputStream(it) }
                     .toList()
                 streams.forEach { (name, stream) ->
-                    logger.info("Loading translation $name")
+                    log(context, "Registering $name")
                     val file = File(dataFolder, name)
                     stream.use { input ->
                         file.outputStream().use { output ->
@@ -48,8 +87,8 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig) {
                     }
                 }
 
-                config.set("translation.version", version)
-                config.set("translation.initialized", true)
+                this.config.set("translation.version", version)
+                this.config.set("translation.initialized", true)
                 saveConfig()
             }
         }
@@ -69,5 +108,7 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig) {
                 }
             }
         }
+
+        GlobalTranslator.translator().addSource(registry)
     }
 }

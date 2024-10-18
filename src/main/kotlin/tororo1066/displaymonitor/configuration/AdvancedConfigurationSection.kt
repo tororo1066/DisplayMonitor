@@ -8,23 +8,28 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 import org.joml.Quaternionf
 import org.joml.Vector3f
+import tororo1066.displaymonitor.actions.ActionRunner
+import tororo1066.displaymonitor.elements.AsyncExecute
+import tororo1066.displaymonitor.elements.Execute
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 
 open class AdvancedConfigurationSection: MemorySection {
 
     constructor(): super()
 
-    constructor(parent: ConfigurationSection, path: String): super(parent, path)
+    constructor(parent: AdvancedConfigurationSection, path: String): super(parent, path)
+
+    constructor(copy: ConfigurationSection): super(copy.parent!!, copy.name)
 
     companion object {
     }
 
-    private fun createSection(section: ConfigurationSection, key: String): ConfigurationSection {
-        return AdvancedConfigurationSection(section, key)
+    protected fun createAdvancedSection(key: String): AdvancedConfigurationSection {
+        return AdvancedConfigurationSection(this, key)
     }
 
     private fun mapToSection(path: String, map: Map<*, *>): ConfigurationSection {
-        val section = createSection(this, path)
+        val section = createAdvancedSection(path)
         map.forEach { (key, value) ->
             section.set(key.toString(), value)
         }
@@ -48,7 +53,7 @@ open class AdvancedConfigurationSection: MemorySection {
 
         val key = path.substring(i2)
         if (section === this) {
-            val result = createSection(this, key)
+            val result = createAdvancedSection(key)
             super.set(key, result)
             return result
         }
@@ -56,17 +61,20 @@ open class AdvancedConfigurationSection: MemorySection {
     }
 
     override fun getConfigurationSection(path: String): ConfigurationSection? {
-        var value = get(path)
-        if (value is Map<*, *>) {
-            return createSection(this, path).apply {
-                (value as Map<*, *>).forEach { (key, value) ->
-                    set(key.toString(), value)
+        var value = get(path, null)
+        if (value != null) {
+            if (value is Map<*, *>) {
+                return createAdvancedSection(path).apply {
+                    (value as Map<*, *>).forEach { (key, value) ->
+                        set(key.toString(), value)
+                    }
                 }
             }
+            return value as? ConfigurationSection
         }
 
         value = get(path, getDefault(path))
-        return if (value is ConfigurationSection) value else null
+        return if (value is ConfigurationSection) createSection(path) else null
     }
 
     override fun isConfigurationSection(path: String): Boolean {
@@ -74,16 +82,58 @@ open class AdvancedConfigurationSection: MemorySection {
         return value is ConfigurationSection || value is Map<*, *>
     }
 
-    override fun set(path: String, value: Any?) {
-        if (value is Map<*, *>) {
-            super.set(path, mapToSection(path, value))
-        } else {
-            super.set(path, value)
+    fun getAdvancedConfigurationSection(path: String): AdvancedConfigurationSection? {
+        return getConfigurationSection(path) as? AdvancedConfigurationSection
+    }
+
+    fun getAdvancedConfigurationSectionList(path: String): List<AdvancedConfigurationSection> {
+        return getMapList(path).map {
+            toAdvancedConfigurationSection(it)
         }
     }
 
-    fun getBukkitVector(key: String, def: Vector? = null): Vector? {
-        val split = getString(key, "")?.split(",") ?: return def
+    private fun toAdvancedConfigurationSection(map: Map<*, *>, path: String = ""): AdvancedConfigurationSection {
+        val section = createAdvancedSection(path)
+        map.forEach { (key, value) ->
+            section.set(key.toString(), value)
+        }
+        return section
+    }
+
+    override fun set(path: String, value: Any?) {
+        if (value is Map<*, *>) {
+            super.set(path, mapToSection(path, value))
+            return
+        }
+
+        if (value is ConfigurationSection) {
+            super.set(path, createAdvancedSection(path).apply {
+                value.getValues(true).forEach { (key, value) ->
+                    set(key, value)
+                }
+            })
+            return
+        }
+
+        super.set(path, value)
+    }
+
+    override fun get(path: String, def: Any?): Any? {
+        val value = super.get(path, def)
+        if (value !is String) return value
+
+        val root = root ?: return value
+        if (root is AdvancedConfiguration) {
+            return root.evaluate(value)
+        }
+
+        return value
+    }
+
+    open fun getBukkitVector(key: String, def: Vector? = null): Vector? {
+        val value = getString(key, "") ?: return def
+        val root = root as? AdvancedConfiguration
+        val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         if (split.size != 3) return def
         return try {
             Vector(split[0].toDouble(), split[1].toDouble(), split[2].toDouble())
@@ -92,21 +142,12 @@ open class AdvancedConfigurationSection: MemorySection {
         }
     }
 
-    fun getVector3f(key: String, def: Vector3f? = null): Vector3f? {
-        val split = getString(key, "")?.split(",") ?: return def
-        if (split.size != 3) return def
+    open fun getVector3f(key: String, def: Vector3f? = null): Vector3f? {
+        val value = getString(key) ?: return def
+        val root = root as? AdvancedConfiguration
+        val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         return try {
             Vector3f(split[0].toFloat(), split[1].toFloat(), split[2].toFloat())
-        } catch (e: NumberFormatException) {
-            def
-        }
-    }
-
-    fun getQuaternion(key: String, def: Quaternionf? = null): Quaternionf? {
-        val split = getString(key, "")?.split(",") ?: return def
-        if (split.size != 4) return def
-        return try {
-            Quaternionf(split[0].toFloat(), split[1].toFloat(), split[2].toFloat(), split[3].toFloat())
         } catch (e: NumberFormatException) {
             def
         }
@@ -118,9 +159,93 @@ open class AdvancedConfigurationSection: MemorySection {
         }, { def })
     }
 
-    fun getStringItemStack(key: String, def: ItemStack? = null): ItemStack? {
+    @Suppress("UNCHECKED_CAST")
+    fun <T: Any> getEnum(key: String, clazz: Class<T>, def: T? = null): T? {
+        if (!clazz.isEnum) return def
+        return UsefulUtility.sTry({
+            val cast = clazz as Class<Enum<*>>
+            cast.enumConstants.firstOrNull { it.name == getString(key, "")?.uppercase() } as? T
+        }, { def })
+    }
+
+    open fun getStringItemStack(key: String, def: ItemStack? = null): ItemStack? {
         return UsefulUtility.sTry({
             Bukkit.getItemFactory().createItemStack(getString(key, "")!!)
         }, { def })
+    }
+
+    open fun getConfigExecute(key: String, def: Execute? = null): Execute? {
+        val root = root as? AdvancedConfiguration ?: return def
+        val list = getAdvancedConfigurationSectionList(key)
+        if (list.isEmpty()) return def
+        return Execute {
+            ActionRunner.run(root, list, it.caster, it)
+        }
+    }
+
+    open fun getAsyncConfigExecute(key: String, def: AsyncExecute? = null): AsyncExecute? {
+        val root = root as? AdvancedConfiguration ?: return def
+        val list = getAdvancedConfigurationSectionList(key)
+        if (list.isEmpty()) return def
+        return AsyncExecute {
+            ActionRunner.run(root, list, it.caster, it, true)
+        }
+    }
+
+    open fun getRotation(key: String, def: Quaternionf? = null): Quaternionf? {
+        val value = getString(key) ?: return def
+        val root = root as? AdvancedConfiguration
+        val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
+        if (split.isEmpty()) return def
+        val type = split[0].lowercase()
+        try {
+            when(type) {
+                "euler" -> {
+                    if (split.size != 4) return def
+                    val x = split[1].toFloat()
+                    val y = split[2].toFloat()
+                    val z = split[3].toFloat()
+                    return Quaternionf().rotationXYZ(x, y, z)
+                }
+                "axis" -> {
+                    if (split.size != 5) return def
+                    val angle = split[1].toFloat()
+                    val x = split[2].toFloat()
+                    val y = split[3].toFloat()
+                    val z = split[4].toFloat()
+                    return Quaternionf().rotationAxis(angle, x, y, z)
+                }
+                else -> {
+                    if (split.size != 4 && split.size != 5) return def
+                    val minus = if (split.size == 4) 1 else 0
+                    val x = split[1-minus].toFloat()
+                    val y = split[2-minus].toFloat()
+                    val z = split[3-minus].toFloat()
+                    val w = split[4-minus].toFloat()
+                    return Quaternionf(x, y, z, w)
+                }
+            }
+        } catch (e: NumberFormatException) {
+            return def
+        }
+    }
+
+    open fun <T> withParameters(parameters: Map<String, Any>, action: AdvancedConfigurationSection.() -> T): T {
+        val root = root as? AdvancedConfiguration
+        val value: T
+        if (root != null) {
+            val old = root.parameters
+            root.parameters = parameters.toMutableMap()
+            value = action.invoke(this)
+            root.parameters = old
+        } else {
+            value = action.invoke(this)
+        }
+
+        return value
+    }
+
+    override fun toString(): String {
+        return "AdvancedConfigurationSection(${getValues(true)})"
     }
 }
