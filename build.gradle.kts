@@ -1,7 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask
 import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask.JarUrl
-import groovy.lang.Closure
 
 plugins {
     kotlin("jvm") version "1.7.20"
@@ -10,6 +9,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     `maven-publish`
 }
+
+group = "tororo1066"
 
 val pluginVersion: String by project.ext
 val apiVersion: String by project.ext
@@ -48,7 +49,6 @@ dependencies {
 }
 
 tasks.register("shadowNormal", ShadowJar::class) {
-    val projectName = project.name.lowercase()
     from(sourceSets.main.get().output)
     configurations = listOf(shadowImplementation)
     archiveClassifier.set("")
