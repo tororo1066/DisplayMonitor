@@ -99,7 +99,7 @@ publishing {
         create<MavenPublication>("plugin") {
             groupId = project.group.toString()
             artifactId = project.name.lowercase()
-            version = project.version.toString()
+            version = System.getenv("VERSION")
             from(components["java"])
         }
     }
