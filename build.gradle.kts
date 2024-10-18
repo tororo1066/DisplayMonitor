@@ -8,9 +8,8 @@ plugins {
     id("com.github.ben-manes.versions") version "0.41.0"
     id("dev.s7a.gradle.minecraft.server") version "1.2.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    `maven-publish`
 }
-
-val gitVersion: Closure<String> by extra
 
 val pluginVersion: String by project.ext
 val apiVersion: String by project.ext
@@ -93,4 +92,24 @@ task<LaunchMinecraftServerTask>("buildAndLaunchServer") {
     serverDirectory.set(dir.resolve("MinecraftServer"))
     nogui.set(true)
     agreeEula.set(true)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("plugin") {
+            groupId = project.group.toString()
+            artifactId = project.name.lowercase()
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/tororo1066/TororoPluginAPI")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
