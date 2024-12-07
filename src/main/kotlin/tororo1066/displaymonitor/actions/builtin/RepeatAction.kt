@@ -2,6 +2,7 @@ package tororo1066.displaymonitor.actions.builtin
 
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.actions.ActionContext
+import tororo1066.displaymonitor.actions.ActionResult
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.Execute
 
@@ -11,7 +12,7 @@ class RepeatAction: AbstractAction() {
     var isInfinity = false
     var actions: Execute = Execute.empty()
 
-    override fun run(context: ActionContext) {
+    override fun run(context: ActionContext): ActionResult {
         val cloneContext = context.cloneWithRandomUUID()
         if (isInfinity) {
             while (true) {
@@ -23,11 +24,13 @@ class RepeatAction: AbstractAction() {
         } else {
             repeat(times) {
                 if (context.stop) {
-                    return
+                    return ActionResult.success()
                 }
                 actions(cloneContext)
             }
         }
+
+        return ActionResult.success()
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {

@@ -8,3 +8,4 @@ softdepend:
 
 libraries:
   - com.ezylang:EvalEx:3.1.2
+  - org.jetbrains.kotlin:kotlin-stdlib:1.7.20

@@ -1,0 +1,10 @@
+name: DisplayMonitor
+main: tororo1066.displaymonitor.DisplayMonitor
+version: '1.0'
+api-version: '1.20'
+loader: tororo1066.displaymonitor.DependencyLoader
+
+dependencies:
+  server:
+    NMSUtils:
+      load: BEFORE

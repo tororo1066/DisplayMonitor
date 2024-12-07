@@ -15,6 +15,7 @@ class SetElement: AbstractElement() {
     }
 
     override fun spawn(p: Player, location: Location) {
+        startTick(p)
         elements.values.forEach { it.spawn(p, location) }
     }
 
@@ -22,8 +23,9 @@ class SetElement: AbstractElement() {
         elements.values.forEach { it.tick(p) }
     }
 
-    override fun remove(p: Player) {
-        elements.values.forEach { it.remove(p) }
+    override fun remove() {
+        tickTask?.cancel()
+        elements.values.forEach { it.remove() }
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {

@@ -8,7 +8,7 @@ import java.util.function.Consumer
 
 abstract class AbstractAction {
 
-    abstract fun run(context: ActionContext)
+    abstract fun run(context: ActionContext): ActionResult
 
     abstract fun prepare(section: AdvancedConfigurationSection)
 

@@ -10,12 +10,14 @@ abstract class CheckAction: AbstractAction() {
 
     abstract fun isAllowed(context: ActionContext): Boolean
 
-    override fun run(context: ActionContext) {
+    override fun run(context: ActionContext): ActionResult {
         if (isAllowed(context)) {
             actions(context)
         } else {
             failActions(context)
         }
+
+        return ActionResult.success()
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {

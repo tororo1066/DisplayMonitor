@@ -6,11 +6,9 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
-import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.configuration.DisplayParameters
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.AsyncExecute
-import tororo1066.displaymonitor.elements.Execute
 import tororo1066.displaymonitor.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
@@ -71,7 +69,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         startTick(p)
     }
 
-    override fun remove(p: Player) {
+    override fun remove() {
         entity.remove()
         tickTask?.cancel()
         sEvent.unregisterAll()
@@ -80,7 +78,7 @@ abstract class DisplayBaseElement : AbstractElement() {
     override fun tick(p: Player) {
 
         if (!entity.isValid) {
-            remove(p)
+            remove()
             return
         }
 

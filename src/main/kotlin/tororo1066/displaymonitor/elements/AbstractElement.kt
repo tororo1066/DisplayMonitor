@@ -30,11 +30,9 @@ abstract class AbstractElement: Cloneable {
 
     abstract fun spawn(p: Player, location: Location)
 
-    abstract fun remove(p: Player)
+    abstract fun remove()
 
     abstract fun tick(p: Player)
-
-//    abstract fun prepare(section: AdvancedConfigurationSection)
 
     private fun Field.isNullable(): Boolean {
         return this.annotations.any { it.annotationClass.simpleName == "Nullable" }

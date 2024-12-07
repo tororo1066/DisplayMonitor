@@ -1,8 +1,10 @@
 package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.util.Vector
+import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.actions.ActionContext
+import tororo1066.displaymonitor.actions.ActionResult
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.tororopluginapi.utils.addYaw
@@ -21,28 +23,33 @@ class SummonElement: AbstractAction() {
 
     var forceSync = false
 
-    override fun run(context: ActionContext) {
-        val element = ElementStorage.createElement(presetName, clazz, overrideParameters, "SummonElement") ?: return
+    override fun run(context: ActionContext): ActionResult {
+        val caster = context.caster ?: return ActionResult.playerRequired()
+        val location = context.location?.clone() ?: return ActionResult.locationRequired()
+
+        val element = ElementStorage.createElement(presetName, clazz, overrideParameters, "SummonElement")
+            ?: return ActionResult.noParameters(DisplayMonitor.translate("action.summonElement.noElement"))
 
         element.groupUUID = context.groupUUID
         element.contextUUID = context.uuid
 
         context.elements[name] = element
-
-        val location = context.location.clone()
         if (lockPitch) {
             location.pitch = 0f
         }
+        val clone = location.clone()
         location
-            .add(context.location.direction.normalize().multiply(relativeOffset.z))
-            .add(context.location.direction.rotateAroundY(90.0).normalize().multiply(relativeOffset.x))
-            .add(context.location.direction.rotateAroundZ(-90.0).normalize().multiply(relativeOffset.y))
+            .add(clone.direction.normalize().multiply(relativeOffset.z))
+            .add(clone.direction.rotateAroundY(90.0).normalize().multiply(relativeOffset.x))
+            .add(clone.direction.rotateAroundZ(-90.0).normalize().multiply(relativeOffset.y))
             .add(offset)
             .addYaw(180f)
 
         forceSync.orBlockingTask {
-            element.spawn(context.caster, location)
+            element.spawn(caster, location)
         }
+
+        return ActionResult.success()
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {

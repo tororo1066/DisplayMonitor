@@ -19,7 +19,7 @@ object ActionRunner {
     fun run(
         root: AdvancedConfiguration,
         actionList: List<AdvancedConfigurationSection>,
-        p: Player,
+        p: Player? = null,
         context: ActionContext? = null,
         async: Boolean = false
     ) {
@@ -28,7 +28,7 @@ object ActionRunner {
         val actionContext = context ?: ActionContext()
         actionContext.configuration = root
         actionContext.caster = p
-        actionContext.location = p.location.clone()
+        actionContext.location = p?.location?.clone()
 
         root.parameters.putAll(actionContext.getDefaultParameters())
 

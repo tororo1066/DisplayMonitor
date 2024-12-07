@@ -2,16 +2,22 @@ package tororo1066.displaymonitor.actions.builtin
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.ActionResult
 
 class MessageAction: AbstractAction() {
 
     var message: Component? = null
 
-    override fun run(context: ActionContext) {
-        message?.let { context.caster.sendMessage(it) }
+    override fun run(context: ActionContext): ActionResult {
+        val caster = context.caster ?: return ActionResult.playerRequired()
+        val message = message ?: return ActionResult.noParameters(DisplayMonitor.translate("action.message.empty"))
+        caster.sendMessage(message)
+
+        return ActionResult.success()
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {

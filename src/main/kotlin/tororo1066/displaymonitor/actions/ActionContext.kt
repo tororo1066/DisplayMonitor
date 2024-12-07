@@ -13,8 +13,8 @@ class ActionContext(): Cloneable {
     var groupUUID: UUID = UUID.randomUUID()
     var uuid = UUID.randomUUID()
 
-    lateinit var caster: Player
-    lateinit var location: Location
+    var caster: Player? = null
+    var location: Location? = null
 
     val elements = HashMap<String, AbstractElement>()
 
@@ -50,20 +50,24 @@ class ActionContext(): Cloneable {
 
     fun getDefaultParameters(): MutableMap<String, Any> {
         val map = HashMap<String, Any>()
-        map["caster.name"] = caster.name
-        map["caster.uuid"] = caster.uniqueId.toString()
-        map["caster.location.x"] = caster.location.x
-        map["caster.location.y"] = caster.location.y
-        map["caster.location.z"] = caster.location.z
-        map["caster.location.yaw"] = caster.location.yaw
-        map["caster.location.pitch"] = caster.location.pitch
-        map["caster.world"] = caster.world.name
-        map["location.x"] = location.x
-        map["location.y"] = location.y
-        map["location.z"] = location.z
-        map["location.yaw"] = location.yaw
-        map["location.pitch"] = location.pitch
-        map["location.world"] = location.world.name
+        caster?.let {
+            map["caster.name"] = it.name
+            map["caster.uuid"] = it.uniqueId.toString()
+            map["caster.location.x"] = it.location.x
+            map["caster.location.y"] = it.location.y
+            map["caster.location.z"] = it.location.z
+            map["caster.location.yaw"] = it.location.yaw
+            map["caster.location.pitch"] = it.location.pitch
+            map["caster.world"] = it.world.name
+        }
+        location?.let {
+            map["location.x"] = it.x
+            map["location.y"] = it.y
+            map["location.z"] = it.z
+            map["location.yaw"] = it.yaw
+            map["location.pitch"] = it.pitch
+            map["location.world"] = it.world.name
+        }
         return map
     }
 }
