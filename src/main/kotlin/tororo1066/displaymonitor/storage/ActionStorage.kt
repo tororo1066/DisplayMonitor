@@ -34,6 +34,7 @@ object ActionStorage {
         actions["Repeat"] = RepeatAction::class.java
         actions["Asynchronous"] = AsynchronousAction::class.java
         actions["UpdateParameters"] = UpdateParametersAction::class.java
+        actions["WaitCommand"] = WaitCommandAction::class.java
 
         loadActions()
     }
