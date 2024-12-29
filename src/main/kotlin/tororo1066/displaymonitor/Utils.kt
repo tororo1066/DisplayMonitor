@@ -23,14 +23,6 @@ object Utils {
         }
     }
 
-    fun AdvancedConfiguration.clone(): AdvancedConfiguration {
-        val yaml = AdvancedConfiguration()
-        getValues(true).forEach { (key, value) ->
-            yaml.set(key, value)
-        }
-        return yaml
-    }
-
     fun AdvancedConfigurationSection.clone(): AdvancedConfigurationSection {
         val yaml = AdvancedConfigurationSection(this)
         getValues(true).forEach { (key, value) ->
@@ -47,9 +39,13 @@ object Utils {
         return yaml
     }
 
-    fun hexToBukkitColor(hex: String): Color {
-        val colorInt = Integer.parseInt(hex.removePrefix("#"), 16)
-        return Color.fromRGB(colorInt)
+    fun hexToBukkitColor(hex: String): Color? {
+        try {
+            val colorInt = Integer.parseInt(hex.removePrefix("#"), 16)
+            return Color.fromRGB(colorInt)
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     fun isPointInsideRotatedRect(

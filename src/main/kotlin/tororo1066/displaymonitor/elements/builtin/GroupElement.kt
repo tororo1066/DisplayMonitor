@@ -1,31 +1,49 @@
 package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Location
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Marker
 import org.bukkit.entity.Player
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.storage.ElementStorage
 
-class SetElement: AbstractElement() {
+class GroupElement: AbstractElement() {
 
     var elements = mutableMapOf<String, AbstractElement>()
+    lateinit var centerEntity: Entity
+
+    override val syncGroup = true
 
     override fun applyChanges() {
         elements.values.forEach { it.applyChanges() }
     }
 
-    override fun spawn(p: Player, location: Location) {
+    override fun spawn(p: Player?, location: Location) {
+        centerEntity = location.world.spawn(location, Marker::class.java)
+        elements.values.forEach {
+            it.spawn(p, location)
+            it.attachEntity(centerEntity)
+        }
         startTick(p)
-        elements.values.forEach { it.spawn(p, location) }
     }
 
-    override fun tick(p: Player) {
+    override fun tick(p: Player?) {
+        if (!centerEntity.isValid) {
+            remove()
+            return
+        }
         elements.values.forEach { it.tick(p) }
     }
 
     override fun remove() {
         tickTask?.cancel()
         elements.values.forEach { it.remove() }
+        centerEntity.remove()
+    }
+
+    override fun attachEntity(entity: Entity) {
+        entity.addPassenger(centerEntity)
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {
@@ -38,7 +56,9 @@ class SetElement: AbstractElement() {
             val presetName = element.getString("preset")
             val clazz = element.getString("type")
             val overrideParameters = element.getAdvancedConfigurationSection("parameters")
-            ElementStorage.createElement(presetName, clazz, overrideParameters, "SetElement")?.let {
+            ElementStorage.createElement(presetName, clazz, overrideParameters, "GroupElement")?.let {
+                it.groupUUID = groupUUID
+                it.contextUUID = contextUUID
                 this.elements[key] = it
             }
         }
@@ -49,14 +69,22 @@ class SetElement: AbstractElement() {
             val editConfig = edit.getAdvancedConfigurationSection(key) ?: return@forEach
             split.forEach second@ { name ->
                 val element = this.elements[name] ?: return@second
-                element.prepare(editConfig)
-                element.applyChanges()
+                element.edit(editConfig)
+            }
+        }
+    }
+
+    override fun move(location: Location) {
+        centerEntity.teleport(location)
+        elements.values.forEach {
+            if (!it.syncGroup) {
+                it.move(location)
             }
         }
     }
 
     override fun clone(): AbstractElement {
-        val element = super.clone() as SetElement
+        val element = super.clone() as GroupElement
         element.elements = elements.mapValues { it.value.clone() }.toMutableMap()
         return element
     }

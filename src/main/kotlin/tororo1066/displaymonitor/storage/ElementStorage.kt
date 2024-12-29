@@ -19,7 +19,7 @@ object ElementStorage {
         elementClasses["ItemElement"] = ItemElement::class.java
         elementClasses["BlockElement"] = BlockElement::class.java
         elementClasses["TextElement"] = TextElement::class.java
-        elementClasses["SetElement"] = SetElement::class.java
+        elementClasses["GroupElement"] = GroupElement::class.java
 
         load()
     }

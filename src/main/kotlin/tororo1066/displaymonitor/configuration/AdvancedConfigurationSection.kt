@@ -235,7 +235,9 @@ open class AdvancedConfigurationSection: MemorySection {
         val value: T
         if (root != null) {
             val old = root.parameters
-            root.parameters = parameters.toMutableMap()
+            root.parameters = old.toMutableMap().apply {
+                putAll(parameters)
+            }
             value = action.invoke(this)
             root.parameters = old
         } else {

@@ -10,7 +10,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import tororo1066.displaymonitor.Utils
 
-class AdvancedConfiguration: AdvancedConfigurationSection(), Configuration {
+class AdvancedConfiguration: AdvancedConfigurationSection(), Configuration, Cloneable {
 
     private inner class Options: ConfigurationOptions(this)
 
@@ -41,11 +41,6 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), Configuration {
     fun evaluate(value: String): Any {
         //$[key] or $[key]$ or $[key]:default$
 
-//        val replace = value.replace(Regex("\\$[a-zA-Z0-9_.]+\\$?")) {
-//            val key = if (it.value.endsWith("$")) it.value.substring(1, it.value.length - 1) else it.value.substring(1)
-//            (parameters[key] ?: it.value).toString()
-//        }
-
         val replace = value.replace(Regex("\\$[a-zA-Z0-9_.]+(:[a-zA-Z0-9_.]+)?\\$?")) {
             val replace = if (it.value.endsWith("$")) it.value.substring(1, it.value.length - 1) else it.value.substring(1)
             val split = replace.split(":")
@@ -61,4 +56,12 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), Configuration {
         }
     }
 
+    public override fun clone(): AdvancedConfiguration {
+        val clone = AdvancedConfiguration()
+        clone.parameters = parameters.toMutableMap()
+        getValues(true).forEach { (key, value) ->
+            clone.set(key, value)
+        }
+        return clone
+    }
 }

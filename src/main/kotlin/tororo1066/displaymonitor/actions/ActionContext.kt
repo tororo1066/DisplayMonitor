@@ -44,6 +44,7 @@ class ActionContext(): Cloneable {
         context.uuid = uuid
         context.caster = caster
         context.location = location
+        context.configuration = configuration
         context.elements.putAll(elements)
         return context
     }
@@ -58,7 +59,7 @@ class ActionContext(): Cloneable {
             map["caster.location.z"] = it.location.z
             map["caster.location.yaw"] = it.location.yaw
             map["caster.location.pitch"] = it.location.pitch
-            map["caster.world"] = it.world.name
+            map["caster.location.world"] = it.location.world.name
         }
         location?.let {
             map["location.x"] = it.x

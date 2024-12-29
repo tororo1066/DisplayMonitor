@@ -1,17 +1,11 @@
 package tororo1066.displaymonitor.commands
 
 import net.kyori.adventure.text.Component
-import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.commandapi.argumentType.StringArg
 import tororo1066.displaymonitor.Config
-import tororo1066.displaymonitor.Utils.mergeConfiguration
-import tororo1066.displaymonitor.actions.ActionRunner
-import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.storage.ActionStorage
-import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.annotation.SCommandV2Body
 import tororo1066.tororopluginapi.sCommand.v2.SCommandV2
-import java.io.File
 
 class DisplayCommands: SCommandV2("dmonitor") {
 
@@ -20,7 +14,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
     }
 
     @SCommandV2Body
-    val testCommand = command {
+    val displayCommand = command {
 
         literal("runLoaded") {
             argument("name", StringArg(StringArg.StringType.SINGLE_WORD)) {

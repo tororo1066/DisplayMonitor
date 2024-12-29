@@ -2,6 +2,7 @@ package tororo1066.displaymonitor.elements
 
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import tororo1066.displaymonitor.actions.ActionContext
@@ -14,6 +15,8 @@ import java.lang.reflect.Field
 import java.util.UUID
 
 abstract class AbstractElement: Cloneable {
+
+    abstract val syncGroup: Boolean
 
     var groupUUID: UUID? = null
     var contextUUID: UUID? = null
@@ -28,11 +31,25 @@ abstract class AbstractElement: Cloneable {
         execute(context)
     }
 
-    abstract fun spawn(p: Player, location: Location)
+    protected fun runExecute(execute: Execute, context: ActionContext) {
+        execute(context)
+    }
+
+    protected fun runExecute(execute: Execute, modification: (ActionContext) -> Unit) {
+        val context = (getContext() ?: return).clone()
+        modification(context)
+        execute(context)
+    }
+
+    abstract fun spawn(p: Player?, location: Location)
 
     abstract fun remove()
 
-    abstract fun tick(p: Player)
+    abstract fun tick(p: Player?)
+
+    abstract fun attachEntity(entity: Entity)
+
+    abstract fun move(location: Location)
 
     private fun Field.isNullable(): Boolean {
         return this.annotations.any { it.annotationClass.simpleName == "Nullable" }
@@ -79,7 +96,7 @@ abstract class AbstractElement: Cloneable {
         applyChanges()
     }
 
-    protected fun startTick(p: Player) {
+    protected fun startTick(p: Player?) {
         tickTask = Bukkit.getScheduler().runTaskTimer(SJavaPlugin.plugin, Runnable {
             tick(p)
         }, 0, 1)

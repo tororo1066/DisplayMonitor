@@ -10,7 +10,7 @@ public class DependencyLoader extends AbstractDependencyLoader {
     @Override
     public Library[] getDependencies() {
         return new Library[]{
-                LibraryType.KOTLIN.createLibrary(),
+//                LibraryType.KOTLIN.createLibrary(),
                 LibraryType.EVALEX.createLibrary()
         };
     }

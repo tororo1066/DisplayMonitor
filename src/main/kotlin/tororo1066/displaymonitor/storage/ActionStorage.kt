@@ -35,6 +35,8 @@ object ActionStorage {
         actions["Asynchronous"] = AsynchronousAction::class.java
         actions["UpdateParameters"] = UpdateParametersAction::class.java
         actions["WaitCommand"] = WaitCommandAction::class.java
+        actions["ModifyVariable"] = ModifyVariableAction::class.java
+        actions["MoveElement"] = MoveElement::class.java
 
         loadActions()
     }

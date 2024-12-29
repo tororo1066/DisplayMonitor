@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture
 
 object ActionRunner {
 
-    val runContext = "ActionRunner"
+    private const val runContext = "ActionRunner"
 
     fun run(config: AdvancedConfiguration, p: Player) {
         val configActions = config.getAdvancedConfigurationSectionList("actions")

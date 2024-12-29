@@ -34,9 +34,7 @@ class SummonElement: AbstractAction() {
         element.contextUUID = context.uuid
 
         context.elements[name] = element
-        if (lockPitch) {
-            location.pitch = 0f
-        }
+
         val clone = location.clone()
         location
             .add(clone.direction.normalize().multiply(relativeOffset.z))
@@ -44,6 +42,10 @@ class SummonElement: AbstractAction() {
             .add(clone.direction.rotateAroundZ(-90.0).normalize().multiply(relativeOffset.y))
             .add(offset)
             .addYaw(180f)
+
+        if (lockPitch) {
+            location.pitch = 0f
+        }
 
         forceSync.orBlockingTask {
             element.spawn(caster, location)

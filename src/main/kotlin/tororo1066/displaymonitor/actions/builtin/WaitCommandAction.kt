@@ -71,8 +71,14 @@ class WaitCommandAction: AbstractAction() {
         command = section.getString("command") ?: ""
         actions = section.getConfigExecute("actions") ?: actions
         failActions = section.getConfigExecute("fail") ?: failActions
-        timeout = section.getLong("timeout", -1L)
-        infinite = section.getBoolean("infinite", timeout == -1L)
+        if (section.contains("timeout")) {
+            val timeout = section.get("timeout")
+            if (timeout is Int) {
+                this.timeout = timeout.toLong()
+            } else if (timeout is String && timeout == "infinity") {
+                infinite = true
+            }
+        }
         server = section.getBoolean("server", false)
         cancelCommand = section.getBoolean("cancelCommand", false)
     }

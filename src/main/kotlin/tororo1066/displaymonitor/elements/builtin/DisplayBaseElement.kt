@@ -2,6 +2,7 @@ package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Location
 import org.bukkit.entity.Display
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.Vector
@@ -26,6 +27,7 @@ abstract class DisplayBaseElement : AbstractElement() {
     @Settable var switchHover = true
     @Settable var visualizeHitbox = false
     @Settable var visibleAll = false
+    @Settable var public = false
     @Settable var persistent = true
 
     abstract val clazz: Class<out Display>
@@ -34,9 +36,11 @@ abstract class DisplayBaseElement : AbstractElement() {
     val sEvent = SEvent()
     var hover = false
 
+    override val syncGroup = true
+
     abstract fun applyEntity(entity: Display)
 
-    override fun spawn(p: Player, location: Location) {
+    override fun spawn(p: Player?, location: Location) {
         entity = location.world.spawn(location, clazz) {
             it.billboard = displayParameters.billboard
             it.transformation = displayParameters.getTransformation()
@@ -49,12 +53,12 @@ abstract class DisplayBaseElement : AbstractElement() {
             applyEntity(it)
             it.isVisibleByDefault = visibleAll
             it.isPersistent = persistent
-            p.showEntity(SJavaPlugin.plugin, it)
+            p?.showEntity(SJavaPlugin.plugin, it)
         }
 
         runExecute(onSpawn)
         sEvent.register<PlayerInteractEvent> { e ->
-            if (e.player != p) return@register
+            if (!public && e.player != p) return@register
             if (Utils.isPointInsideRotatedRect(
                     e.player,
                     entity,
@@ -62,11 +66,18 @@ abstract class DisplayBaseElement : AbstractElement() {
                     interactionDistance,
                 )
             ) {
-                runExecute(onInteract)
+                runExecute(onInteract) {
+                    it.caster = e.player
+                    it.location = e.player.location
+                }
             }
         }
 
         startTick(p)
+    }
+
+    override fun attachEntity(entity: Entity) {
+        entity.addPassenger(this.entity)
     }
 
     override fun remove() {
@@ -75,36 +86,55 @@ abstract class DisplayBaseElement : AbstractElement() {
         sEvent.unregisterAll()
     }
 
-    override fun tick(p: Player) {
+    override fun tick(p: Player?) {
 
         if (!entity.isValid) {
             remove()
             return
         }
 
-        val onCursor = Utils.isPointInsideRotatedRect(
-            p,
-            entity,
-            interactionScale,
-            interactionDistance,
-            visualizeHitbox
-        )
+        val players = if (public) entity.location.getNearbyPlayers(interactionScale.x + interactionDistance) else listOfNotNull(p)
+        players.forEach { player ->
+            val onCursor = Utils.isPointInsideRotatedRect(
+                player,
+                entity,
+                interactionScale,
+                interactionDistance,
+                visualizeHitbox
+            )
 
-        if (!switchHover) {
-            if (onCursor) {
-                runExecute(onHover)
+            if (!switchHover) {
+                if (onCursor) {
+                    runExecute(onHover) {
+                        it.caster = player
+                        it.location = player.location
+                    }
+                } else {
+                    runExecute(onUnhover) {
+                        it.caster = player
+                        it.location = player.location
+                    }
+                }
             } else {
-                runExecute(onUnhover)
-            }
-        } else {
-            if (onCursor && !hover) {
-                runExecute(onHover)
-                hover = true
-            } else if (!onCursor && hover) {
-                runExecute(onUnhover)
-                hover = false
+                if (onCursor && !hover) {
+                    runExecute(onHover) {
+                        it.caster = player
+                        it.location = player.location
+                    }
+                    hover = true
+                } else if (!onCursor && hover) {
+                    runExecute(onUnhover) {
+                        it.caster = player
+                        it.location = player.location
+                    }
+                    hover = false
+                }
             }
         }
+    }
+
+    override fun move(location: Location) {
+        entity.teleport(location)
     }
 
     override fun applyChanges() {
@@ -115,6 +145,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         entity.teleportDuration = displayParameters.teleportDuration
         entity.isVisibleByDefault = visibleAll
         entity.isPersistent = persistent
+
         applyEntity(entity)
     }
 
@@ -129,6 +160,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         element.switchHover = switchHover
         element.visualizeHitbox = visualizeHitbox
         element.visibleAll = visibleAll
+        element.public = public
         element.persistent = persistent
         return element
     }
