@@ -20,7 +20,7 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 repositories {
     mavenCentral()
     maven(url = "https://oss.sonatype.org/content/groups/public/")
-    maven(url = "https://papermc.io/repo/repository/maven-public/")
+    maven(url = "https://repo.papermc.io/repository/maven-public/")
     maven(url = "https://libraries.minecraft.net")
     maven(url = "https://jitpack.io")
     maven {
@@ -49,23 +49,6 @@ tasks.register("shadowNormal", ShadowJar::class) {
     from(sourceSets.main.get().output)
     configurations = listOf(shadowImplementation)
     archiveClassifier.set("")
-}
-
-task<LaunchMinecraftServerTask>("buildAndLaunchServer") {
-    val dir = layout.buildDirectory.get().asFile
-    dependsOn("build")
-    doFirst {
-        copy {
-            from(dir.resolve("libs/${project.name}.jar"))
-            into(dir.resolve("MinecraftServer/plugins"))
-        }
-    }
-
-    jarUrl.set(JarUrl.Paper(pluginVersion))
-    jarName.set("server.jar")
-    serverDirectory.set(dir.resolve("MinecraftServer"))
-    nogui.set(true)
-    agreeEula.set(true)
 }
 
 publishing {

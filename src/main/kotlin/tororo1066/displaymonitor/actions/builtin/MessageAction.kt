@@ -13,9 +13,9 @@ class MessageAction: AbstractAction() {
     var message: Component? = null
 
     override fun run(context: ActionContext): ActionResult {
-        val caster = context.caster ?: return ActionResult.playerRequired()
+        val target = context.target ?: return ActionResult.targetRequired()
         val message = message ?: return ActionResult.noParameters(DisplayMonitor.translate("action.message.empty"))
-        caster.sendMessage(message)
+        target.sendMessage(message)
 
         return ActionResult.success()
     }

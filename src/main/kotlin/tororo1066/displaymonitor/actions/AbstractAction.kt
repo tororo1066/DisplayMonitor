@@ -12,10 +12,10 @@ abstract class AbstractAction {
 
     abstract fun prepare(section: AdvancedConfigurationSection)
 
-    protected fun threadBlockingRunTask(run: (BukkitTask) -> Unit) {
+    protected fun threadBlockingRunTask(run: () -> Unit) {
         var lock = true
         Bukkit.getScheduler().runTask(SJavaPlugin.plugin, Consumer {
-            run(it)
+            run()
             lock = false
         })
         while (lock) {
@@ -23,13 +23,15 @@ abstract class AbstractAction {
         }
     }
 
-    protected fun runTask(run: (BukkitTask) -> Unit) {
-        Bukkit.getScheduler().runTask(SJavaPlugin.plugin, Consumer {
-            run(it)
-        })
+    protected fun runTask(run: () -> Unit) {
+        Bukkit.getScheduler().runTask(SJavaPlugin.plugin, run)
     }
 
-    protected fun Boolean.orBlockingTask(run: (BukkitTask) -> Unit) {
+    protected fun Boolean.orBlockingTask(run: () -> Unit) {
+        if (Bukkit.isPrimaryThread()) {
+            run()
+            return
+        }
         if (this) {
             threadBlockingRunTask(run)
         } else {

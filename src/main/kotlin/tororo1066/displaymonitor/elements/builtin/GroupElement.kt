@@ -3,7 +3,6 @@ package tororo1066.displaymonitor.elements.builtin
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Marker
-import org.bukkit.entity.Player
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.storage.ElementStorage
@@ -19,21 +18,23 @@ class GroupElement: AbstractElement() {
         elements.values.forEach { it.applyChanges() }
     }
 
-    override fun spawn(p: Player?, location: Location) {
+    override fun spawn(entity: Entity?, location: Location) {
         centerEntity = location.world.spawn(location, Marker::class.java)
         elements.values.forEach {
-            it.spawn(p, location)
+            it.groupUUID = groupUUID
+            it.contextUUID = contextUUID
+            it.spawn(entity, location)
             it.attachEntity(centerEntity)
         }
-        startTick(p)
+        startTick(entity)
     }
 
-    override fun tick(p: Player?) {
+    override fun tick(entity: Entity?) {
         if (!centerEntity.isValid) {
             remove()
             return
         }
-        elements.values.forEach { it.tick(p) }
+        elements.values.forEach { it.tick(entity) }
     }
 
     override fun remove() {
@@ -57,8 +58,8 @@ class GroupElement: AbstractElement() {
             val clazz = element.getString("type")
             val overrideParameters = element.getAdvancedConfigurationSection("parameters")
             ElementStorage.createElement(presetName, clazz, overrideParameters, "GroupElement")?.let {
-                it.groupUUID = groupUUID
-                it.contextUUID = contextUUID
+//                it.groupUUID = groupUUID
+//                it.contextUUID = contextUUID
                 this.elements[key] = it
             }
         }

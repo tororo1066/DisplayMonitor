@@ -24,7 +24,7 @@ class SummonElement: AbstractAction() {
     var forceSync = false
 
     override fun run(context: ActionContext): ActionResult {
-        val caster = context.caster ?: return ActionResult.playerRequired()
+        val target = context.target ?: return ActionResult.targetRequired()
         val location = context.location?.clone() ?: return ActionResult.locationRequired()
 
         val element = ElementStorage.createElement(presetName, clazz, overrideParameters, "SummonElement")
@@ -33,7 +33,7 @@ class SummonElement: AbstractAction() {
         element.groupUUID = context.groupUUID
         element.contextUUID = context.uuid
 
-        context.elements[name] = element
+        context.publicContext.elements[name] = element
 
         val clone = location.clone()
         location
@@ -48,7 +48,7 @@ class SummonElement: AbstractAction() {
         }
 
         forceSync.orBlockingTask {
-            element.spawn(caster, location)
+            element.spawn(target, location)
         }
 
         return ActionResult.success()

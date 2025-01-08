@@ -89,12 +89,12 @@ object SettableProcessor {
             }
 
             Execute::class.java -> {
-                return this.getConfigExecute(key) as? Type
+                return this.getAnyConfigExecute(key) as? Type
             }
 
-            AsyncExecute::class.java -> {
-                return this.getAsyncConfigExecute(key) as? Type
-            }
+//            AsyncExecute::class.java -> {
+//                return this.getAsyncConfigExecute(key) as? Type
+//            }
 
             ItemStack::class.java -> {
                 return this.getStringItemStack(key) as? Type

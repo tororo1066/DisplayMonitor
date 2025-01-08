@@ -1,29 +1,25 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import tororo1066.displaymonitor.DisplayMonitor
+import org.bukkit.entity.Player
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.ActionResult
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 
-class RemoveElement: AbstractAction() {
+class RemoveEntityAction: AbstractAction() {
 
-    var name = ""
     var forceSync = false
 
     override fun run(context: ActionContext): ActionResult {
-        val element = context.publicContext.elements[name] ?: return ActionResult.noParameters(DisplayMonitor.translate("action.removeElement.notFound", name))
-
+        val target = context.target ?: return ActionResult.targetRequired()
+        if (target is Player) return ActionResult.failed("Player cannot be removed")
         forceSync.orBlockingTask {
-            element.remove()
-            context.publicContext.elements.remove(name)
+            target.remove()
         }
-
         return ActionResult.success()
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {
-        name = section.getString("name", "")!!
         forceSync = section.getBoolean("forceSync", false)
     }
 }

@@ -5,7 +5,8 @@ class ActionResult(var actionResultType: ActionResultType, var message: String =
         fun success(message: String = "") = ActionResult(ActionResultType.SUCCESS, message)
         fun failed(message: String = "") = ActionResult(ActionResultType.FAILED, message)
         fun noParameters(message: String = "") = ActionResult(ActionResultType.NO_PARAMETERS, message)
-        fun playerRequired(message: String = "") = ActionResult(ActionResultType.PLAYER_REQUIRED, message)
+        fun casterRequired(message: String = "") = ActionResult(ActionResultType.CASTER_REQUIRED, message)
+        fun targetRequired(message: String = "") = ActionResult(ActionResultType.TARGET_REQUIRED, message)
         fun locationRequired(message: String = "") = ActionResult(ActionResultType.LOCATION_REQUIRED, message)
     }
 
@@ -13,7 +14,8 @@ class ActionResult(var actionResultType: ActionResultType, var message: String =
         SUCCESS,
         FAILED,
         NO_PARAMETERS,
-        PLAYER_REQUIRED,
+        CASTER_REQUIRED,
+        TARGET_REQUIRED,
         LOCATION_REQUIRED,
     }
 }

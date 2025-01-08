@@ -40,6 +40,6 @@ class RepeatAction: AbstractAction() {
         } else if (times is String && times == "infinity") {
             isInfinity = true
         }
-        actions = section.getConfigExecute("actions", actions)!!
+        actions = section.getAnyConfigExecute("actions", actions)!!
     }
 }

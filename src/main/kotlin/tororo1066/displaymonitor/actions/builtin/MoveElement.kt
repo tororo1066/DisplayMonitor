@@ -14,7 +14,7 @@ class MoveElement: AbstractAction() {
 
     override fun run(context: ActionContext): ActionResult {
         location ?: return ActionResult.noParameters("Location is not set")
-        val element = context.elements[element] ?: return ActionResult.noParameters("Element not found")
+        val element = context.publicContext.elements[element] ?: return ActionResult.noParameters("Element not found")
         element.move(location!!)
         return ActionResult.success()
     }

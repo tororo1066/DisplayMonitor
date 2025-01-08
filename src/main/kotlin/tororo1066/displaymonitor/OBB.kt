@@ -4,6 +4,8 @@ import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
+import org.bukkit.World
+import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
@@ -140,43 +142,45 @@ class OBB {
         if (display is TextDisplay) {
             center.y += halfWidths[1]
         }
+
+        //ブロックディスプレイの場合軸方向に半分ずらす
+        if (display is BlockDisplay) {
+            center.add(axes[0].cloneVector().mul(0.5f))
+            center.add(axes[1].cloneVector().mul(0.5f))
+            center.add(axes[2].cloneVector().mul(0.5f))
+        }
     }
 
     private fun Vector3f.cloneVector(): Vector3f {
         return Vector3f(this.x, this.y, this.z)
     }
 
-    fun hit(box: BoundingBox): Boolean {
+    fun intersect(box: BoundingBox): Boolean {
         val min = Vector3f(box.minX.toFloat(), box.minY.toFloat(), box.minZ.toFloat())
         val max = Vector3f(box.maxX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat())
         val obb = OBB(min, max)
-        return hit(obb)
+        return intersect(obb)
     }
 
-    fun hit(obb: OBB): Boolean {
+
+    fun intersect(obb: OBB): Boolean {
+        // 2つのOBBの中心間のベクトル
         val t = Vector3f(center.x - obb.center.x, center.y - obb.center.y, center.z - obb.center.z)
+
+        // 2つのOBBの中心間のベクトルを各軸に投影
         val p = Vector3f(t.dot(axes[0]), t.dot(axes[1]), t.dot(axes[2]))
-        val d = Vector3f(obb.center.dot(axes[0]), obb.center.dot(axes[1]), obb.center.dot(axes[2]))
+        val d = Vector3f(obb.axes[0].dot(axes[0]), obb.axes[0].dot(axes[1]), obb.axes[0].dot(axes[2]))
 
-        val c = Vector3f(
-            abs(d.x - p.x),
-            abs(d.y - p.y),
-            abs(d.z - p.z)
-        )
+        // 2つのOBBの中心間のベクトルを各軸に投影したものの絶対値
+        val ad = Vector3f(abs(d.x), abs(d.y), abs(d.z))
 
-        val r = Vector3f(
-            obb.halfWidths.x * abs(axes[0].dot(obb.axes[0])) +
-                    obb.halfWidths.y * abs(axes[0].dot(obb.axes[1])) +
-                    obb.halfWidths.z * abs(axes[0].dot(obb.axes[2])),
-            obb.halfWidths.x * abs(axes[1].dot(obb.axes[0])) +
-                    obb.halfWidths.y * abs(axes[1].dot(obb.axes[1])) +
-                    obb.halfWidths.z * abs(axes[1].dot(obb.axes[2])),
-            obb.halfWidths.x * abs(axes[2].dot(obb.axes[0])) +
-                    obb.halfWidths.y * abs(axes[2].dot(obb.axes[1])) +
-                    obb.halfWidths.z * abs(axes[2].dot(obb.axes[2]))
-        )
+        // 2つのOBBの中心間のベクトルを各軸に投影したものの絶対値がOBBの半径の和よりも小さいかどうか
+        if (abs(p.x) > halfWidths.x + ad.x) return false
+        if (abs(p.y) > halfWidths.y + ad.y) return false
+        if (abs(p.z) > halfWidths.z + ad.z) return false
 
-        return c.x <= r.x && c.y <= r.y && c.z <= r.z
+        // 2つのOBBの中心間のベクトルを各軸に投影したものの絶対値がOBBの半径の和よりも小さい場合は交差している
+        return true
     }
 
     // OBBとレイの交差判定
@@ -216,7 +220,7 @@ class OBB {
         return true
     }
 
-    fun showParticle(player: Player) {
+    fun showParticle(world: World, player: Player?) {
         val corners = arrayOfNulls<Vector3f>(8)
         for (i in 0..7) {
             corners[i] = center.cloneVector()
@@ -229,21 +233,26 @@ class OBB {
         for (i in 0..7) {
             for (j in i + 1..7) {
                 if (Integer.bitCount(i xor j) == 1) {
-                    drawLine(player, corners[i], corners[j])
+                    drawLine(world, player, corners[i], corners[j])
                 }
             }
         }
     }
 
-    private fun drawLine(player: Player, start: Vector3f?, end: Vector3f?) {
+    private fun drawLine(world: World, player: Player?, start: Vector3f?, end: Vector3f?) {
         val distance = start!!.distance(end!!)
         val step = end.cloneVector().sub(start).normalize().mul(0.2f) // 線の分解能
         val current = start.cloneVector()
 
         var i = 0.0
         while (i < distance) {
-            val loc = Location(player.world, current.x.toDouble(), current.y.toDouble(), current.z.toDouble())
-            player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
+            val loc = Location(world, current.x.toDouble(), current.y.toDouble(), current.z.toDouble())
+            if (player != null) {
+                player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
+            } else {
+                world.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
+            }
+//            player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
             current.add(step)
             i += 0.2
         }

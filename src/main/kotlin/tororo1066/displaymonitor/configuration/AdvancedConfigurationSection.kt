@@ -12,6 +12,7 @@ import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitor.elements.AsyncExecute
 import tororo1066.displaymonitor.elements.Execute
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
+import tororo1066.tororopluginapi.sItem.SItem
 
 open class AdvancedConfigurationSection: MemorySection {
 
@@ -169,8 +170,14 @@ open class AdvancedConfigurationSection: MemorySection {
     }
 
     open fun getStringItemStack(key: String, def: ItemStack? = null): ItemStack? {
+        val string = getString(key, "") ?: return def
+
+        if (string.startsWith("base64:")) {
+            return SItem.fromBase64(string.substring(7))?.build()
+        }
+
         return UsefulUtility.sTry({
-            Bukkit.getItemFactory().createItemStack(getString(key, "")!!)
+            Bukkit.getItemFactory().createItemStack(string)
         }, { def })
     }
 
@@ -179,7 +186,7 @@ open class AdvancedConfigurationSection: MemorySection {
         val list = getAdvancedConfigurationSectionList(key)
         if (list.isEmpty()) return def
         return Execute {
-            ActionRunner.run(root, list, it.caster, it)
+            ActionRunner.run(root, list, it)
         }
     }
 
@@ -188,8 +195,29 @@ open class AdvancedConfigurationSection: MemorySection {
         val list = getAdvancedConfigurationSectionList(key)
         if (list.isEmpty()) return def
         return AsyncExecute {
-            ActionRunner.run(root, list, it.caster, it, true)
+            ActionRunner.run(root, list, it, true)
         }
+    }
+
+    open fun getAnyConfigExecute(key: String, def: Execute? = null): Execute? {
+        val root = root as? AdvancedConfiguration ?: return def
+        if (isList("${key}_async")) {
+            val list = getAdvancedConfigurationSectionList("${key}_async")
+            if (list.isNotEmpty()) {
+                return AsyncExecute {
+                    ActionRunner.run(root, list, it, true)
+                }
+            }
+        } else {
+            val list = getAdvancedConfigurationSectionList(key)
+            if (list.isNotEmpty()) {
+                return Execute {
+                    ActionRunner.run(root, list, it)
+                }
+            }
+        }
+
+        return def
     }
 
     open fun getRotation(key: String, def: Quaternionf? = null): Quaternionf? {

@@ -1,6 +1,7 @@
 package tororo1066.displaymonitor.actions
 
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.elements.AbstractElement
@@ -8,29 +9,28 @@ import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
 
-class ActionContext(): Cloneable {
+class ActionContext(val publicContext: PublicActionContext): Cloneable {
 
     var groupUUID: UUID = UUID.randomUUID()
     var uuid = UUID.randomUUID()
 
-    var caster: Player? = null
+    var caster: Entity? = null
+    var target: Entity? = null
     var location: Location? = null
 
-    val elements = HashMap<String, AbstractElement>()
+//    val elements = HashMap<String, AbstractElement>()
 
     var configuration: AdvancedConfiguration? = null
     val parameters get() = configuration?.parameters
     var stop = false
 
-    constructor(caster: Player, location: Location): this() {
+    constructor(publicContext: PublicActionContext, caster: Entity, location: Location): this(publicContext) {
         this.caster = caster
+        this.target = caster
         this.location = location
     }
 
-    constructor(caster: Player): this() {
-        this.caster = caster
-        this.location = caster.location
-    }
+    constructor(publicContext: PublicActionContext, caster: Entity): this(publicContext, caster, caster.location)
 
     fun cloneWithRandomUUID(): ActionContext {
         val context = clone()
@@ -39,13 +39,13 @@ class ActionContext(): Cloneable {
     }
 
     public override fun clone(): ActionContext {
-        val context = ActionContext()
+        val context = ActionContext(publicContext)
         context.groupUUID = groupUUID
         context.uuid = uuid
         context.caster = caster
+        context.target = target
         context.location = location
         context.configuration = configuration
-        context.elements.putAll(elements)
         return context
     }
 
@@ -60,6 +60,16 @@ class ActionContext(): Cloneable {
             map["caster.location.yaw"] = it.location.yaw
             map["caster.location.pitch"] = it.location.pitch
             map["caster.location.world"] = it.location.world.name
+        }
+        target?.let {
+            map["target.name"] = it.name
+            map["target.uuid"] = it.uniqueId.toString()
+            map["target.location.x"] = it.location.x
+            map["target.location.y"] = it.location.y
+            map["target.location.z"] = it.location.z
+            map["target.location.yaw"] = it.location.yaw
+            map["target.location.pitch"] = it.location.pitch
+            map["target.location.world"] = it.location.world.name
         }
         location?.let {
             map["location.x"] = it.x

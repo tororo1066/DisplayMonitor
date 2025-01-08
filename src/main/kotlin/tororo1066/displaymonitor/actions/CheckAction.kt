@@ -21,7 +21,7 @@ abstract class CheckAction: AbstractAction() {
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {
-        actions = section.getConfigExecute("actions") ?: actions
-        failActions = section.getConfigExecute("fail") ?: failActions
+        actions = section.getAnyConfigExecute("then") ?: actions
+        failActions = section.getAnyConfigExecute("else") ?: failActions
     }
 }

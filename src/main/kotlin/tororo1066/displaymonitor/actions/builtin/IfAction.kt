@@ -5,7 +5,7 @@ import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.CheckAction
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 
-class CheckExpressionAction: CheckAction() {
+class IfAction: CheckAction() {
 
     var expression = ""
 

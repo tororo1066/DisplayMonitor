@@ -14,7 +14,7 @@ class EditElement: AbstractAction() {
     var forceSync = false
 
     override fun run(context: ActionContext): ActionResult {
-        val element = context.elements[name] ?: return ActionResult.noParameters(DisplayMonitor.translate("action.editElement.notFound", name))
+        val element = context.publicContext.elements[name] ?: return ActionResult.noParameters(DisplayMonitor.translate("action.editElement.notFound", name))
         forceSync.orBlockingTask {
             element.edit(edit ?: AdvancedConfiguration())
         }

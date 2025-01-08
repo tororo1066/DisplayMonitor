@@ -11,8 +11,8 @@ class RemoveAllElement: AbstractAction() {
 
     override fun run(context: ActionContext): ActionResult {
         forceSync.orBlockingTask {
-            context.elements.values.forEach { it.remove() }
-            context.elements.clear()
+            context.publicContext.elements.values.forEach { it.remove() }
+            context.publicContext.elements.clear()
         }
 
         return ActionResult.success()

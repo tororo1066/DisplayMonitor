@@ -29,14 +29,16 @@ object ActionStorage {
         actions["Command"] = CommandAction::class.java
         actions["RemoveAllElement"] = RemoveAllElement::class.java
         actions["RemoveElement"] = RemoveElement::class.java
-        actions["Stop"] = StopAction::class.java
-        actions["CheckExpression"] = CheckExpressionAction::class.java
+        actions["End"] = EndAction::class.java
+        actions["If"] = IfAction::class.java
         actions["Repeat"] = RepeatAction::class.java
         actions["Asynchronous"] = AsynchronousAction::class.java
         actions["UpdateParameters"] = UpdateParametersAction::class.java
         actions["WaitCommand"] = WaitCommandAction::class.java
         actions["ModifyVariable"] = ModifyVariableAction::class.java
         actions["MoveElement"] = MoveElement::class.java
+        actions["RemoveEntity"] = RemoveEntityAction::class.java
+        actions["CheckEntity"] = CheckEntityAction::class.java
 
         loadActions()
     }

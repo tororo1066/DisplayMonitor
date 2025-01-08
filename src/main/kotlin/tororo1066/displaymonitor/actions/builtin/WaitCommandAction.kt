@@ -28,11 +28,11 @@ class WaitCommandAction: AbstractAction() {
 
     override fun run(context: ActionContext): ActionResult {
         if (command.isBlank()) return ActionResult.noParameters("Command is empty")
-        val sender = if (server) Bukkit.getConsoleSender() else context.caster ?: return ActionResult.playerRequired()
+        val sender = if (server) Bukkit.getConsoleSender() else context.target ?: return ActionResult.casterRequired()
         var complete = false
 
         fun process(sender: CommandSender, command: String, unit: BiSEventUnit<*>): Boolean {
-            if (!server && sender != context.caster) return false
+            if (!server && sender != context.target) return false
             if (command != this.command) return false
             actions(context)
             unit.unregister()
@@ -69,8 +69,8 @@ class WaitCommandAction: AbstractAction() {
 
     override fun prepare(section: AdvancedConfigurationSection) {
         command = section.getString("command") ?: ""
-        actions = section.getConfigExecute("actions") ?: actions
-        failActions = section.getConfigExecute("fail") ?: failActions
+        actions = section.getAnyConfigExecute("then") ?: actions
+        failActions = section.getAnyConfigExecute("else") ?: failActions
         if (section.contains("timeout")) {
             val timeout = section.get("timeout")
             if (timeout is Int) {

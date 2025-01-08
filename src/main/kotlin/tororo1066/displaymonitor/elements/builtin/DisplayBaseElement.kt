@@ -1,15 +1,18 @@
 package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Location
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Display
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitor.configuration.DisplayParameters
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.AsyncExecute
+import tororo1066.displaymonitor.elements.Execute
 import tororo1066.displaymonitor.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
@@ -19,10 +22,10 @@ abstract class DisplayBaseElement : AbstractElement() {
 
     @Settable(childOnly = true) var displayParameters = DisplayParameters()
     @Settable var interactionScale = Vector(1.0, 1.0, 1.0)
-    @Settable var onSpawn: AsyncExecute = AsyncExecute.empty()
-    @Settable var onInteract: AsyncExecute = AsyncExecute.empty()
-    @Settable var onHover: AsyncExecute = AsyncExecute.empty()
-    @Settable var onUnhover: AsyncExecute = AsyncExecute.empty()
+    @Settable var onSpawn: Execute = Execute.empty()
+    @Settable var onInteract: Execute = Execute.empty()
+    @Settable var onHover: Execute = Execute.empty()
+    @Settable var onUnhover: Execute = Execute.empty()
     @Settable var interactionDistance = 4.0
     @Settable var switchHover = true
     @Settable var visualizeHitbox = false
@@ -40,8 +43,8 @@ abstract class DisplayBaseElement : AbstractElement() {
 
     abstract fun applyEntity(entity: Display)
 
-    override fun spawn(p: Player?, location: Location) {
-        entity = location.world.spawn(location, clazz) {
+    override fun spawn(entity: Entity?, location: Location) {
+        this.entity = location.world.spawn(location, clazz) {
             it.billboard = displayParameters.billboard
             it.transformation = displayParameters.getTransformation()
             it.interpolationDelay = displayParameters.interpolationDelay
@@ -53,27 +56,29 @@ abstract class DisplayBaseElement : AbstractElement() {
             applyEntity(it)
             it.isVisibleByDefault = visibleAll
             it.isPersistent = persistent
-            p?.showEntity(SJavaPlugin.plugin, it)
+            (entity as? Player)?.showEntity(SJavaPlugin.plugin, it)
+
+            it.persistentDataContainer.set(NamespacedKey(SJavaPlugin.plugin, "displayentity"), PersistentDataType.STRING, "")
         }
 
         runExecute(onSpawn)
         sEvent.register<PlayerInteractEvent> { e ->
-            if (!public && e.player != p) return@register
+            if (!public && e.player != entity) return@register
             if (Utils.isPointInsideRotatedRect(
                     e.player,
-                    entity,
+                    this.entity,
                     interactionScale,
                     interactionDistance,
                 )
             ) {
                 runExecute(onInteract) {
-                    it.caster = e.player
+                    it.target = e.player
                     it.location = e.player.location
                 }
             }
         }
 
-        startTick(p)
+        startTick(entity)
     }
 
     override fun attachEntity(entity: Entity) {
@@ -86,18 +91,18 @@ abstract class DisplayBaseElement : AbstractElement() {
         sEvent.unregisterAll()
     }
 
-    override fun tick(p: Player?) {
+    override fun tick(entity: Entity?) {
 
-        if (!entity.isValid) {
+        if (!this.entity.isValid) {
             remove()
             return
         }
 
-        val players = if (public) entity.location.getNearbyPlayers(interactionScale.x + interactionDistance) else listOfNotNull(p)
+        val players = if (public) this.entity.location.getNearbyPlayers(interactionScale.x + interactionDistance) else listOfNotNull(entity as? Player)
         players.forEach { player ->
             val onCursor = Utils.isPointInsideRotatedRect(
                 player,
-                entity,
+                this.entity,
                 interactionScale,
                 interactionDistance,
                 visualizeHitbox
@@ -106,25 +111,25 @@ abstract class DisplayBaseElement : AbstractElement() {
             if (!switchHover) {
                 if (onCursor) {
                     runExecute(onHover) {
-                        it.caster = player
+                        it.target = player
                         it.location = player.location
                     }
                 } else {
                     runExecute(onUnhover) {
-                        it.caster = player
+                        it.target = player
                         it.location = player.location
                     }
                 }
             } else {
                 if (onCursor && !hover) {
                     runExecute(onHover) {
-                        it.caster = player
+                        it.target = player
                         it.location = player.location
                     }
                     hover = true
                 } else if (!onCursor && hover) {
                     runExecute(onUnhover) {
-                        it.caster = player
+                        it.target = player
                         it.location = player.location
                     }
                     hover = false

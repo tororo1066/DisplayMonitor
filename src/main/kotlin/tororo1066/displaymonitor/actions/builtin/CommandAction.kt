@@ -15,7 +15,7 @@ class CommandAction: AbstractAction() {
 
     override fun run(context: ActionContext): ActionResult {
         if (command.isBlank()) return ActionResult.noParameters(DisplayMonitor.translate("action.command.empty"))
-        val sender = if (console) Bukkit.getConsoleSender() else context.caster ?: return ActionResult.playerRequired()
+        val sender = if (console) Bukkit.getConsoleSender() else context.target ?: return ActionResult.targetRequired()
         forceSync.orBlockingTask {
             Bukkit.dispatchCommand(sender, command)
         }

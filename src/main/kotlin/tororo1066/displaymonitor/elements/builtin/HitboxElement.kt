@@ -1,11 +1,17 @@
 package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Location
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Entity
-import org.bukkit.entity.Player
+import org.bukkit.persistence.PersistentDataType
+import org.joml.Vector3f
+import tororo1066.displaymonitor.OBB
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.AsyncExecute
+import tororo1066.displaymonitor.elements.Execute
 import tororo1066.displaymonitor.elements.Settable
+import tororo1066.tororopluginapi.SJavaPlugin
+import kotlin.math.max
 
 class HitboxElement: AbstractElement() {
 
@@ -13,40 +19,57 @@ class HitboxElement: AbstractElement() {
 
     @Settable var width = 1.0
     @Settable var height = 1.0
-    @Settable var onCollide = AsyncExecute.empty()
+    @Settable var depth = 1.0
+    @Settable var onCollide = Execute.empty()
+    @Settable var visualizeHitbox = false
 
     var location: Location? = null
+    var removed = false
 
-    override fun spawn(p: Player?, location: Location) {
+    override fun spawn(entity: Entity?, location: Location) {
         this.location = location
-        startTick(p)
+        startTick(entity)
     }
 
     override fun remove() {
+        removed = true
         tickTask?.cancel()
     }
 
-    override fun tick(p: Player?) {
+    override fun tick(entity: Entity?) {
         val loc = location ?: return
-        val entities = loc.world.getNearbyEntities(loc, width, height, width)
-        entities.forEach { entity ->
+
+        val obb = OBB(
+            min = Vector3f((loc.x - width / 2).toFloat(), (loc.y - height / 2).toFloat(), (loc.z - depth / 2).toFloat()),
+            max = Vector3f((loc.x + width / 2).toFloat(), (loc.y + height / 2).toFloat(), (loc.z + depth / 2).toFloat())
+        )
+        obb.rotateX(loc.pitch)
+        obb.rotateY(loc.yaw)
+
+        if (visualizeHitbox) {
+            obb.showParticle(loc.world, null)
+        }
+
+        val entities = loc.world.getNearbyEntities(loc, max(width, depth), height, max(width, depth))
+        entities.forEach { nearby ->
+            if (nearby.persistentDataContainer.has(NamespacedKey(SJavaPlugin.plugin, "displayentity"), PersistentDataType.STRING)) return@forEach
+            if (!obb.intersect(nearby.boundingBox)) return@forEach
             runExecute(onCollide) {
-//                it.caster = entity
+                it.target = nearby
             }
+            if (removed) return
         }
     }
 
     override fun attachEntity(entity: Entity) {
-        TODO("Not yet implemented")
+        location = entity.location
     }
 
     override fun move(location: Location) {
-        TODO("Not yet implemented")
+        this.location = location
     }
 
-    override fun applyChanges() {
-        TODO("Not yet implemented")
-    }
+    override fun applyChanges() {}
 
 
 }

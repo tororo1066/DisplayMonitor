@@ -2,7 +2,9 @@ package tororo1066.displaymonitor.configuration
 
 import org.bukkit.entity.Player
 import tororo1066.displaymonitor.Utils.clone
+import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.ActionRunner
+import tororo1066.displaymonitor.actions.PublicActionContext
 
 class ActionConfiguration(val root: AdvancedConfiguration, configuration: AdvancedConfigurationSection) {
 
@@ -17,7 +19,7 @@ class ActionConfiguration(val root: AdvancedConfiguration, configuration: Advanc
     }
 
     fun run(p: Player) {
-        ActionRunner.run(root.clone(), actions, p, async = true)
+        ActionRunner.run(root.clone(), actions, ActionContext(PublicActionContext(), p), async = true)
     }
 
     override fun toString(): String {

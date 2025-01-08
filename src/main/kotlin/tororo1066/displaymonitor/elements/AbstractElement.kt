@@ -3,7 +3,6 @@ package tororo1066.displaymonitor.elements
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
@@ -41,11 +40,11 @@ abstract class AbstractElement: Cloneable {
         execute(context)
     }
 
-    abstract fun spawn(p: Player?, location: Location)
+    abstract fun spawn(entity: Entity?, location: Location)
 
     abstract fun remove()
 
-    abstract fun tick(p: Player?)
+    abstract fun tick(entity: Entity?)
 
     abstract fun attachEntity(entity: Entity)
 
@@ -96,9 +95,9 @@ abstract class AbstractElement: Cloneable {
         applyChanges()
     }
 
-    protected fun startTick(p: Player?) {
+    protected fun startTick(entity: Entity?) {
         tickTask = Bukkit.getScheduler().runTaskTimer(SJavaPlugin.plugin, Runnable {
-            tick(p)
+            tick(entity)
         }, 0, 1)
     }
 

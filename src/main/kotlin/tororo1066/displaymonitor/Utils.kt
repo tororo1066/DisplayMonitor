@@ -66,7 +66,7 @@ object Utils {
         obb.modifyBy(p, entity)
 
         if (visible) {
-            obb.showParticle(p)
+            obb.showParticle(p.world, p)
         }
 
         return obb.rayTrace(
