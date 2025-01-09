@@ -1,10 +1,12 @@
 package tororo1066.displaymonitor.elements.builtin
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Display
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
@@ -16,6 +18,7 @@ import tororo1066.displaymonitor.elements.Execute
 import tororo1066.displaymonitor.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
+import java.util.UUID
 
 
 abstract class DisplayBaseElement : AbstractElement() {
@@ -62,8 +65,12 @@ abstract class DisplayBaseElement : AbstractElement() {
         }
 
         runExecute(onSpawn)
+
+        val dropInteract = arrayListOf<UUID>()
+
         sEvent.register<PlayerInteractEvent> { e ->
             if (!public && e.player != entity) return@register
+            if (dropInteract.contains(e.player.uniqueId)) return@register
             if (Utils.isPointInsideRotatedRect(
                     e.player,
                     this.entity,
@@ -76,6 +83,15 @@ abstract class DisplayBaseElement : AbstractElement() {
                     it.location = e.player.location
                 }
             }
+        }
+
+        sEvent.register<PlayerDropItemEvent> { e ->
+            if (!public && e.player != entity) return@register
+            dropInteract.add(e.player.uniqueId)
+
+            Bukkit.getScheduler().runTaskLater(SJavaPlugin.plugin, Runnable {
+                dropInteract.remove(e.player.uniqueId)
+            }, 1)
         }
 
         startTick(entity)

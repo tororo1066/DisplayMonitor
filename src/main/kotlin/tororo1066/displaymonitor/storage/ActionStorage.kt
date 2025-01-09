@@ -9,6 +9,7 @@ import tororo1066.displaymonitor.actions.*
 import tororo1066.displaymonitor.actions.builtin.*
 import tororo1066.displaymonitor.configuration.ActionConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
+import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.events.TriggerEvent
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
@@ -76,8 +77,11 @@ object ActionStorage {
         loadActions(directory)
     }
 
-    fun trigger(name: String, p: Player) {
-        loadedConfigActions.filter { it.value.triggers.contains(name) }.forEach { it.value.run(p) }
-        Bukkit.getPluginManager().callEvent(TriggerEvent(name, p))
+    fun trigger(name: String, context: ActionContext, condition: (AdvancedConfigurationSection) -> Boolean) {
+        loadedConfigActions.filter { it.value.triggers.contains(name) }.forEach {
+            val triggerSection = it.value.triggers[name] ?: return@forEach
+            if (condition(triggerSection)) it.value.run(context)
+        }
+        Bukkit.getPluginManager().callEvent(TriggerEvent(name, context))
     }
 }
