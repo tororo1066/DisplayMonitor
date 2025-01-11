@@ -10,7 +10,7 @@ class IfAction: CheckAction() {
     var expression = ""
 
     override fun isAllowed(context: ActionContext): Boolean {
-        return Expression(expression).withValues(context.parameters ?: mapOf<String, Any>()).evaluate().booleanValue
+        return Expression(expression).withValues(context.configuration?.parameters ?: mapOf<String, Any>()).evaluate().booleanValue
     }
 
     override fun prepare(section: AdvancedConfigurationSection) {

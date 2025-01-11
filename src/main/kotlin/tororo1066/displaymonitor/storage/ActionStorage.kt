@@ -77,7 +77,7 @@ object ActionStorage {
         loadActions(directory)
     }
 
-    fun trigger(name: String, context: ActionContext, condition: (AdvancedConfigurationSection) -> Boolean) {
+    fun trigger(name: String, context: ActionContext, condition: (AdvancedConfigurationSection) -> Boolean = { true }) {
         loadedConfigActions.filter { it.value.triggers.contains(name) }.forEach {
             val triggerSection = it.value.triggers[name] ?: return@forEach
             if (condition(triggerSection)) it.value.run(context)

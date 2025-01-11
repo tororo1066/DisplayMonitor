@@ -2,12 +2,8 @@ package tororo1066.displaymonitor.actions
 
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import org.bukkit.entity.Player
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
-import tororo1066.displaymonitor.elements.AbstractElement
 import java.util.UUID
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutorService
 
 class ActionContext(val publicContext: PublicActionContext): Cloneable {
 
@@ -18,10 +14,9 @@ class ActionContext(val publicContext: PublicActionContext): Cloneable {
     var target: Entity? = null
     var location: Location? = null
 
-//    val elements = HashMap<String, AbstractElement>()
-
     var configuration: AdvancedConfiguration? = null
-    val parameters get() = configuration?.parameters
+
+    val prepareParameters = mutableMapOf<String, Any>()
     var stop = false
 
     constructor(publicContext: PublicActionContext, caster: Entity, location: Location): this(publicContext) {

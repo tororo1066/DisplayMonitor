@@ -25,6 +25,9 @@ object ActionRunner {
     ) {
         if (actionList.isEmpty()) return
 
+        context.configuration = root
+
+        root.parameters.putAll(context.prepareParameters)
         root.parameters.putAll(context.getDefaultParameters())
         val caster = context.caster
         if (caster != null) {
