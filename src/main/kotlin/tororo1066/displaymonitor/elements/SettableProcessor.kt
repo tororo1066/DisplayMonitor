@@ -25,9 +25,9 @@ import java.util.function.Function
 
 object SettableProcessor: ISettableProcessor {
 
-    val fieldCache = IdentityHashMap<Class<*>, List<Field>>()
-    val customVariableProcessors = mutableMapOf<Class<*>, Function<Any, Map<String, Any>>>()
-    val customValueProcessors = mutableMapOf<Class<*>, BiFunction<IAdvancedConfigurationSection, String, Any>>()
+    private val fieldCache = IdentityHashMap<Class<*>, List<Field>>()
+    private val customVariableProcessors = mutableMapOf<Class<*>, Function<Any, Map<String, Any>>>()
+    private val customValueProcessors = mutableMapOf<Class<*>, BiFunction<IAdvancedConfigurationSection, String, Any>>()
 
     override fun getCustomVariableProcessors(): MutableMap<Class<*>, Function<Any, Map<String, Any>>> {
         return customVariableProcessors
@@ -98,6 +98,7 @@ object SettableProcessor: ISettableProcessor {
         return configuration.processValue(key, clazz)
     }
 
+    @JvmName("processValue2")
     @Suppress("UNCHECKED_CAST")
     fun <Type: Any> IAdvancedConfigurationSection.processValue(key: String, clazz: Class<Type>): Type? {
         customValueProcessors[clazz]?.let {
