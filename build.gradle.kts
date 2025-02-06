@@ -1,11 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask
-import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask.JarUrl
 
 plugins {
     kotlin("jvm") version "1.7.20"
-    id("com.github.ben-manes.versions") version "0.41.0"
-    id("dev.s7a.gradle.minecraft.server") version "1.2.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     `maven-publish`
 }
@@ -44,23 +40,22 @@ repositories {
     }
 }
 
-val shadowImplementation: Configuration by configurations.creating
-configurations["implementation"].extendsFrom(shadowImplementation)
-
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("tororo1066:commandapi:$apiVersion")
     compileOnly("tororo1066:base:$apiVersion")
-    shadowImplementation("tororo1066:tororopluginapi:$apiVersion")
+    implementation("tororo1066:tororopluginapi:$apiVersion")
     compileOnly("com.mojang:brigadier:1.0.18")
     compileOnly("com.ezylang:EvalEx:3.1.2")
-    shadowImplementation(project(":DisplayMonitorAPI"))
+    implementation(project(":DisplayMonitorAPI"))
 }
 
-tasks.register("shadowNormal", ShadowJar::class) {
-    from(sourceSets.main.get().output)
-    configurations = listOf(shadowImplementation)
+tasks.withType<ShadowJar> {
     archiveClassifier.set("")
+}
+
+tasks.named("build") {
+    dependsOn("shadowJar")
 }
 
 publishing {

@@ -7,7 +7,7 @@ group = "tororo1066"
 
 publishing {
     publications {
-        create<MavenPublication>("plugin") {
+        create<MavenPublication>("api") {
             groupId = project.group.toString()
             artifactId = "display-monitor-api"
             version = System.getenv("VERSION")
