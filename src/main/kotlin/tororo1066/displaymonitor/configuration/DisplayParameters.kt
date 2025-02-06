@@ -5,7 +5,7 @@ import org.bukkit.entity.Display.Billboard
 import org.bukkit.util.Transformation
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import tororo1066.displaymonitor.elements.Settable
+import tororo1066.displaymonitorapi.elements.Settable
 
 data class DisplayParameters(
     @Settable var translation: Vector3f = Vector3f(),

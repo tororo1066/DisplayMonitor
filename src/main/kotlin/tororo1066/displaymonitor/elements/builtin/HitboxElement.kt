@@ -7,9 +7,8 @@ import org.bukkit.persistence.PersistentDataType
 import org.joml.Vector3f
 import tororo1066.displaymonitor.OBB
 import tororo1066.displaymonitor.elements.AbstractElement
-import tororo1066.displaymonitor.elements.AsyncExecute
-import tororo1066.displaymonitor.elements.Execute
-import tororo1066.displaymonitor.elements.Settable
+import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import kotlin.math.max
 
@@ -17,7 +16,8 @@ class HitboxElement: AbstractElement() {
 
     override val syncGroup = false
 
-    @Settable var width = 1.0
+    @Settable
+    var width = 1.0
     @Settable var height = 1.0
     @Settable var depth = 1.0
     @Settable var onCollide = Execute.empty()

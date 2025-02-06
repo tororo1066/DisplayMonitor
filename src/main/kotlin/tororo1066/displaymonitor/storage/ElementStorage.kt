@@ -4,16 +4,17 @@ import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.Utils.mergeConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
-import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.builtin.*
-import tororo1066.displaymonitor.events.LoadPresetElementEvent
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.displaymonitorapi.elements.IAbstractElement
+import tororo1066.displaymonitorapi.events.ElementRegisteringEvent
+import tororo1066.displaymonitorapi.storage.IElementStorage
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 
-object ElementStorage {
-    val presetElements = mutableMapOf<String, AbstractElement>()
-    val elementClasses = mutableMapOf<String, Class<out AbstractElement>>()
+object ElementStorage: IElementStorage {
+    val presetElements = mutableMapOf<String, IAbstractElement>()
+    val elementClasses = mutableMapOf<String, Class<out IAbstractElement>>()
 
     init {
         elementClasses["ItemElement"] = ItemElement::class.java
@@ -30,10 +31,10 @@ object ElementStorage {
         val directory = File(SJavaPlugin.plugin.dataFolder, "elements")
         directory.mkdirs()
         loadElements(directory)
-        LoadPresetElementEvent().callEvent()
+        ElementRegisteringEvent().callEvent()
     }
 
-    fun loadElements(directory: File) {
+    override fun loadElements(directory: File) {
         val context = "LoadElements(ElementStorage)"
         val files = directory.listFiles()
         if (files == null) {
@@ -58,7 +59,7 @@ object ElementStorage {
         }
     }
 
-    fun loadElement(section: AdvancedConfigurationSection) {
+    override fun loadElement(section: IAdvancedConfigurationSection) {
         val context = "LoadElement(ElementStorage)"
         val type = section.getString("type")
         if (type == null) {
@@ -75,8 +76,8 @@ object ElementStorage {
         presetElements[section.name] = element
     }
 
-    fun createElement(presetName: String?, clazz: String?, overrideParameters: AdvancedConfigurationSection?, context: String): AbstractElement? {
-        val element: AbstractElement
+    override fun createElement(presetName: String?, clazz: String?, overrideParameters: IAdvancedConfigurationSection?, context: String): IAbstractElement? {
+        val element: IAbstractElement
         val presetElement = presetElements[presetName]
         if (presetElement != null) {
             element = presetElement.clone()
@@ -92,5 +93,9 @@ object ElementStorage {
         }
 
         return element
+    }
+
+    override fun registerElement(key: String, element: Class<out IAbstractElement>) {
+        elementClasses[key] = element
     }
 }

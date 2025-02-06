@@ -6,24 +6,34 @@ import tororo1066.displaymonitor.actions.parameters.ActionParameters
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.storage.ActionStorage
+import tororo1066.displaymonitorapi.actions.IAbstractAction
+import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.actions.IActionRunner
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import java.util.concurrent.CompletableFuture
 
-object ActionRunner {
+object ActionRunner: IActionRunner {
 
     private const val runContext = "ActionRunner"
 
     fun run(config: AdvancedConfiguration, p: Player) {
         val configActions = config.getAdvancedConfigurationSectionList("actions")
-        run(config, configActions, ActionContext(PublicActionContext(), p))
+        run(config, configActions, ActionContext(PublicActionContext(), p), async = false, disableAutoStop = false)
     }
 
-    fun run(
-        root: AdvancedConfiguration,
-        actionList: List<AdvancedConfigurationSection>,
-        context: ActionContext,
-        async: Boolean = false
+    override fun run(
+        root: IAdvancedConfiguration,
+        actionList: List<IAdvancedConfigurationSection>,
+        context: IActionContext,
+        async: Boolean,
+        disableAutoStop: Boolean
     ) {
         if (actionList.isEmpty()) return
+
+        if (disableAutoStop) {
+            context.publicContext.shouldAutoStop = false
+        }
 
         context.configuration = root
 
@@ -49,12 +59,15 @@ object ActionRunner {
         fun invokeActions() {
             for (action in actionList) {
                 if (context.publicContext.stop) {
+                    ActionStorage.contextStorage.remove(context.groupUUID)
                     break
                 }
                 if (context.stop) {
-                    ActionStorage.contextStorage[context.groupUUID]?.remove(context.uuid)
-                    if (ActionStorage.contextStorage[context.groupUUID]?.isEmpty() == true) {
-                        ActionStorage.contextStorage.remove(context.groupUUID)
+                    ActionStorage.contextStorage[context.groupUUID]?.let {
+                        it.remove(context.uuid)
+                        if (it.isEmpty()) {
+                            ActionStorage.contextStorage.remove(context.groupUUID)
+                        }
                     }
                     break
                 }
@@ -65,6 +78,11 @@ object ActionRunner {
                     continue
                 }
                 val actionInstance = actionData.getConstructor().newInstance()
+
+                if (!actionInstance.allowedAutoStop()) {
+                    context.publicContext.shouldAutoStop = false
+                }
+
                 try {
                     actionInstance.prepare(action)
                 } catch (e: Exception) {
@@ -84,6 +102,10 @@ object ActionRunner {
                     )
                     e.printStackTrace()
                 }
+            }
+
+            if (context.publicContext.shouldAutoStop) {
+                ActionStorage.contextStorage.remove(context.groupUUID)
             }
         }
 

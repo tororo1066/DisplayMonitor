@@ -2,23 +2,26 @@ package tororo1066.displaymonitor.storage
 
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.Player
 import tororo1066.displaymonitor.Utils.mergeConfiguration
 import tororo1066.displaymonitor.actions.ActionContext
-import tororo1066.displaymonitor.actions.*
+import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitor.actions.builtin.*
 import tororo1066.displaymonitor.configuration.ActionConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
-import tororo1066.displaymonitor.events.TriggerEvent
+import tororo1066.displaymonitorapi.actions.IAbstractAction
+import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.actions.IPublicActionContext
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.displaymonitorapi.events.ActionRegisteringEvent
+import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 import java.util.UUID
+import java.util.function.Function
 
-object ActionStorage {
-    val actions = mutableMapOf<String, Class<out AbstractAction>>()
-//    val contextStorage = mutableMapOf<UUID, ActionContext>()
-    val contextStorage = mutableMapOf<UUID, MutableMap<UUID, ActionContext>>()
+object ActionStorage: IActionStorage {
+    val actions = mutableMapOf<String, Class<out IAbstractAction>>()
+    val contextStorage = mutableMapOf<UUID, MutableMap<UUID, IActionContext>>()
 
     val loadedConfigActions = mutableMapOf<String, ActionConfiguration>()
 
@@ -40,16 +43,18 @@ object ActionStorage {
         actions["MoveElement"] = MoveElement::class.java
         actions["RemoveEntity"] = RemoveEntityAction::class.java
         actions["CheckEntity"] = CheckEntityAction::class.java
+        actions["SetBlock"] = SetBlockAction::class.java
+        actions["Target"] = TargetAction::class.java
+        actions["StoreData"] = StoreDataAction::class.java
+        actions["RestoreData"] = RestoreDataAction::class.java
+
+        ActionRegisteringEvent().callEvent()
 
         loadActions()
     }
 
-    fun registerAction(name: String, action: Class<out AbstractAction>) {
+    override fun registerAction(name: String, action: Class<out IAbstractAction>) {
         actions[name] = action
-    }
-
-    fun registerAction(action: Class<out AbstractAction>) {
-        actions[action.simpleName] = action
     }
 
     fun loadActions(configuration: AdvancedConfiguration) {
@@ -77,11 +82,24 @@ object ActionStorage {
         loadActions(directory)
     }
 
-    fun trigger(name: String, context: ActionContext, condition: (AdvancedConfigurationSection) -> Boolean = { true }) {
+    override fun createPublicContext(): IPublicActionContext {
+        return PublicActionContext()
+    }
+
+    override fun createActionContext(publicContext: IPublicActionContext): IActionContext {
+        return ActionContext(publicContext)
+    }
+
+    override fun trigger(
+        name: String,
+        context: IActionContext,
+        condition: Function<IAdvancedConfigurationSection, Boolean>?
+    ) {
         loadedConfigActions.filter { it.value.triggers.contains(name) }.forEach {
             val triggerSection = it.value.triggers[name] ?: return@forEach
-            if (condition(triggerSection)) it.value.run(context)
+            if (condition == null || condition.apply(triggerSection)) {
+                it.value.run(context)
+            }
         }
-        Bukkit.getPluginManager().callEvent(TriggerEvent(name, context))
     }
 }

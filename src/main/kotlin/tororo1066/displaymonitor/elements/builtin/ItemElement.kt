@@ -5,9 +5,8 @@ import org.bukkit.entity.Display
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.ItemDisplay.ItemDisplayTransform
 import org.bukkit.inventory.ItemStack
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.AbstractElement
-import tororo1066.displaymonitor.elements.Settable
+import tororo1066.displaymonitorapi.elements.Settable
 
 class ItemElement: DisplayBaseElement() {
 

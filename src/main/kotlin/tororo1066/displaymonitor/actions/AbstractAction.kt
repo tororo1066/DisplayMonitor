@@ -1,16 +1,17 @@
 package tororo1066.displaymonitor.actions
 
 import org.bukkit.Bukkit
-import org.bukkit.scheduler.BukkitTask
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
+import tororo1066.displaymonitorapi.actions.IAbstractAction
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.util.function.Consumer
 
-abstract class AbstractAction {
+abstract class AbstractAction: IAbstractAction {
 
-    abstract fun run(context: ActionContext): ActionResult
+    open val allowedAutoStop = true
 
-    abstract fun prepare(section: AdvancedConfigurationSection)
+    override fun allowedAutoStop(): Boolean {
+        return allowedAutoStop
+    }
 
     protected fun threadBlockingRunTask(run: () -> Unit) {
         var lock = true

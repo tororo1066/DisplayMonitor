@@ -4,10 +4,8 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Color
 import org.bukkit.entity.Display
 import org.bukkit.entity.TextDisplay
-import tororo1066.displaymonitor.Utils
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.AbstractElement
-import tororo1066.displaymonitor.elements.Settable
+import tororo1066.displaymonitorapi.elements.Settable
 
 class TextElement: DisplayBaseElement() {
 

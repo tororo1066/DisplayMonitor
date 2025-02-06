@@ -5,6 +5,7 @@ import org.bukkit.entity.Item
 import tororo1066.displaymonitor.actions.parameters.AbstractEntityParameters
 import tororo1066.tororopluginapi.sItem.SItem
 
+@Suppress("unused")
 class ItemEntityParameters: AbstractEntityParameters<Item>() {
 
     val plain = PlainTextComponentSerializer.plainText()

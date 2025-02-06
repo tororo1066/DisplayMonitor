@@ -1,27 +1,29 @@
 package tororo1066.displaymonitor.elements
 
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
-import tororo1066.displaymonitor.actions.ActionContext
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.SettableProcessor.getSettableFields
 import tororo1066.displaymonitor.elements.SettableProcessor.processValue
 import tororo1066.displaymonitor.storage.ActionStorage
+import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.displaymonitorapi.elements.IAbstractElement
+import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.lang.reflect.Field
 import java.util.UUID
 
-abstract class AbstractElement: Cloneable {
+abstract class AbstractElement: IAbstractElement {
 
     abstract val syncGroup: Boolean
 
-    var groupUUID: UUID? = null
-    var contextUUID: UUID? = null
+    private var groupUUID: UUID? = null
+    private var contextUUID: UUID? = null
     protected var tickTask: BukkitTask? = null
 
-    protected fun getContext(): ActionContext? {
+    protected fun getContext(): IActionContext? {
         return ActionStorage.contextStorage[groupUUID]?.get(contextUUID)
     }
 
@@ -30,33 +32,39 @@ abstract class AbstractElement: Cloneable {
         execute(context)
     }
 
-    protected fun runExecute(execute: Execute, context: ActionContext) {
+    protected fun runExecute(execute: Execute, context: IActionContext) {
         execute(context)
     }
 
-    protected fun runExecute(execute: Execute, modification: (ActionContext) -> Unit) {
+    protected fun runExecute(execute: Execute, modification: (IActionContext) -> Unit) {
         val context = (getContext() ?: return).clone()
         modification(context)
         execute(context)
     }
 
-    abstract fun spawn(entity: Entity?, location: Location)
+    override fun getGroupUUID(): UUID? {
+        return groupUUID
+    }
 
-    abstract fun remove()
+    override fun setGroupUUID(uuid: UUID?) {
+        groupUUID = uuid
+    }
 
-    abstract fun tick(entity: Entity?)
+    override fun getContextUUID(): UUID? {
+        return contextUUID
+    }
 
-    abstract fun attachEntity(entity: Entity)
-
-    abstract fun move(location: Location)
+    override fun setContextUUID(uuid: UUID?) {
+        contextUUID = uuid
+    }
 
     private fun Field.isNullable(): Boolean {
         return this.annotations.any { it.annotationClass.simpleName == "Nullable" }
     }
 
-    open fun prepare(section: AdvancedConfigurationSection) {
+    override fun prepare(section: IAdvancedConfigurationSection) {
 
-        fun prepareChild(section: AdvancedConfigurationSection, field: Field, instance: Any) {
+        fun prepareChild(section: IAdvancedConfigurationSection, field: Field, instance: Any) {
             val defaultAccessible = field.canAccess(instance)
             field.isAccessible = true
             val annotation = field.getAnnotation(Settable::class.java) ?: return
@@ -70,8 +78,8 @@ abstract class AbstractElement: Cloneable {
                 }
             } else {
                 val key = annotation.name.ifEmpty { field.name }
-                val value = section.withParameters(SettableProcessor.processVariables(field.get(instance))) {
-                    this.processValue(key, field.type)
+                val value = section.withParameters(SettableProcessor.processVariable(field.get(instance))) {
+                    it.processValue(key, field.type)
                 }
                 if (value != null || field.isNullable()) {
                     field.set(instance, value)
@@ -88,11 +96,8 @@ abstract class AbstractElement: Cloneable {
 
     }
 
-    abstract fun applyChanges()
-
-    fun edit(edit: AdvancedConfigurationSection) {
-        prepare(edit)
-        applyChanges()
+    override fun syncGroup(): Boolean {
+        return syncGroup
     }
 
     protected fun startTick(entity: Entity?) {
@@ -101,9 +106,20 @@ abstract class AbstractElement: Cloneable {
         }, 0, 1)
     }
 
+    override fun clone(): IAbstractElement {
+        val instance = this::class.java.getDeclaredConstructor().newInstance()
 
+        instance.groupUUID = groupUUID
+        instance.contextUUID = contextUUID
+        instance.tickTask = tickTask
 
-    public override fun clone(): AbstractElement {
-        return super.clone() as AbstractElement
+        val settableFields = this::class.java.getSettableFields()
+        settableFields.forEach { field ->
+            val defaultAccessible = field.canAccess(this)
+            field.isAccessible = true
+            field.set(instance, field.get(this))
+            field.isAccessible = defaultAccessible
+        }
+        return instance
     }
 }

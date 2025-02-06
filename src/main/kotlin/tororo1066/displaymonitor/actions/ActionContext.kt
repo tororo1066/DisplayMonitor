@@ -3,37 +3,40 @@ package tororo1066.displaymonitor.actions
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
+import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.actions.IPublicActionContext
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import java.util.UUID
 
-class ActionContext(val publicContext: PublicActionContext): Cloneable {
+class ActionContext(private val publicContext: IPublicActionContext): IActionContext {
 
-    var groupUUID: UUID = UUID.randomUUID()
-    var uuid = UUID.randomUUID()
+    private var groupUUID: UUID = UUID.randomUUID()
+    private var uuid: UUID = UUID.randomUUID()
 
-    var caster: Entity? = null
-    var target: Entity? = null
-    var location: Location? = null
+    private var caster: Entity? = null
+    private var target: Entity? = null
+    private var location: Location? = null
 
-    var configuration: AdvancedConfiguration? = null
+    private var configuration: IAdvancedConfiguration? = null
 
-    val prepareParameters = mutableMapOf<String, Any>()
-    var stop = false
+    private val prepareParameters = HashMap<String, Any>()
+    private var stop = false
 
-    constructor(publicContext: PublicActionContext, caster: Entity, location: Location): this(publicContext) {
+    constructor(publicContext: IPublicActionContext, caster: Entity, location: Location): this(publicContext) {
         this.caster = caster
         this.target = caster
         this.location = location
     }
 
-    constructor(publicContext: PublicActionContext, caster: Entity): this(publicContext, caster, caster.location)
+    constructor(publicContext: IPublicActionContext, caster: Entity): this(publicContext, caster, caster.location)
 
-    fun cloneWithRandomUUID(): ActionContext {
+    override fun cloneWithRandomUUID(): ActionContext {
         val context = clone()
         context.uuid = UUID.randomUUID()
         return context
     }
 
-    public override fun clone(): ActionContext {
+    override fun clone(): ActionContext {
         val context = ActionContext(publicContext)
         context.groupUUID = groupUUID
         context.uuid = uuid
@@ -44,7 +47,71 @@ class ActionContext(val publicContext: PublicActionContext): Cloneable {
         return context
     }
 
-    fun getDefaultParameters(): MutableMap<String, Any> {
+    override fun getPublicContext(): IPublicActionContext {
+        return publicContext
+    }
+
+    override fun getGroupUUID(): UUID {
+        return groupUUID
+    }
+
+    override fun setGroupUUID(groupUUID: UUID) {
+        this.groupUUID = groupUUID
+    }
+
+    override fun getUUID(): UUID {
+        return uuid
+    }
+
+    override fun setUUID(uuid: UUID) {
+        this.uuid = uuid
+    }
+
+    override fun getConfiguration(): IAdvancedConfiguration? {
+        return configuration
+    }
+
+    override fun setConfiguration(configuration: IAdvancedConfiguration?) {
+        this.configuration = configuration
+    }
+
+    override fun getCaster(): Entity? {
+        return caster
+    }
+
+    override fun setCaster(caster: Entity?) {
+        this.caster = caster
+    }
+
+    override fun getTarget(): Entity? {
+        return target
+    }
+
+    override fun setTarget(target: Entity?) {
+        this.target = target
+    }
+
+    override fun getLocation(): Location? {
+        return location
+    }
+
+    override fun setLocation(location: Location?) {
+        this.location = location
+    }
+
+    override fun getPrepareParameters(): java.util.HashMap<String, Any> {
+        return prepareParameters
+    }
+
+    override fun getStop(): Boolean {
+        return stop
+    }
+
+    override fun setStop(stop: Boolean) {
+        this.stop = stop
+    }
+
+    override fun getDefaultParameters(): MutableMap<String, Any> {
         val map = HashMap<String, Any>()
         caster?.let {
             map["caster.name"] = it.name

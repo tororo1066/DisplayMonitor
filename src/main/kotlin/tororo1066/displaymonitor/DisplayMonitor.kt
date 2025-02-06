@@ -4,17 +4,21 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
 import net.kyori.adventure.translation.Translator
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.commands.DisplayCommands
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
+import tororo1066.displaymonitorapi.IDisplayMonitor
+import tororo1066.displaymonitorapi.storage.IActionStorage
+import tororo1066.displaymonitorapi.storage.IElementStorage
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 import java.util.Locale
 import java.util.PropertyResourceBundle
 import java.util.jar.JarFile
 
-class DisplayMonitor: SJavaPlugin(UseOption.SConfig) {
+class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
 
     companion object {
         fun log(context: String, message: String) {
@@ -39,15 +43,17 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig) {
     }
 
     override fun onLoad() {
-        plugin = this
-        ActionStorage
     }
 
     override fun onStart() {
-        Config.load()
-        registerBundle()
-        ElementStorage
-        DisplayCommands()
+        Bukkit.getScheduler().runTaskLater(this, Runnable {
+            ActionStorage
+
+            Config.load()
+            registerBundle()
+            ElementStorage
+            DisplayCommands()
+        }, 1)
     }
 
     private fun registerBundle() {
@@ -110,5 +116,13 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig) {
         }
 
         GlobalTranslator.translator().addSource(registry)
+    }
+
+    override fun getActionStorage(): IActionStorage {
+        return ActionStorage
+    }
+
+    override fun getElementStorage(): IElementStorage {
+        return ElementStorage
     }
 }

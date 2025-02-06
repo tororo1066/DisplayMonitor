@@ -5,10 +5,10 @@ import org.bukkit.command.CommandSender
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.server.ServerCommandEvent
 import tororo1066.displaymonitor.actions.AbstractAction
-import tororo1066.displaymonitor.actions.ActionContext
-import tororo1066.displaymonitor.actions.ActionResult
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
-import tororo1066.displaymonitor.elements.Execute
+import tororo1066.displaymonitorapi.actions.ActionResult
+import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.sEvent.BiSEventUnit
 import tororo1066.tororopluginapi.sEvent.SEvent
 
@@ -26,7 +26,7 @@ class WaitCommandAction: AbstractAction() {
     var server = false
     var cancelCommand = false
 
-    override fun run(context: ActionContext): ActionResult {
+    override fun run(context: IActionContext): ActionResult {
         if (command.isBlank()) return ActionResult.noParameters("Command is empty")
         val sender = if (server) Bukkit.getConsoleSender() else context.target ?: return ActionResult.casterRequired()
         var complete = false
@@ -67,10 +67,10 @@ class WaitCommandAction: AbstractAction() {
         return ActionResult.success()
     }
 
-    override fun prepare(section: AdvancedConfigurationSection) {
+    override fun prepare(section: IAdvancedConfigurationSection) {
         command = section.getString("command") ?: ""
-        actions = section.getAnyConfigExecute("then") ?: actions
-        failActions = section.getAnyConfigExecute("else") ?: failActions
+        actions = section.getConfigExecute("then") ?: actions
+        failActions = section.getConfigExecute("else") ?: failActions
         if (section.contains("timeout")) {
             val timeout = section.get("timeout")
             if (timeout is Int) {

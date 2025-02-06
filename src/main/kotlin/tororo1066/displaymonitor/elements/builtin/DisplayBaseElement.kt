@@ -13,9 +13,8 @@ import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitor.configuration.DisplayParameters
 import tororo1066.displaymonitor.elements.AbstractElement
-import tororo1066.displaymonitor.elements.AsyncExecute
-import tororo1066.displaymonitor.elements.Execute
-import tororo1066.displaymonitor.elements.Settable
+import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
 import java.util.UUID
@@ -168,21 +167,5 @@ abstract class DisplayBaseElement : AbstractElement() {
         entity.isPersistent = persistent
 
         applyEntity(entity)
-    }
-
-    override fun clone(): AbstractElement {
-        val element = super.clone() as DisplayBaseElement
-        element.displayParameters = displayParameters
-        element.interactionScale = interactionScale.clone()
-        element.onSpawn = onSpawn
-        element.onInteract = onInteract
-        element.onHover = onHover
-        element.onUnhover = onUnhover
-        element.switchHover = switchHover
-        element.visualizeHitbox = visualizeHitbox
-        element.visibleAll = visibleAll
-        element.public = public
-        element.persistent = persistent
-        return element
     }
 }

@@ -3,13 +3,14 @@ package tororo1066.displaymonitor.elements.builtin
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Marker
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.storage.ElementStorage
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.displaymonitorapi.elements.IAbstractElement
 
 class GroupElement: AbstractElement() {
 
-    var elements = mutableMapOf<String, AbstractElement>()
+    var elements = mutableMapOf<String, IAbstractElement>()
     lateinit var centerEntity: Entity
 
     override val syncGroup = true
@@ -47,7 +48,7 @@ class GroupElement: AbstractElement() {
         entity.addPassenger(centerEntity)
     }
 
-    override fun prepare(section: AdvancedConfigurationSection) {
+    override fun prepare(section: IAdvancedConfigurationSection) {
         if (section.getBoolean("clear", false)) {
             elements.clear()
         }
@@ -78,15 +79,9 @@ class GroupElement: AbstractElement() {
     override fun move(location: Location) {
         centerEntity.teleport(location)
         elements.values.forEach {
-            if (!it.syncGroup) {
+            if (!it.syncGroup()) {
                 it.move(location)
             }
         }
-    }
-
-    override fun clone(): AbstractElement {
-        val element = super.clone() as GroupElement
-        element.elements = elements.mapValues { it.value.clone() }.toMutableMap()
-        return element
     }
 }

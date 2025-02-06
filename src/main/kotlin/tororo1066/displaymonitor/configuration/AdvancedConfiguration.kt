@@ -9,13 +9,14 @@ import org.bukkit.util.Vector
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import tororo1066.displaymonitor.Utils
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 
-class AdvancedConfiguration: AdvancedConfigurationSection(), Configuration, Cloneable {
+class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfiguration {
 
     private inner class Options: ConfigurationOptions(this)
 
     private val options = Options()
-    var parameters: MutableMap<String, Any> = mutableMapOf()
+    private var parameters: MutableMap<String, Any> = mutableMapOf()
 
     override fun getParent(): ConfigurationSection? {
         return null
@@ -63,5 +64,13 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), Configuration, Clon
             clone.set(key, value)
         }
         return clone
+    }
+
+    override fun getParameters(): MutableMap<String, Any> {
+        return parameters
+    }
+
+    override fun setParameters(parameters: MutableMap<String, Any>) {
+        this.parameters = parameters
     }
 }

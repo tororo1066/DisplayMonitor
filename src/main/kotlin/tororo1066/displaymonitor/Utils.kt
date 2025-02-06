@@ -1,28 +1,14 @@
 package tororo1066.displaymonitor
 
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
-import org.joml.Quaternionf
-import org.joml.Vector3f
-import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
-import tororo1066.displaymonitor.elements.Execute
-import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 
 object Utils {
-
-    fun checkMainThread() {
-        if (!Bukkit.isPrimaryThread()) {
-            throw IllegalStateException("This method must be called from the main thread")
-        }
-    }
-
     fun AdvancedConfigurationSection.clone(): AdvancedConfigurationSection {
         val yaml = AdvancedConfigurationSection(this)
         getValues(true).forEach { (key, value) ->
