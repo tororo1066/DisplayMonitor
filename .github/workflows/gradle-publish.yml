@@ -41,11 +41,20 @@ jobs:
 
       - name: Give Permission
         run: chmod +x ./gradlew
+      - name: Build DisplayMonitorAPI
+        run: ./gradlew DisplayMonitorAPI:build
       - name: Build DisplayMonitor
         run: ./gradlew build
 
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle
+      - name: DisplayMonitorAPI Publish to GitHub Packages
+        run: ./gradlew DisplayMonitorAPI:publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.TOKEN }}
+          VERSION: ${{ env.SHORT_SHA }}
+
       - name: DisplayMonitor Publish to GitHub Packages
         run: ./gradlew publish
         env:
