@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+env:
+  GITHUB_USERNAME: ${{ secrets.USERNAME }}
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
