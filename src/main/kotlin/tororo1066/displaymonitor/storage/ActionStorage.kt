@@ -33,6 +33,7 @@ object ActionStorage: IActionStorage {
         actions["Command"] = CommandAction::class.java
         actions["RemoveAllElement"] = RemoveAllElement::class.java
         actions["RemoveElement"] = RemoveElement::class.java
+        actions["Stop"] = StopAction::class.java
         actions["End"] = EndAction::class.java
         actions["If"] = IfAction::class.java
         actions["Repeat"] = RepeatAction::class.java

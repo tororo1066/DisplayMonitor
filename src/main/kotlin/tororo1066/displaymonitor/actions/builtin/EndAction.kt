@@ -14,6 +14,7 @@ class EndAction: AbstractAction() {
             context.publicContext.elements.forEach { (_, element) ->
                 element.remove()
             }
+            context.publicContext.elements.clear()
         }
         context.publicContext.stop = true
 
