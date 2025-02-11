@@ -5,6 +5,15 @@ plugins {
 
 group = "tororo1066"
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+tasks.javadoc {
+    options.encoding = "UTF-8"
+    setDestinationDir(file("docs/javadoc"))
+}
+
 publishing {
     publications {
         create<MavenPublication>("api") {

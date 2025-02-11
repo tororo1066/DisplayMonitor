@@ -170,6 +170,7 @@ public interface IAdvancedConfigurationSection extends ConfigurationSection {
      *     x,y,z,w<br>
      *     "eular",x,y,z<br>
      *     "axis",angle,x,y,z<br>
+     * </code>
      * @param path パス
      * @return {@link Quaternionf}
      */
@@ -181,6 +182,7 @@ public interface IAdvancedConfigurationSection extends ConfigurationSection {
      *     x,y,z,w<br>
      *     "eular",x,y,z<br>
      *     "axis",angle,x,y,z<br>
+     * </code>
      * @param path パス
      * @param def デフォルト値
      * @return {@link Quaternionf}
