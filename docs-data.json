@@ -36,7 +36,7 @@
           {
             "name": "block",
             "description": "設置するブロック。",
-            "type": "String"
+            "type": "Block"
           },
           {
             "name": "forceSync",
@@ -369,6 +369,411 @@
   },
   {
     "name": "Element",
-    "classes": []
+    "classes": [
+      {
+        "name": "GroupElement",
+        "description": "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。",
+        "parameters": [
+          {
+            "name": "elements",
+            "description": "グループに含まれるElement。",
+            "type": "AdvancedConfigurationSection"
+          },
+          {
+            "name": "edit",
+            "description": "Elementの編集内容。",
+            "type": "AdvancedConfigurationSection"
+          }
+        ]
+      },
+      {
+        "name": "TextElement",
+        "description": "テキストを表示するElement。",
+        "parameters": [
+          {
+            "name": "text",
+            "description": "表示するテキスト。",
+            "type": "Component"
+          },
+          {
+            "name": "backgroundColor",
+            "description": "背景色。",
+            "type": "Color"
+          },
+          {
+            "name": "lineWidth",
+            "description": "行の幅。",
+            "type": "Int"
+          },
+          {
+            "name": "seeThrough",
+            "description": "透過するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "defaultBackground",
+            "description": "デフォルトの背景色を使用するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "shadow",
+            "description": "影を表示するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "alignment",
+            "description": "テキストの配置。",
+            "type": "TextAlignment"
+          },
+          {
+            "name": "textOpacity",
+            "description": "テキストの透明度。",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.translation",
+            "description": "オフセット",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.scale",
+            "description": "大きさ",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.leftRotation",
+            "description": "左回転",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.rightRotation",
+            "description": "右回転",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.billboard",
+            "description": "ビルボード",
+            "type": "Billboard"
+          },
+          {
+            "name": "displayParameters.interpolationDuration",
+            "description": "補間時間",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.interpolationDelay",
+            "description": "補間遅延",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.teleportDuration",
+            "description": "テレポート時間",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.shadowRadius",
+            "description": "影の半径",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.shadowStrength",
+            "description": "影の強さ",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.brightness",
+            "description": "明るさ",
+            "type": "Brightness"
+          },
+          {
+            "name": "interactionScale",
+            "description": "クリックの判定範囲。",
+            "type": "Vector"
+          },
+          {
+            "name": "onSpawn",
+            "description": "スポーン時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onInteract",
+            "description": "クリック時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onHover",
+            "description": "ホバー時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onUnhover",
+            "description": "ホバー解除時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "interactionDistance",
+            "description": "クリックの判定距離。",
+            "type": "Double"
+          },
+          {
+            "name": "switchHover",
+            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "visualizeHitbox",
+            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+            "type": "Boolean"
+          },
+          {
+            "name": "visibleAll",
+            "description": "全てのプレイヤーに表示するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "public",
+            "description": "他のプレイヤーが操作できるようにするか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "BlockElement",
+        "description": "ブロックを表示するElement。",
+        "parameters": [
+          {
+            "name": "block",
+            "description": "表示するブロック。",
+            "type": "Block"
+          },
+          {
+            "name": "displayParameters.translation",
+            "description": "オフセット",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.scale",
+            "description": "大きさ",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.leftRotation",
+            "description": "左回転",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.rightRotation",
+            "description": "右回転",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.billboard",
+            "description": "ビルボード",
+            "type": "Billboard"
+          },
+          {
+            "name": "displayParameters.interpolationDuration",
+            "description": "補間時間",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.interpolationDelay",
+            "description": "補間遅延",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.teleportDuration",
+            "description": "テレポート時間",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.shadowRadius",
+            "description": "影の半径",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.shadowStrength",
+            "description": "影の強さ",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.brightness",
+            "description": "明るさ",
+            "type": "Brightness"
+          },
+          {
+            "name": "interactionScale",
+            "description": "クリックの判定範囲。",
+            "type": "Vector"
+          },
+          {
+            "name": "onSpawn",
+            "description": "スポーン時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onInteract",
+            "description": "クリック時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onHover",
+            "description": "ホバー時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onUnhover",
+            "description": "ホバー解除時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "interactionDistance",
+            "description": "クリックの判定距離。",
+            "type": "Double"
+          },
+          {
+            "name": "switchHover",
+            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "visualizeHitbox",
+            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+            "type": "Boolean"
+          },
+          {
+            "name": "visibleAll",
+            "description": "全てのプレイヤーに表示するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "public",
+            "description": "他のプレイヤーが操作できるようにするか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "ItemElement",
+        "description": "アイテムを表示するElement。",
+        "parameters": [
+          {
+            "name": "itemStack",
+            "description": "表示するアイテム。",
+            "type": "Item"
+          },
+          {
+            "name": "itemDisplayTransform",
+            "description": "アイテムの表示方法。",
+            "type": "ItemDisplayTransform"
+          },
+          {
+            "name": "displayParameters.translation",
+            "description": "オフセット",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.scale",
+            "description": "大きさ",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.leftRotation",
+            "description": "左回転",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.rightRotation",
+            "description": "右回転",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.billboard",
+            "description": "ビルボード",
+            "type": "Billboard"
+          },
+          {
+            "name": "displayParameters.interpolationDuration",
+            "description": "補間時間",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.interpolationDelay",
+            "description": "補間遅延",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.teleportDuration",
+            "description": "テレポート時間",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.shadowRadius",
+            "description": "影の半径",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.shadowStrength",
+            "description": "影の強さ",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.brightness",
+            "description": "明るさ",
+            "type": "Brightness"
+          },
+          {
+            "name": "interactionScale",
+            "description": "クリックの判定範囲。",
+            "type": "Vector"
+          },
+          {
+            "name": "onSpawn",
+            "description": "スポーン時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onInteract",
+            "description": "クリック時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onHover",
+            "description": "ホバー時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "onUnhover",
+            "description": "ホバー解除時のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "interactionDistance",
+            "description": "クリックの判定距離。",
+            "type": "Double"
+          },
+          {
+            "name": "switchHover",
+            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "visualizeHitbox",
+            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+            "type": "Boolean"
+          },
+          {
+            "name": "visibleAll",
+            "description": "全てのプレイヤーに表示するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "public",
+            "description": "他のプレイヤーが操作できるようにするか。",
+            "type": "Boolean"
+          }
+        ]
+      }
+    ]
   }
 ]
