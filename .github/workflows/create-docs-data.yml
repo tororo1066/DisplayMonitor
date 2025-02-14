@@ -31,7 +31,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew GenDocs:build
+        run: ./gradlew GenDocs:shadowJar
 
       - name: Move Jar to root
         run: mv GenDocs/build/libs/GenDocs.jar GenDocs.jar

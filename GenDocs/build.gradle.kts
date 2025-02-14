@@ -32,10 +32,6 @@ tasks.withType<ShadowJar> {
     archiveClassifier.set("")
 }
 
-tasks.named("build") {
-    dependsOn("shadowJar")
-}
-
 //メインクラスの指定
 application {
     mainClass.set("tororo1066.displaymonitor.GenerateDocData")
