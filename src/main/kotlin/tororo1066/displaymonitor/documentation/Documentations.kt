@@ -12,6 +12,7 @@ annotation class ParameterDoc(
     val name: String,
     val description: String,
     val type: ParameterType,
+    val default: String = "",
 )
 
 @Target(AnnotationTarget.PROPERTY)
@@ -43,9 +44,23 @@ enum class ParameterType {
     Long {
         override val example = "1000"
     },
+    @ParameterTypeDoc("実数")
+    Double {
+        override val example = "1000.0"
+    },
+    @ParameterTypeDoc("実数")
+    Float {
+        override val example = "1000.0"
+    },
     @ParameterTypeDoc("装飾可能な文字列")
     Component {
         override val example = "\"<red>Hello!</red>\""
+    },
+    @ParameterTypeDoc("色")
+    Color {
+        override val example = """
+            #ff0000
+        """.trimIndent()
     },
     @ParameterTypeDoc("位置")
     Location {
@@ -56,10 +71,34 @@ enum class ParameterType {
             <x>,<y>,<z>,<yaw>,<pitch>
         """.trimIndent()
     },
+    @ParameterTypeDoc("ブロック")
+    Block {
+        override val example = """
+            minecraft:oak_stairs[shape=straight]
+        """.trimIndent()
+    },
+    @ParameterTypeDoc("アイテム")
+    Item {
+        override val example = """
+            minecraft:diamond_sword{Enchantments:[{id:"minecraft:sharpness",lvl:5}]}
+        """.trimIndent()
+    },
     @ParameterTypeDoc("ベクトル")
     Vector {
         override val example = """
             <x>,<y>,<z>
+        """.trimIndent()
+    },
+    @ParameterTypeDoc("ベクトル")
+    Vector3f {
+        override val example = """
+            <x>,<y>,<z>
+        """.trimIndent()
+    },
+    @ParameterTypeDoc("回転")
+    Rotation {
+        override val example = """
+            <yaw>,<pitch>
         """.trimIndent()
     },
     @ParameterTypeDoc("Actionのリスト")
@@ -74,7 +113,50 @@ enum class ParameterType {
         override val example = """
             key: value
         """.trimIndent()
-    };
+    },
+
+    @ParameterTypeDoc("ビルボード")
+    Billboard {
+        override val example = """
+            選択
+            FIXED
+            VERTICAL
+            HORIZONTAL
+            CENTER
+        """.trimIndent()
+    },
+    @ParameterTypeDoc("輝き")
+    Brightness {
+        override val example = """
+            block: <0~15>
+            sky: <0~15>
+        """.trimIndent()
+    },
+    @ParameterTypeDoc("アイテム表示")
+    ItemDisplayTransform {
+        override val example = """
+            選択
+            NONE
+            THIRDPERSON_LEFTHAND
+            THIRDPERSON_RIGHTHAND
+            FIRSTPERSON_LEFTHAND
+            FIRSTPERSON_RIGHTHAND
+            HEAD
+            GUI
+            GROUND
+            FIXED
+        """.trimIndent()
+    },
+    @ParameterTypeDoc("テキストの位置")
+    TextAlignment {
+        override val example = """
+            選択
+            LEFT
+            CENTER
+            RIGHT
+        """.trimIndent()
+    },
+    ;
 
     abstract val example: kotlin.String
 }

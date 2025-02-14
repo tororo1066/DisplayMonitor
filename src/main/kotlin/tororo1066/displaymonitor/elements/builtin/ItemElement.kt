@@ -5,12 +5,31 @@ import org.bukkit.entity.Display
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.ItemDisplay.ItemDisplayTransform
 import org.bukkit.inventory.ItemStack
+import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitorapi.elements.Settable
 
+@ClassDoc(
+    name = "ItemElement",
+    description = "アイテムを表示するElement。"
+)
 class ItemElement: DisplayBaseElement() {
 
+    @ParameterDoc(
+        name = "itemStack",
+        description = "表示するアイテム。",
+        type = ParameterType.Item,
+        default = "minecraft:stone"
+    )
     @Settable var itemStack = ItemStack(Material.STONE)
+    @ParameterDoc(
+        name = "itemDisplayTransform",
+        description = "アイテムの表示方法。",
+        type = ParameterType.ItemDisplayTransform,
+        default = "FIXED"
+    )
     @Settable var itemDisplayTransform = ItemDisplayTransform.FIXED
 
     override val clazz = ItemDisplay::class.java

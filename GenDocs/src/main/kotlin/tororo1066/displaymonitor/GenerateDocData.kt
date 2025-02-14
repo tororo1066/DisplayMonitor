@@ -3,6 +3,7 @@ package tororo1066.displaymonitor
 import com.google.gson.Gson
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitorapi.elements.Settable
 import java.io.File
 import java.net.JarURLConnection
 import java.net.URISyntaxException
@@ -32,26 +33,31 @@ object GenerateDocData {
                 jsonWriter.name("description").value(classDoc.description)
 
                 jsonWriter.name("parameters").beginArray()
-                clazz.declaredFields.forEach third@ { field ->
-                    val parameterDoc = field.getAnnotation(ParameterDoc::class.java) ?: return@third
-                    jsonWriter.beginObject()
-                    jsonWriter.name("name").value(parameterDoc.name)
-                    jsonWriter.name("description").value(parameterDoc.description)
-                    jsonWriter.name("type").value(parameterDoc.type.name)
-                    jsonWriter.endObject()
-                }
 
-                var superClass = clazz.superclass
-                while (superClass != null) {
-                    superClass.declaredFields.forEach third@ { field ->
+                fun checkField(clazz: Class<*>, name: String) {
+                    println("Check: ${clazz.name}")
+                    clazz.declaredFields.forEach third@ { field ->
+                        if (field.isAnnotationPresent(Settable::class.java)) {
+                            println("Settable: $name.${field.name}")
+                            val annotation = field.getAnnotation(Settable::class.java)
+                            if (annotation.childOnly) {
+                                println("ChildOnly: $name.${field.name}")
+                                checkField(field.type, if (name.isEmpty()) field.name else "$name.${field.name}")
+                            }
+                        }
                         val parameterDoc = field.getAnnotation(ParameterDoc::class.java) ?: return@third
                         jsonWriter.beginObject()
-                        jsonWriter.name("name").value(parameterDoc.name)
+                        jsonWriter.name("name").value(if (name.isEmpty()) parameterDoc.name else "$name.${parameterDoc.name}")
                         jsonWriter.name("description").value(parameterDoc.description)
                         jsonWriter.name("type").value(parameterDoc.type.name)
                         jsonWriter.endObject()
                     }
-                    superClass = superClass.superclass
+                }
+
+                var currentClass: Class<*>? = clazz
+                while (currentClass != null) {
+                    checkField(currentClass, "")
+                    currentClass = currentClass.superclass
                 }
 
                 jsonWriter.endArray()

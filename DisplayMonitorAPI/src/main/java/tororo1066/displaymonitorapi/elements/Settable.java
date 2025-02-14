@@ -1,12 +1,15 @@
 package tororo1066.displaymonitorapi.elements;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
  * {@link IAbstractElement}のフィールドに付与するアノテーション<br>
  * このアノテーションが付与されたフィールドは、Configから値を設定できる
  */
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Settable {
 

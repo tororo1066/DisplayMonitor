@@ -20,7 +20,7 @@ class SetBlockAction: AbstractAction() {
     @ParameterDoc(
         name = "block",
         description = "設置するブロック。",
-        type = ParameterType.String
+        type = ParameterType.Block
     )
     var block: BlockData? = null
     @ParameterDoc(

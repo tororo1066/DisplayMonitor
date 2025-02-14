@@ -12,6 +12,8 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitor.configuration.DisplayParameters
+import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.Settable
@@ -19,21 +21,75 @@ import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
 import java.util.UUID
 
-
 abstract class DisplayBaseElement : AbstractElement() {
 
     @Settable(childOnly = true) var displayParameters = DisplayParameters()
+    @ParameterDoc(
+        name = "interactionScale",
+        description = "クリックの判定範囲。",
+        type = ParameterType.Vector,
+        default = "1,1,1"
+    )
     @Settable var interactionScale = Vector(1.0, 1.0, 1.0)
+    @ParameterDoc(
+        name = "onSpawn",
+        description = "スポーン時のアクション。",
+        type = ParameterType.Actions
+    )
     @Settable var onSpawn: Execute = Execute.empty()
+    @ParameterDoc(
+        name = "onInteract",
+        description = "クリック時のアクション。",
+        type = ParameterType.Actions
+    )
     @Settable var onInteract: Execute = Execute.empty()
+    @ParameterDoc(
+        name = "onHover",
+        description = "ホバー時のアクション。",
+        type = ParameterType.Actions
+    )
     @Settable var onHover: Execute = Execute.empty()
+    @ParameterDoc(
+        name = "onUnhover",
+        description = "ホバー解除時のアクション。",
+        type = ParameterType.Actions
+    )
     @Settable var onUnhover: Execute = Execute.empty()
+    @ParameterDoc(
+        name = "interactionDistance",
+        description = "クリックの判定距離。",
+        type = ParameterType.Double,
+        default = "4"
+    )
     @Settable var interactionDistance = 4.0
+    @ParameterDoc(
+        name = "switchHover",
+        description = "ホバー時のアクションを切り替えた時のみに実行するか。",
+        type = ParameterType.Boolean,
+        default = "true"
+    )
     @Settable var switchHover = true
+    @ParameterDoc(
+        name = "visualizeHitbox",
+        description = "クリックの判定範囲を表示するか。 (デバッグ用)",
+        type = ParameterType.Boolean,
+        default = "false"
+    )
     @Settable var visualizeHitbox = false
+    @ParameterDoc(
+        name = "visibleAll",
+        description = "全てのプレイヤーに表示するか。",
+        type = ParameterType.Boolean,
+        default = "false"
+    )
     @Settable var visibleAll = false
+    @ParameterDoc(
+        name = "public",
+        description = "他のプレイヤーが操作できるようにするか。",
+        type = ParameterType.Boolean,
+        default = "false"
+    )
     @Settable var public = false
-    @Settable var persistent = true
 
     abstract val clazz: Class<out Display>
 
@@ -57,7 +113,6 @@ abstract class DisplayBaseElement : AbstractElement() {
             it.brightness = displayParameters.brightness
             applyEntity(it)
             it.isVisibleByDefault = visibleAll
-            it.isPersistent = persistent
             (entity as? Player)?.showEntity(SJavaPlugin.plugin, it)
 
             it.persistentDataContainer.set(NamespacedKey(SJavaPlugin.plugin, "displayentity"), PersistentDataType.STRING, "")
@@ -164,7 +219,6 @@ abstract class DisplayBaseElement : AbstractElement() {
         entity.interpolationDuration = displayParameters.interpolationDuration
         entity.teleportDuration = displayParameters.teleportDuration
         entity.isVisibleByDefault = visibleAll
-        entity.isPersistent = persistent
 
         applyEntity(entity)
     }
