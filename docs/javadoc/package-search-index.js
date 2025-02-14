@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"tororo1066.displaymonitorapi"},{"l":"tororo1066.displaymonitorapi.actions"},{"l":"tororo1066.displaymonitorapi.configuration"},{"l":"tororo1066.displaymonitorapi.elements"},{"l":"tororo1066.displaymonitorapi.events"},{"l":"tororo1066.displaymonitorapi.storage"},{"l":"すべてのパッケージ","u":"allpackages-index.html"}];updateSearchResults();
