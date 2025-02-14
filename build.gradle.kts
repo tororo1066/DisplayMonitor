@@ -19,6 +19,14 @@ allprojects {
     repositories {
         mavenCentral()
         maven(url = "https://repo.papermc.io/repository/maven-public/")
+
+        maven {
+            url = uri("https://maven.pkg.github.com/tororo1066/TororoPluginAPI")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 
     dependencies {
@@ -31,13 +39,6 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/groups/public/")
     maven(url = "https://libraries.minecraft.net")
     maven(url = "https://jitpack.io")
-    maven {
-        url = uri("https://maven.pkg.github.com/tororo1066/TororoPluginAPI")
-        credentials {
-            username = System.getenv("GITHUB_USERNAME")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }
 }
 
 dependencies {

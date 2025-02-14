@@ -3,6 +3,9 @@ package tororo1066.displaymonitor.actions.builtin
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
@@ -10,15 +13,49 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.utils.addYaw
 import java.util.UUID
 
+@ClassDoc(
+    name = "SummonElement",
+    description = "Elementを召喚する。"
+)
 class SummonElement: AbstractAction() {
 
     override val allowedAutoStop = false
 
+    @ParameterDoc(
+        name = "name",
+        description = "Elementの名前。",
+        type = ParameterType.String
+    )
     var name = ""
+    @ParameterDoc(
+        name = "preset",
+        description = "Elementのプリセット名。 presetが指定されている場合、typeは無視される。",
+        type = ParameterType.String
+    )
     var presetName = ""
+    @ParameterDoc(
+        name = "offset",
+        description = "Elementの位置のオフセット。",
+        type = ParameterType.Vector
+    )
     var offset = Vector(0, 0, 0)
+    @ParameterDoc(
+        name = "relativeOffset",
+        description = "Elementの位置の相対オフセット。",
+        type = ParameterType.Vector
+    )
     var relativeOffset = Vector(0, 0, 0)
+    @ParameterDoc(
+        name = "type",
+        description = "Elementのクラス名。",
+        type = ParameterType.String
+    )
     var clazz = ""
+    @ParameterDoc(
+        name = "parameters",
+        description = "Elementのパラメータ。",
+        type = ParameterType.AdvancedConfigurationSection
+    )
     var overrideParameters: IAdvancedConfigurationSection? = null
 
     var lockPitch = false

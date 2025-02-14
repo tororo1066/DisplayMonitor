@@ -1,4 +1,4 @@
-name: Create Jar
+name: Create Docs Data
 
 on:
   push:
@@ -8,6 +8,9 @@ on:
 env:
   GITHUB_USERNAME: ${{ secrets.USERNAME }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -28,10 +31,18 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew GenDocs:build
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: DisplayMonitor.jar
-          path: build/libs/DisplayMonitor.jar
+      - name: Move Jar to root
+        run: mv GenDocs/build/libs/GenDocs.jar GenDocs.jar
+
+      - name: Execute Jar
+        run: java -jar GenDocs.jar
+
+      - name: Commit and Push
+        run: |
+          git config --local user.name 'github-actions[bot]'
+          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs-data.json
+          git commit -m "Update docs-data.json"
+          git push

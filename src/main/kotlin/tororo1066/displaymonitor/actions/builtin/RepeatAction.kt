@@ -1,16 +1,43 @@
 package tororo1066.displaymonitor.actions.builtin
 
 import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
+@ClassDoc(
+    name = "RepeatAction",
+    description = "指定した回数だけアクションを繰り返す。"
+)
 class RepeatAction: AbstractAction() {
 
+    @ParameterDoc(
+        name = "times",
+        description = "繰り返す回数。",
+        type = ParameterType.Int
+    )
     var times = 1
+    @ParameterDoc(
+        name = "isInfinity",
+        description = "無限に繰り返すか。 times が無視される。",
+        type = ParameterType.Boolean
+    )
     var isInfinity = false
+    @ParameterDoc(
+        name = "actions",
+        description = "繰り返すアクションのリスト。",
+        type = ParameterType.Actions
+    )
     var actions: Execute = Execute.empty()
+    @ParameterDoc(
+        name = "variableName",
+        description = "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。",
+        type = ParameterType.String
+    )
     var variableName: String? = null
 
     override fun run(context: IActionContext): ActionResult {

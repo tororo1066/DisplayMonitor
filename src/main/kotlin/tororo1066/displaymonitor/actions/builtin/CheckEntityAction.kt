@@ -1,13 +1,30 @@
 package tororo1066.displaymonitor.actions.builtin
 
 import tororo1066.displaymonitor.actions.CheckAction
+import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
+@ClassDoc(
+    name = "CheckEntity",
+    description = "対象が指定したエンティティであるかを確認する。"
+)
 class CheckEntityAction: CheckAction() {
 
-    var allowedEntities = emptyList<String>()
-    var disallowedEntities = emptyList<String>()
+    @ParameterDoc(
+        name = "allowedEntities",
+        description = "許可するエンティティのリスト。",
+        type = ParameterType.StringList
+    )
+    var allowedEntities = ArrayList<String>()
+    @ParameterDoc(
+        name = "disallowedEntities",
+        description = "許可しないエンティティのリスト。",
+        type = ParameterType.StringList
+    )
+    var disallowedEntities = ArrayList<String>()
 
     override fun isAllowed(context: IActionContext): Boolean {
         val entity = context.target ?: return false
@@ -17,7 +34,9 @@ class CheckEntityAction: CheckAction() {
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         super.prepare(section)
-        allowedEntities = section.getStringList("allowedEntities").map { it.lowercase() }
-        disallowedEntities = section.getStringList("disallowedEntities").map { it.lowercase() }
+        allowedEntities = ArrayList(section.getStringList("allowedEntities").map { it.lowercase() })
+        disallowedEntities = ArrayList(section.getStringList("disallowedEntities").map { it.lowercase() })
+        section.getString("allowedEntities")?.let { allowedEntities.add(it.lowercase()) }
+        section.getString("disallowedEntities")?.let { disallowedEntities.add(it.lowercase()) }
     }
 }

@@ -2,6 +2,7 @@ package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -9,6 +10,10 @@ import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 import java.util.UUID
 
+@ClassDoc(
+    name = "StoreData",
+    description = "Unsupported"
+)
 class StoreDataAction: AbstractAction() {
 
     companion object {
