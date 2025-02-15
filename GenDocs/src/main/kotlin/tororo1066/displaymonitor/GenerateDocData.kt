@@ -37,13 +37,10 @@ object GenerateDocData {
                 jsonWriter.name("parameters").beginArray()
 
                 fun checkField(clazz: Class<*>, name: String) {
-                    println("Check: ${clazz.name}")
                     clazz.declaredFields.forEach third@ { field ->
                         if (field.isAnnotationPresent(Settable::class.java)) {
-                            println("Settable: $name.${field.name}")
                             val annotation = field.getAnnotation(Settable::class.java)
                             if (annotation.childOnly) {
-                                println("ChildOnly: $name.${field.name}")
                                 checkField(field.type, if (name.isEmpty()) field.name else "$name.${field.name}")
                             }
                         }
@@ -66,23 +63,25 @@ object GenerateDocData {
                 jsonWriter.endObject()
             }
 
-            jsonWriter.beginObject()
-            jsonWriter.name("name").value("Types")
-            jsonWriter.name("classes").beginArray()
-            ParameterType.values().forEach second@ { parameterType ->
-                jsonWriter.beginObject()
-                jsonWriter.name("name").value(parameterType.name)
-                val annotation = parameterType.javaClass.getField(parameterType.name).getAnnotation(ParameterTypeDoc::class.java) ?: return@second
-                jsonWriter.name("description").value(
-                    annotation.name + "\n" + parameterType.example
-                )
-                jsonWriter.name("parameters").beginArray().endArray()
-                jsonWriter.endObject()
-            }
-
             jsonWriter.endArray()
             jsonWriter.endObject()
         }
+
+        jsonWriter.beginObject()
+        jsonWriter.name("name").value("Types")
+        jsonWriter.name("classes").beginArray()
+        ParameterType.values().forEach second@ { parameterType ->
+            jsonWriter.beginObject()
+            jsonWriter.name("name").value(parameterType.name)
+            val annotation = parameterType.javaClass.getField(parameterType.name).getAnnotation(ParameterTypeDoc::class.java) ?: return@second
+            jsonWriter.name("description").value(
+                annotation.name + "\n\n" + "例: " + parameterType.example
+            )
+            jsonWriter.name("parameters").beginArray().endArray()
+            jsonWriter.endObject()
+        }
+        jsonWriter.endArray()
+        jsonWriter.endObject()
 
         jsonWriter.endArray()
         jsonWriter.close()
