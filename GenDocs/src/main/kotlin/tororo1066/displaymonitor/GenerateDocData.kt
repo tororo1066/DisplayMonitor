@@ -3,6 +3,8 @@ package tororo1066.displaymonitor
 import com.google.gson.Gson
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterType
+import tororo1066.displaymonitor.documentation.ParameterTypeDoc
 import tororo1066.displaymonitorapi.elements.Settable
 import java.io.File
 import java.net.JarURLConnection
@@ -63,6 +65,21 @@ object GenerateDocData {
                 jsonWriter.endArray()
                 jsonWriter.endObject()
             }
+
+            jsonWriter.beginObject()
+            jsonWriter.name("name").value("Types")
+            jsonWriter.name("classes").beginArray()
+            ParameterType.values().forEach second@ { parameterType ->
+                jsonWriter.beginObject()
+                jsonWriter.name("name").value(parameterType.name)
+                val annotation = parameterType.javaClass.getField(parameterType.name).getAnnotation(ParameterTypeDoc::class.java) ?: return@second
+                jsonWriter.name("description").value(
+                    annotation.name + "\n" + parameterType.example
+                )
+                jsonWriter.name("parameters").beginArray().endArray()
+                jsonWriter.endObject()
+            }
+
             jsonWriter.endArray()
             jsonWriter.endObject()
         }
