@@ -9,7 +9,6 @@ import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.AsyncExecute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
-// Configのみでしか効果を発揮しないのでinternal化
 @ClassDoc(
     name = "Asynchronous",
     description = "非同期でアクションを実行する。"

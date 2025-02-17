@@ -7,9 +7,12 @@ import net.kyori.adventure.translation.Translator
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.commands.DisplayCommands
+import tororo1066.displaymonitor.elements.SettableProcessor
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.IDisplayMonitor
+import tororo1066.displaymonitorapi.IDisplayMonitor.DisplayMonitorInstance
+import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.storage.IElementStorage
 import tororo1066.tororopluginapi.SJavaPlugin
@@ -42,10 +45,9 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
         }
     }
 
-    override fun onLoad() {
-    }
-
     override fun onStart() {
+        DisplayMonitorInstance.setInstance(this)
+
         Bukkit.getScheduler().runTaskLater(this, Runnable {
             ActionStorage
 
@@ -54,6 +56,17 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
             ElementStorage
             DisplayCommands()
         }, 1)
+    }
+
+    override fun onEnd() {
+        ActionStorage.contextStorage.values.forEach {
+            it.values.forEach { context ->
+                context.publicContext.elements.values.forEach { element ->
+                    element.remove()
+                }
+                context.publicContext.stop = true
+            }
+        }
     }
 
     private fun registerBundle() {
@@ -124,5 +137,9 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
 
     override fun getElementStorage(): IElementStorage {
         return ElementStorage
+    }
+
+    override fun getSettableProcessor(): ISettableProcessor {
+        return SettableProcessor
     }
 }

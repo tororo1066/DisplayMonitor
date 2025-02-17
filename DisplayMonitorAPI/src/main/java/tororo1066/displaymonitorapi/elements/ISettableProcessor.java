@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
 
+import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -53,4 +55,6 @@ public interface ISettableProcessor {
      * @return 処理後の値
      */
     @Nullable <T extends @NotNull Object> T processValue(@NotNull IAdvancedConfigurationSection configuration, @NotNull String key, @NotNull Class<T> clazz);
+
+    @NotNull List<Field> getSettableFields(@NotNull Class<?> clazz);
 }

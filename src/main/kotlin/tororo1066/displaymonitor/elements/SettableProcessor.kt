@@ -173,11 +173,16 @@ object SettableProcessor: ISettableProcessor {
         }
     }
 
+    @JvmName("getSettableFields2")
     fun Class<*>.getSettableFields(): List<Field> {
         return fieldCache.getOrPut(this) {
             FieldUtils.getAllFieldsList(this)
         }.filter {
             it.isAnnotationPresent(Settable::class.java)
         }
+    }
+
+    override fun getSettableFields(clazz: Class<*>): List<Field> {
+        return clazz.getSettableFields()
     }
 }

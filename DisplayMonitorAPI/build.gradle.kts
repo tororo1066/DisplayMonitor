@@ -11,7 +11,6 @@ tasks.withType<JavaCompile> {
 
 tasks.javadoc {
     options.encoding = "UTF-8"
-    setDestinationDir(file("../docs/javadoc"))
 }
 
 publishing {

@@ -23,7 +23,7 @@ abstract class AbstractElement: IAbstractElement {
     private var contextUUID: UUID? = null
     protected var tickTask: BukkitTask? = null
 
-    protected fun getContext(): IActionContext? {
+    private fun getContext(): IActionContext? {
         return ActionStorage.contextStorage[groupUUID]?.get(contextUUID)
     }
 
@@ -62,48 +62,52 @@ abstract class AbstractElement: IAbstractElement {
         return this.annotations.any { it.annotationClass.simpleName == "Nullable" }
     }
 
-    override fun prepare(section: IAdvancedConfigurationSection) {
-
-        fun prepareChild(section: IAdvancedConfigurationSection, field: Field, instance: Any) {
-            val defaultAccessible = field.canAccess(instance)
-            field.isAccessible = true
-            val annotation = field.getAnnotation(Settable::class.java) ?: return
-            if (annotation.childOnly) {
-                val key = annotation.name.ifEmpty { field.name }
-                val newSection = section.getAdvancedConfigurationSection(key) ?: return
-                val newInstance = field.get(instance)
-                val newFields = newInstance.javaClass.getSettableFields()
-                newFields.forEach { newField ->
-                    prepareChild(newSection, newField, newInstance)
-                }
-            } else {
-                val key = annotation.name.ifEmpty { field.name }
-                val value = section.withParameters(SettableProcessor.processVariable(field.get(instance))) {
-                    it.processValue(key, field.type)
-                }
-                if (value != null || field.isNullable()) {
-                    field.set(instance, value)
-                }
-            }
-            field.isAccessible = defaultAccessible
-        }
-
-
-        val settableFields = this::class.java.getSettableFields()
-        settableFields.forEach { field ->
-            prepareChild(section, field, this)
-        }
-
-    }
+//    override fun prepare(section: IAdvancedConfigurationSection) {
+//
+//        fun prepareChild(section: IAdvancedConfigurationSection, field: Field, instance: Any) {
+//            val defaultAccessible = field.canAccess(instance)
+//            field.isAccessible = true
+//            val annotation = field.getAnnotation(Settable::class.java) ?: return
+//            if (annotation.childOnly) {
+//                val key = annotation.name.ifEmpty { field.name }
+//                val newSection = section.getAdvancedConfigurationSection(key) ?: return
+//                val newInstance = field.get(instance)
+//                val newFields = newInstance.javaClass.getSettableFields()
+//                newFields.forEach { newField ->
+//                    prepareChild(newSection, newField, newInstance)
+//                }
+//            } else {
+//                val key = annotation.name.ifEmpty { field.name }
+//                val value = section.withParameters(SettableProcessor.processVariable(field.get(instance))) {
+//                    it.processValue(key, field.type)
+//                }
+//                if (value != null || field.isNullable()) {
+//                    field.set(instance, value)
+//                }
+//            }
+//            field.isAccessible = defaultAccessible
+//        }
+//
+//
+//        val settableFields = this::class.java.getSettableFields()
+//        settableFields.forEach { field ->
+//            prepareChild(section, field, this)
+//        }
+//
+//    }
 
     override fun syncGroup(): Boolean {
         return syncGroup
     }
 
-    protected fun startTick(entity: Entity?) {
+    override fun startTick(entity: Entity?) {
         tickTask = Bukkit.getScheduler().runTaskTimer(SJavaPlugin.plugin, Runnable {
             tick(entity)
         }, 0, 1)
+    }
+
+    override fun stopTick() {
+        tickTask?.cancel()
     }
 
     override fun clone(): IAbstractElement {
