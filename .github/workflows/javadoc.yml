@@ -8,6 +8,11 @@ env:
   GITHUB_USERNAME: ${{ secrets.USERNAME }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
