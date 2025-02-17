@@ -775,5 +775,115 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Types",
+    "classes": [
+      {
+        "name": "String",
+        "description": "文字列\n\n例: \"example\"",
+        "parameters": []
+      },
+      {
+        "name": "StringList",
+        "description": "文字列のリスト\n\n例: - example1\n- example2",
+        "parameters": []
+      },
+      {
+        "name": "Boolean",
+        "description": "真偽値\n\n例: true",
+        "parameters": []
+      },
+      {
+        "name": "Int",
+        "description": "整数\n\n例: 1000",
+        "parameters": []
+      },
+      {
+        "name": "Long",
+        "description": "整数\n\n例: 1000",
+        "parameters": []
+      },
+      {
+        "name": "Double",
+        "description": "実数\n\n例: 1000.0",
+        "parameters": []
+      },
+      {
+        "name": "Float",
+        "description": "実数\n\n例: 1000.0",
+        "parameters": []
+      },
+      {
+        "name": "Component",
+        "description": "装飾可能な文字列\n\n例: \"\u003cred\u003eHello!\u003c/red\u003e\"",
+        "parameters": []
+      },
+      {
+        "name": "Color",
+        "description": "色\n\n例: #ff0000",
+        "parameters": []
+      },
+      {
+        "name": "Location",
+        "description": "位置\n\n例: \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Block",
+        "description": "ブロック\n\n例: minecraft:oak_stairs[shape\u003dstraight]",
+        "parameters": []
+      },
+      {
+        "name": "Item",
+        "description": "アイテム\n\n例: minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}",
+        "parameters": []
+      },
+      {
+        "name": "Vector",
+        "description": "ベクトル\n\n例: \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Vector3f",
+        "description": "ベクトル\n\n例: \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Rotation",
+        "description": "回転\n\n例: \u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Actions",
+        "description": "Actionのリスト\n\n例: - class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "AdvancedConfigurationSection",
+        "description": "セクション\n\n例: key: value",
+        "parameters": []
+      },
+      {
+        "name": "Billboard",
+        "description": "ビルボード\n\n例: 選択\nFIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
+        "name": "Brightness",
+        "description": "輝き\n\n例: block: \u003c0~15\u003e\nsky: \u003c0~15\u003e",
+        "parameters": []
+      },
+      {
+        "name": "ItemDisplayTransform",
+        "description": "アイテム表示\n\n例: 選択\nNONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "parameters": []
+      },
+      {
+        "name": "TextAlignment",
+        "description": "テキストの位置\n\n例: 選択\nLEFT\nCENTER\nRIGHT",
+        "parameters": []
+      }
+    ]
   }
 ]
