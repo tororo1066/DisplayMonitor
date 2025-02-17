@@ -68,7 +68,7 @@ object GenerateDocData {
         }
 
         jsonWriter.beginObject()
-        jsonWriter.name("name").value("Types")
+        jsonWriter.name("name").value("Type")
         jsonWriter.name("classes").beginArray()
         ParameterType.values().forEach second@ { parameterType ->
             jsonWriter.beginObject()
