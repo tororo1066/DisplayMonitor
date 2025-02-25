@@ -232,7 +232,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
         return tororo1066.displaymonitorapi.configuration.Execute {
-            ActionRunner.run(root as AdvancedConfiguration, list, it, async = false, disableAutoStop = false)
+            ActionRunner.run(root as AdvancedConfiguration, list, it, null, async = false, disableAutoStop = false)
         }
     }
 
@@ -244,7 +244,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
         return tororo1066.displaymonitorapi.configuration.AsyncExecute {
-            ActionRunner.run(root as AdvancedConfiguration, list, it, async = true, disableAutoStop = false)
+            ActionRunner.run(root as AdvancedConfiguration, list, it, null, async = true, disableAutoStop = false)
         }
     }
 
@@ -278,19 +278,26 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val root = root as? AdvancedConfiguration
         val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         if (split.isEmpty()) return null
-        val type = split[0].lowercase()
+        val isRadians = split[0].endsWith("_radians")
+        val type = if (isRadians) split[0].substringBefore("_radians") else split[0]
+
+        fun radians(value: Float): Float {
+            return if (isRadians) value else Math.toRadians(value.toDouble()).toFloat()
+        }
+
         try {
             when(type) {
                 "euler" -> {
                     if (split.size != 4) return null
-                    val x = split[1].toFloat()
-                    val y = split[2].toFloat()
-                    val z = split[3].toFloat()
-                    return Quaternionf().rotationXYZ(x, y, z)
+                    val x = radians(split[1].toFloat())
+                    val y = radians(split[2].toFloat())
+                    val z = radians(split[3].toFloat())
+                    return Quaternionf()
+                        .rotationXYZ(x, y, z)
                 }
                 "axis" -> {
                     if (split.size != 5) return null
-                    val angle = split[1].toFloat()
+                    val angle = radians(split[1].toFloat())
                     val x = split[2].toFloat()
                     val y = split[3].toFloat()
                     val z = split[4].toFloat()

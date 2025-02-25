@@ -4,9 +4,7 @@ import org.bukkit.entity.Player
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.parameters.ActionParameters
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
 import tororo1066.displaymonitor.storage.ActionStorage
-import tororo1066.displaymonitorapi.actions.IAbstractAction
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.actions.IActionRunner
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
@@ -19,13 +17,14 @@ object ActionRunner: IActionRunner {
 
     fun run(config: AdvancedConfiguration, p: Player) {
         val configActions = config.getAdvancedConfigurationSectionList("actions")
-        run(config, configActions, ActionContext(PublicActionContext(), p), async = false, disableAutoStop = false)
+        run(config, configActions, ActionContext(PublicActionContext(), p), null, async = false, disableAutoStop = false)
     }
 
     override fun run(
         root: IAdvancedConfiguration,
         actionList: List<IAdvancedConfigurationSection>,
         context: IActionContext,
+        actionName: String?,
         async: Boolean,
         disableAutoStop: Boolean
     ) {
@@ -52,9 +51,9 @@ object ActionRunner: IActionRunner {
             .computeIfAbsent(context.groupUUID)
             { mutableMapOf() }[context.uuid] = context
 
-//        if (actionList.none { it.getString("class") == "Stop" }) {
-//            DisplayMonitor.warn(runContext, DisplayMonitor.translate("action.stop.not.found"))
-//        }
+        if (actionName != null) {
+            ActionStorage.contextByName[actionName] = context.groupUUID
+        }
 
         fun invokeActions() {
             for (action in actionList) {

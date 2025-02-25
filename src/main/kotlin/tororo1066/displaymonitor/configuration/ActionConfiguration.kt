@@ -7,7 +7,7 @@ import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitorapi.actions.IActionContext
 
-class ActionConfiguration(val root: AdvancedConfiguration, configuration: AdvancedConfigurationSection) {
+class ActionConfiguration(private val root: AdvancedConfiguration, configuration: AdvancedConfigurationSection) {
 
     val actions: MutableList<AdvancedConfigurationSection> = mutableListOf()
 
@@ -22,12 +22,8 @@ class ActionConfiguration(val root: AdvancedConfiguration, configuration: Advanc
         }
     }
 
-    fun run(p: Player) {
-        ActionRunner.run(root.clone(), actions, ActionContext(PublicActionContext(), p), async = true, false)
-    }
-
-    fun run(context: IActionContext) {
-        ActionRunner.run(root.clone(), actions, context, async = true, false)
+    fun run(context: IActionContext, actionName: String? = null) {
+        ActionRunner.run(root.clone(), actions, context, actionName, async = true, false)
     }
 
     override fun toString(): String {

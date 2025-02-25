@@ -118,10 +118,12 @@ public interface IActionContext extends Cloneable {
     void setStop(@NotNull Boolean stop);
 
     /**
-     * 新しいGroupUUIDとUUIDを持つIActionContextを複製する
+     * 新しいUUIDを持つIActionContextを複製する
      * @return 複製されたIActionContext
      */
     @NotNull IActionContext cloneWithRandomUUID();
+
+    @NotNull IActionContext cloneWithNewPublicContext(@NotNull IPublicActionContext publicActionContext);
 
     /**
      * デフォルトのパラメータを取得する

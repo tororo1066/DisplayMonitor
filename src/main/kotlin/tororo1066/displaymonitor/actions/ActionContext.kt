@@ -30,14 +30,18 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
 
     constructor(publicContext: IPublicActionContext, caster: Entity): this(publicContext, caster, caster.location)
 
-    override fun cloneWithRandomUUID(): ActionContext {
+    override fun cloneWithRandomUUID(): IActionContext {
         val context = clone()
         context.uuid = UUID.randomUUID()
         return context
     }
 
-    override fun clone(): ActionContext {
-        val context = ActionContext(publicContext)
+    override fun clone(): IActionContext {
+        return cloneWithNewPublicContext(publicContext)
+    }
+
+    override fun cloneWithNewPublicContext(publicActionContext: IPublicActionContext): IActionContext {
+        val context = ActionContext(publicActionContext)
         context.groupUUID = groupUUID
         context.uuid = uuid
         context.caster = caster

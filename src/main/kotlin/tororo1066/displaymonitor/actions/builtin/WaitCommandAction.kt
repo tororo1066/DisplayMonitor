@@ -69,6 +69,10 @@ class WaitCommandAction: AbstractAction() {
         var complete = false
 
         fun process(sender: CommandSender, command: String, unit: BiSEventUnit<*>): Boolean {
+            if (context.publicContext.stop) {
+                unit.unregister()
+                return false
+            }
             if (!server && sender != context.target) return false
             if (command != this.command) return false
             actions(context)

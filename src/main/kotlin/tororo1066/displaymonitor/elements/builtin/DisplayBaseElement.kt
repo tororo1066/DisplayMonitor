@@ -38,6 +38,12 @@ abstract class DisplayBaseElement : AbstractElement() {
     )
     @Settable var onSpawn: Execute = Execute.empty()
     @ParameterDoc(
+        name = "onTick",
+        description = "1Tick毎に実行されるアクション。",
+        type = ParameterType.Actions
+    )
+    @Settable var onTick: Execute = Execute.empty()
+    @ParameterDoc(
         name = "onInteract",
         description = "クリック時のアクション。",
         type = ParameterType.Actions
@@ -132,6 +138,7 @@ abstract class DisplayBaseElement : AbstractElement() {
                     interactionDistance,
                 )
             ) {
+                e.isCancelled = true
                 runExecute(onInteract) {
                     it.target = e.player
                     it.location = e.player.location
@@ -157,7 +164,7 @@ abstract class DisplayBaseElement : AbstractElement() {
 
     override fun remove() {
         entity.remove()
-        tickTask?.cancel()
+        stopTick()
         sEvent.unregisterAll()
     }
 
@@ -167,6 +174,8 @@ abstract class DisplayBaseElement : AbstractElement() {
             remove()
             return
         }
+
+        runExecute(onTick)
 
         val players = if (public) this.entity.location.getNearbyPlayers(interactionScale.x + interactionDistance) else listOfNotNull(entity as? Player)
         players.forEach { player ->

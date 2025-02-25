@@ -22,6 +22,7 @@ import java.util.function.Function
 object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
     val contextStorage = mutableMapOf<UUID, MutableMap<UUID, IActionContext>>()
+    val contextByName = mutableMapOf<String, UUID>()
 
     val loadedConfigActions = mutableMapOf<String, ActionConfiguration>()
 
@@ -48,6 +49,8 @@ object ActionStorage: IActionStorage {
         actions["Target"] = TargetAction::class.java
         actions["StoreData"] = StoreDataAction::class.java
         actions["RestoreData"] = RestoreDataAction::class.java
+        actions["Lightning"] = LightningAction::class.java
+        actions["AccessAction"] = AccessAction::class.java
 
         ActionRegisteringEvent().callEvent()
 

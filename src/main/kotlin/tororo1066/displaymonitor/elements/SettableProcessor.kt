@@ -58,15 +58,22 @@ object SettableProcessor: ISettableProcessor {
                 )
             }
             is Quaternionf -> {
+
+                val euler = value.getEulerAnglesXYZ(Vector3f())
+
                 return mapOf(
                     "base.quaternion.x" to value.x,
                     "base.quaternion.y" to value.y,
                     "base.quaternion.z" to value.z,
                     "base.quaternion.w" to value.w,
-                    "base.euler.x" to value.getEulerAnglesXYZ(Vector3f()).x,
-                    "base.euler.y" to value.getEulerAnglesXYZ(Vector3f()).y,
-                    "base.euler.z" to value.getEulerAnglesXYZ(Vector3f()).z,
+                    "base.euler.x" to euler.x,
+                    "base.euler.y" to euler.y,
+                    "base.euler.z" to euler.z,
+                    "base.euler.degrees.x" to Math.toDegrees(euler.x.toDouble()),
+                    "base.euler.degrees.y" to Math.toDegrees(euler.y.toDouble()),
+                    "base.euler.degrees.z" to Math.toDegrees(euler.z.toDouble()),
                     "base.axis.angle" to value.angle(),
+                    "base.axis.angle.degrees" to Math.toDegrees(value.angle().toDouble()),
                     "base.axis.x" to value.x,
                     "base.axis.y" to value.y,
                     "base.axis.z" to value.z

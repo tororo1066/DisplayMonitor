@@ -1,5 +1,6 @@
 package tororo1066.displaymonitor.elements.builtin
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Marker
@@ -80,8 +81,6 @@ class GroupElement: AbstractElement() {
             val clazz = element.getString("type")
             val overrideParameters = element.getAdvancedConfigurationSection("parameters")
             ElementStorage.createElement(presetName, clazz, overrideParameters, "GroupElement")?.let {
-//                it.groupUUID = groupUUID
-//                it.contextUUID = contextUUID
                 this.elements[key] = it
             }
         }
