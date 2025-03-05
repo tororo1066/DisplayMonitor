@@ -22,8 +22,8 @@ class ActionConfiguration(private val root: AdvancedConfiguration, configuration
         }
     }
 
-    fun run(context: IActionContext, actionName: String? = null) {
-        ActionRunner.run(root.clone(), actions, context, actionName, async = true, false)
+    fun run(context: IActionContext, async: Boolean = true, actionName: String? = null) {
+        ActionRunner.run(root.clone(), actions, context, actionName, async = async, false)
     }
 
     override fun toString(): String {

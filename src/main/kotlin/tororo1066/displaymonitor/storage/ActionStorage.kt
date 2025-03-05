@@ -2,6 +2,7 @@ package tororo1066.displaymonitor.storage
 
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.plugin.Plugin
 import tororo1066.displaymonitor.Utils.mergeConfiguration
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.PublicActionContext
@@ -51,6 +52,7 @@ object ActionStorage: IActionStorage {
         actions["RestoreData"] = RestoreDataAction::class.java
         actions["Lightning"] = LightningAction::class.java
         actions["AccessAction"] = AccessAction::class.java
+        actions["RunAction"] = RunAction::class.java
 
         ActionRegisteringEvent().callEvent()
 

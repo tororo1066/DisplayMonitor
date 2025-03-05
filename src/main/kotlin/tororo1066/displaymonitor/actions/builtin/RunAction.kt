@@ -4,50 +4,50 @@ import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.ParameterType
+import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
 @ClassDoc(
-    name = "ModifyVariable",
-    description = "変数を変更する。"
+    name = "RunAction",
+    description = "指定されたActionを実行する。"
 )
-class ModifyVariableAction: AbstractAction() {
+class RunAction: AbstractAction() {
 
     @ParameterDoc(
-        name = "variable",
-        description = "変更する変数の名前。",
+        name = "action",
+        description = "実行するActionの名前。",
         type = ParameterType.String
     )
-    var variable = ""
+    var action = ""
     @ParameterDoc(
-        name = "value",
-        description = "変数に代入する値。",
-        type = ParameterType.String
+        name = "cloneContext",
+        description = "コンテキストを複製するか。",
+        type = ParameterType.Boolean
     )
-    var value = ""
+    var cloneContext = false
     @ParameterDoc(
         name = "variables",
-        description = "変数のマップ。",
+        description = "実行時の変数。 コンテキストを複製していると終了後に破棄される。",
         type = ParameterType.AdvancedConfigurationSection
     )
     var variables = mutableMapOf<String, String>()
 
     override fun run(context: IActionContext): ActionResult {
-        val configuration = context.configuration ?: return ActionResult.failed("No configuration found")
-        val parameters = configuration.parameters
+        val action = ActionStorage.loadedConfigActions[action] ?: return ActionResult.noParameters("Action $action not found.")
+        val newContext = if (cloneContext) context.cloneWithRandomUUID() else context
         variables.forEach { (key, value) ->
-            parameters[key] = value
+            newContext.configuration?.parameters?.set(key, value)
         }
+        action.run(newContext)
         return ActionResult.success()
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
-        variable = section.getString("variable", "")!!
-        value = section.getString("value", "")!!
-
+        action = section.getString("action", "")!!
+        cloneContext = section.getBoolean("cloneContext", false)
         variables.clear()
-        variables[variable] = value
         section.getAdvancedConfigurationSection("variables")?.let { variablesSection ->
             variablesSection.getKeys(false).forEach { key ->
                 variables[key] = variablesSection.getString(key) ?: ""

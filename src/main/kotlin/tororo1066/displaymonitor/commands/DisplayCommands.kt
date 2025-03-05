@@ -97,7 +97,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
                     context.prepareParameters.putAll(parameters)
                 }
 
-                configuration.run(context, actionName)
+                configuration.run(context, async = true, actionName)
             } catch (e: Exception) {
                 sender.sendMessage(Component.text("An error occurred"))
                 e.printStackTrace()

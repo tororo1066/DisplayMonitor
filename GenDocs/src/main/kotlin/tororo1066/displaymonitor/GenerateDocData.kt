@@ -75,7 +75,7 @@ object GenerateDocData {
             jsonWriter.name("name").value(parameterType.name)
             val annotation = parameterType.javaClass.getField(parameterType.name).getAnnotation(ParameterTypeDoc::class.java) ?: return@second
             jsonWriter.name("description").value(
-                annotation.name + "\n\n" + "例: " + parameterType.example
+                annotation.name + "\n\n" + "例:\n  " + parameterType.example
             )
             jsonWriter.name("parameters").beginArray().endArray()
             jsonWriter.endObject()
