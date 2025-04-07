@@ -19,7 +19,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
 
     constructor(): super()
 
-    constructor(parent: AdvancedConfigurationSection, path: String): super(parent, path)
+    constructor(parent: IAdvancedConfigurationSection, path: String): super(parent, path)
 
     constructor(copy: ConfigurationSection): super(copy.parent!!, copy.name)
 
@@ -126,6 +126,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
 
         val root = root ?: return value
         if (root is AdvancedConfiguration) {
+            Bukkit.getLogger().info("evaluating $value")
             return root.evaluate(value)
         }
 

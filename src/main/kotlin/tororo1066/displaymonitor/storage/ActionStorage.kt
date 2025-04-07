@@ -1,17 +1,18 @@
 package tororo1066.displaymonitor.storage
 
-import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.plugin.Plugin
 import tororo1066.displaymonitor.Utils.mergeConfiguration
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitor.actions.builtin.*
+import tororo1066.displaymonitor.actions.builtin.debug.PrintVariables
 import tororo1066.displaymonitor.configuration.ActionConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitorapi.actions.IAbstractAction
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.actions.IPublicActionContext
+import tororo1066.displaymonitorapi.configuration.IActionConfiguration
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.events.ActionRegisteringEvent
 import tororo1066.displaymonitorapi.storage.IActionStorage
@@ -53,39 +54,62 @@ object ActionStorage: IActionStorage {
         actions["Lightning"] = LightningAction::class.java
         actions["AccessAction"] = AccessAction::class.java
         actions["RunAction"] = RunAction::class.java
+        actions["Random"] = RandomAction::class.java
+        actions["Package"] = PackageAction::class.java
+
+        actions["PrintVariables"] = PrintVariables::class.java
 
         ActionRegisteringEvent().callEvent()
 
-        loadActions()
+        loadDisplayMonitorActions()
     }
 
     override fun registerAction(name: String, action: Class<out IAbstractAction>) {
         actions[name] = action
     }
 
-    fun loadActions(configuration: AdvancedConfiguration) {
+    override fun getActionConfiguration(section: IAdvancedConfigurationSection): IActionConfiguration {
+        return ActionConfiguration(section)
+    }
+
+    override fun getActionConfigurations(configuration: IAdvancedConfiguration): List<IActionConfiguration> {
+        val actions = mutableListOf<IActionConfiguration>()
         configuration.getKeys(false).forEach { key ->
             val actionSection = configuration.getAdvancedConfigurationSection(key) ?: return@forEach
-            loadedConfigActions[key] = ActionConfiguration(configuration, actionSection)
+            actions.add(ActionConfiguration(actionSection))
+        }
+
+        return actions
+    }
+
+    override fun getActionConfigurations(file: File): List<IActionConfiguration> {
+        val yaml = AdvancedConfiguration().mergeConfiguration(YamlConfiguration.loadConfiguration(file))
+        return getActionConfigurations(yaml)
+    }
+
+    fun loadDisplayMonitorActions(configuration: AdvancedConfiguration) {
+        configuration.getKeys(false).forEach { key ->
+            val actionSection = configuration.getAdvancedConfigurationSection(key) ?: return@forEach
+            loadedConfigActions[key] = ActionConfiguration(actionSection)
         }
     }
 
-    fun loadActions(file: File) {
+    fun loadDisplayMonitorActions(file: File) {
         if (!file.exists()) return
         if (file.isDirectory) {
-            file.listFiles()?.forEach { loadActions(it) }
+            file.listFiles()?.forEach { loadDisplayMonitorActions(it) }
             return
         }
 
         val yaml = AdvancedConfiguration().mergeConfiguration(YamlConfiguration.loadConfiguration(file))
-        loadActions(yaml)
+        loadDisplayMonitorActions(yaml)
     }
 
-    fun loadActions() {
+    fun loadDisplayMonitorActions() {
         loadedConfigActions.clear()
         val directory = File(SJavaPlugin.plugin.dataFolder, "actions")
         directory.mkdirs()
-        loadActions(directory)
+        loadDisplayMonitorActions(directory)
     }
 
     override fun createPublicContext(): IPublicActionContext {
@@ -104,7 +128,7 @@ object ActionStorage: IActionStorage {
         loadedConfigActions.filter { it.value.triggers.contains(name) }.forEach {
             val triggerSection = it.value.triggers[name] ?: return@forEach
             if (condition == null || condition.apply(triggerSection)) {
-                it.value.run(context)
+                it.value.run(context, async = true, actionName = null)
             }
         }
     }

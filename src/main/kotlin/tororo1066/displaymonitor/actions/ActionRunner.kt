@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture
 
 object ActionRunner: IActionRunner {
 
-    private const val runContext = "ActionRunner"
+    private const val RUN_CONTEXT = "ActionRunner"
 
     fun run(config: AdvancedConfiguration, p: Player) {
         val configActions = config.getAdvancedConfigurationSectionList("actions")
@@ -73,7 +73,7 @@ object ActionRunner: IActionRunner {
                 val actionClass = action.getString("class")
                 val actionData = ActionStorage.actions[actionClass]
                 if (actionData == null) {
-                    DisplayMonitor.warn(runContext, DisplayMonitor.translate("action.class.not.found", actionClass))
+                    DisplayMonitor.warn(RUN_CONTEXT, DisplayMonitor.translate("action.class.not.found", actionClass))
                     continue
                 }
                 val actionInstance = actionData.getConstructor().newInstance()
@@ -86,7 +86,7 @@ object ActionRunner: IActionRunner {
                     actionInstance.prepare(action)
                 } catch (e: Exception) {
                     DisplayMonitor.error(
-                        runContext,
+                        RUN_CONTEXT,
                         DisplayMonitor.translate("action.prepare.error", actionClass, e.message)
                     )
                     e.printStackTrace()
@@ -96,7 +96,7 @@ object ActionRunner: IActionRunner {
                     actionInstance.run(context)
                 } catch (e: Exception) {
                     DisplayMonitor.error(
-                        runContext,
+                        RUN_CONTEXT,
                         DisplayMonitor.translate("action.running.error", actionClass, e.message)
                     )
                     e.printStackTrace()
@@ -112,12 +112,17 @@ object ActionRunner: IActionRunner {
             CompletableFuture.runAsync {
                 invokeActions()
             }.exceptionally {
-                DisplayMonitor.error(runContext, DisplayMonitor.translate("action.unknown.error", it.message))
+                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", it.message))
                 it.printStackTrace()
                 null
             }
         } else {
-            invokeActions()
+            try {
+                invokeActions()
+            } catch (e: Exception) {
+                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
+                e.printStackTrace()
+            }
         }
     }
 }

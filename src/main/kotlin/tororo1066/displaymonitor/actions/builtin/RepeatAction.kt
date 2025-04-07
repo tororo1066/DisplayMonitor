@@ -10,7 +10,7 @@ import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
 @ClassDoc(
-    name = "RepeatAction",
+    name = "Repeat",
     description = "指定した回数だけアクションを繰り返す。"
 )
 class RepeatAction: AbstractAction() {

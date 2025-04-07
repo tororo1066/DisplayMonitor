@@ -2,6 +2,9 @@ package tororo1066.displaymonitor.actions
 
 import org.bukkit.Bukkit
 import tororo1066.displaymonitorapi.actions.IAbstractAction
+import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.util.function.Consumer
 
@@ -37,6 +40,20 @@ abstract class AbstractAction: IAbstractAction {
             threadBlockingRunTask(run)
         } else {
             runTask(run)
+        }
+    }
+
+    protected fun createExecute(actions: List<IAdvancedConfigurationSection>, isAsync: Boolean = false): Execute {
+        return Execute { context ->
+            if (actions.isEmpty()) return@Execute
+            ActionRunner.run(
+                actions.first().root as IAdvancedConfiguration,
+                actions,
+                context,
+                actionName = null,
+                async = isAsync,
+                disableAutoStop = false
+            )
         }
     }
 }

@@ -5,8 +5,12 @@ import org.jetbrains.annotations.Nullable;
 import tororo1066.displaymonitorapi.actions.IAbstractAction;
 import tororo1066.displaymonitorapi.actions.IActionContext;
 import tororo1066.displaymonitorapi.actions.IPublicActionContext;
+import tororo1066.displaymonitorapi.configuration.IActionConfiguration;
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration;
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
 
+import java.io.File;
+import java.util.List;
 import java.util.function.Function;
 
 public interface IActionStorage {
@@ -25,6 +29,29 @@ public interface IActionStorage {
     default void registerAction(@NotNull Class<? extends @NotNull IAbstractAction> action) {
         registerAction(action.getSimpleName(), action);
     }
+
+    /**
+     * Actionを取得する
+     * @param section {@link IAdvancedConfigurationSection}
+     * @return {@link IActionConfiguration}
+     */
+    @NotNull IActionConfiguration getActionConfiguration(@NotNull IAdvancedConfigurationSection section);
+
+    /**
+     * ActionをIAdvancedConfigurationから取得する
+     * @param configuration {@link IAdvancedConfiguration}
+     * @return {@link IActionConfiguration}のリスト
+     */
+    @NotNull List<@NotNull IActionConfiguration> getActionConfigurations(@NotNull IAdvancedConfiguration configuration);
+
+    /**
+     * Actionをファイルから取得する
+     * @param file ファイル
+     * @return {@link IActionConfiguration}のリスト
+     */
+    @NotNull List<@NotNull IActionConfiguration> getActionConfigurations(@NotNull File file);
+
+
 
     /**
      * 空の{@link IPublicActionContext}を作成する

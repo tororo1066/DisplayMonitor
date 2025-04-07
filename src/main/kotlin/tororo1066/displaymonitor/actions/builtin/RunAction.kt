@@ -38,9 +38,9 @@ class RunAction: AbstractAction() {
         val action = ActionStorage.loadedConfigActions[action] ?: return ActionResult.noParameters("Action $action not found.")
         val newContext = if (cloneContext) context.cloneWithRandomUUID() else context
         variables.forEach { (key, value) ->
-            newContext.configuration?.parameters?.set(key, value)
+            newContext.configuration?.parameters?.put(key, value)
         }
-        action.run(newContext)
+        action.run(newContext, async = false, actionName = null)
         return ActionResult.success()
     }
 

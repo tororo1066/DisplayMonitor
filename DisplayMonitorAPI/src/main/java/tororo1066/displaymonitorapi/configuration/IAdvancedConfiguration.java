@@ -7,7 +7,11 @@ import java.util.Map;
 
 public interface IAdvancedConfiguration extends IAdvancedConfigurationSection, Configuration, Cloneable {
 
+    @NotNull Character SEPARATOR = '\u0BEC';
+
     @NotNull Map<String, Object> getParameters();
 
     void setParameters(@NotNull Map<String, Object> parameters);
+
+    @NotNull Object evaluate(@NotNull String value);
 }

@@ -1,17 +1,15 @@
 package tororo1066.displaymonitor.configuration
 
-import org.bukkit.entity.Player
-import tororo1066.displaymonitor.Utils.clone
-import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.ActionRunner
-import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.configuration.IActionConfiguration
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
-class ActionConfiguration(private val root: AdvancedConfiguration, configuration: AdvancedConfigurationSection) {
+class ActionConfiguration(configuration: IAdvancedConfigurationSection): IActionConfiguration {
 
-    val actions: MutableList<AdvancedConfigurationSection> = mutableListOf()
+    val actions: MutableList<IAdvancedConfigurationSection> = mutableListOf()
 
-    val triggers = mutableMapOf<String, AdvancedConfigurationSection>()
+    val triggers = mutableMapOf<String, IAdvancedConfigurationSection>()
 
     init {
         val actionSection = configuration.getAdvancedConfigurationSectionList("actions")
@@ -22,8 +20,17 @@ class ActionConfiguration(private val root: AdvancedConfiguration, configuration
         }
     }
 
-    fun run(context: IActionContext, async: Boolean = true, actionName: String? = null) {
-        ActionRunner.run(root.clone(), actions, context, actionName, async = async, false)
+    override fun run(context: IActionContext, async: Boolean, actionName: String?) {
+        val root = context.configuration ?: AdvancedConfiguration()
+        val newActions = mutableListOf<AdvancedConfigurationSection>()
+        actions.forEach {
+            newActions.add(AdvancedConfigurationSection(root, "").apply {
+                it.getValues(true).forEach { (key, value) ->
+                    set(key, value)
+                }
+            })
+        }
+        ActionRunner.run(root, newActions, context, actionName, async = async, false)
     }
 
     override fun toString(): String {

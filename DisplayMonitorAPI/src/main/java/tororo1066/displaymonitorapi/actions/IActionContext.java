@@ -123,6 +123,11 @@ public interface IActionContext extends Cloneable {
      */
     @NotNull IActionContext cloneWithRandomUUID();
 
+    /**
+     * 新しいPublicActionContextを持つIActionContextを複製する
+     * @param publicActionContext 新しい{@link IPublicActionContext}
+     * @return 複製されたIActionContext
+     */
     @NotNull IActionContext cloneWithNewPublicContext(@NotNull IPublicActionContext publicActionContext);
 
     /**

@@ -65,7 +65,7 @@ class WaitCommandAction: AbstractAction() {
 
     override fun run(context: IActionContext): ActionResult {
         if (command.isBlank()) return ActionResult.noParameters("Command is empty")
-        val sender = if (server) Bukkit.getConsoleSender() else context.target ?: return ActionResult.casterRequired()
+        val sender = if (server) Bukkit.getConsoleSender() else context.target ?: return ActionResult.targetRequired()
         var complete = false
 
         fun process(sender: CommandSender, command: String, unit: BiSEventUnit<*>): Boolean {

@@ -13,7 +13,11 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 
 class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfiguration {
 
-    private inner class Options: ConfigurationOptions(this)
+    private inner class Options: ConfigurationOptions(this) {
+        override fun pathSeparator(): Char {
+            return IAdvancedConfiguration.SEPARATOR
+        }
+    }
 
     private val options = Options()
     private var parameters: MutableMap<String, Any> = mutableMapOf()
@@ -39,16 +43,23 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
         return options
     }
 
-    fun evaluate(value: String): Any {
+    override fun evaluate(value: String): Any {
         //$[key] or $[key]$ or $[key]:default$
-
+        Bukkit.getLogger().info("=== Evaluate ===")
+        Bukkit.getLogger().info("parameters: $parameters")
+        Bukkit.getLogger().info("value: $value")
         val replace = value.replace(Regex("\\$[a-zA-Z0-9_.]+(:[a-zA-Z0-9_.]+)?\\$?")) {
             val replace = if (it.value.endsWith("$")) it.value.substring(1, it.value.length - 1) else it.value.substring(1)
+            Bukkit.getLogger().info("Found replace: $replace")
             val split = replace.split(":")
             val key = split[0]
             val def = if (split.size == 2) split[1] else null
+            Bukkit.getLogger().info("Key $key")
+            Bukkit.getLogger().info("Value ${(parameters[key] ?: def ?: it.value)}")
             (parameters[key] ?: def ?: it.value).toString()
         }
+        Bukkit.getLogger().info("Replace: $replace")
+        Bukkit.getLogger().info("=== End ===")
 
         return try {
             Expression(replace).evaluate().value

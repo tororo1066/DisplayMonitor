@@ -143,7 +143,7 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
             map["location.z"] = it.z
             map["location.yaw"] = it.yaw
             map["location.pitch"] = it.pitch
-            map["location.world"] = it.world.name
+            map["location.world"] = it.world?.name ?: ""
         }
         return map
     }

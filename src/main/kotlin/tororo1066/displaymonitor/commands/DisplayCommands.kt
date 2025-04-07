@@ -152,7 +152,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
             setPlayerFunctionExecutor { sender, _, _ ->
                 try {
                     Config.load()
-                    ActionStorage.loadActions()
+                    ActionStorage.loadDisplayMonitorActions()
                     sender.sendMessage(Component.text("Reloaded"))
                 } catch (e: Exception) {
                     sender.sendMessage(Component.text("An error occurred"))
