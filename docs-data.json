@@ -94,7 +94,18 @@
         ]
       },
       {
-        "name": "RepeatAction",
+        "name": "Random",
+        "description": "重み付きでランダムにアクションを実行する。",
+        "parameters": [
+          {
+            "name": "actions",
+            "description": "実行するアクションのリスト。そのセクション内にrandom_weightを指定することで重みを指定できる。",
+            "type": "Actions"
+          }
+        ]
+      },
+      {
+        "name": "Repeat",
         "description": "指定した回数だけアクションを繰り返す。",
         "parameters": [
           {
@@ -368,6 +379,17 @@
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
             "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "Package",
+        "description": "複数のアクションを一つのアクションに纏めて実行する。",
+        "parameters": [
+          {
+            "name": "actions",
+            "description": "実行するアクション。",
+            "type": "Actions"
           }
         ]
       },
