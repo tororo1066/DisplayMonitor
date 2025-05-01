@@ -14,6 +14,16 @@ tasks.javadoc {
     options.encoding = "UTF-8"
 }
 
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.named("javadoc"))
+}
+
 publishing {
     publications {
         create<MavenPublication>("api") {

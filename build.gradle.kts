@@ -60,6 +60,16 @@ tasks.named("build") {
     dependsOn("shadowJar")
 }
 
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.named("javadoc"))
+}
+
 publishing {
     publications {
         create<MavenPublication>("plugin") {
@@ -67,8 +77,8 @@ publishing {
             artifactId = "display-monitor-plugin"
             version = System.getenv("VERSION")
             from(components["java"])
-            artifact(tasks["javadocJar"])
-            artifact(tasks["sourcesJar"])
+            artifact(tasks.named("javadocJar"))
+            artifact(tasks.named("sourcesJar"))
         }
     }
     repositories {
