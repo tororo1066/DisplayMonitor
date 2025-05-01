@@ -66,6 +66,8 @@ publishing {
             artifactId = "display-monitor-plugin"
             version = System.getenv("VERSION")
             from(components["java"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
         }
     }
     repositories {
