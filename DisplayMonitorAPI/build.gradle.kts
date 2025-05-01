@@ -1,6 +1,7 @@
 plugins {
     id("java")
     `maven-publish`
+    `java-library`
 }
 
 group = "tororo1066"
@@ -20,6 +21,8 @@ publishing {
             artifactId = "display-monitor-api"
             version = System.getenv("VERSION")
             from(components["java"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
         }
     }
     repositories {
