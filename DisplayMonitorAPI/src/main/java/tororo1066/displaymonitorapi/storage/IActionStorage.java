@@ -32,10 +32,11 @@ public interface IActionStorage {
 
     /**
      * Actionを取得する
+     * @param key Actionのキー
      * @param section {@link IAdvancedConfigurationSection}
      * @return {@link IActionConfiguration}
      */
-    @NotNull IActionConfiguration getActionConfiguration(@NotNull IAdvancedConfigurationSection section);
+    @NotNull IActionConfiguration getActionConfiguration(@NotNull String key, @NotNull IAdvancedConfigurationSection section);
 
     /**
      * ActionをIAdvancedConfigurationから取得する

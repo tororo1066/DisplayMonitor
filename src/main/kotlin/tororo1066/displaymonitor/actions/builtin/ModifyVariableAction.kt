@@ -25,13 +25,13 @@ class ModifyVariableAction: AbstractAction() {
         description = "変数に代入する値。",
         type = ParameterType.String
     )
-    var value = ""
+    var value: Any = ""
     @ParameterDoc(
         name = "variables",
         description = "変数のマップ。",
         type = ParameterType.AdvancedConfigurationSection
     )
-    var variables = mutableMapOf<String, String>()
+    var variables = mutableMapOf<String, Any>()
 
     override fun run(context: IActionContext): ActionResult {
         val configuration = context.configuration ?: return ActionResult.failed("No configuration found")
@@ -44,13 +44,13 @@ class ModifyVariableAction: AbstractAction() {
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         variable = section.getString("variable", "")!!
-        value = section.getString("value", "")!!
+        value = section.get("value", "")!!
 
         variables.clear()
         variables[variable] = value
         section.getAdvancedConfigurationSection("variables")?.let { variablesSection ->
             variablesSection.getKeys(false).forEach { key ->
-                variables[key] = variablesSection.getString(key) ?: ""
+                variables[key] = variablesSection.get(key) ?: ""
             }
         }
     }

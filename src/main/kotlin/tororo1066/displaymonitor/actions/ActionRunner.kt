@@ -1,6 +1,7 @@
 package tororo1066.displaymonitor.actions
 
 import org.bukkit.entity.Player
+import tororo1066.displaymonitor.Config
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.parameters.ActionParameters
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
@@ -93,7 +94,13 @@ object ActionRunner: IActionRunner {
                     continue
                 }
                 try {
-                    actionInstance.run(context)
+                    val result = actionInstance.run(context)
+                    if (Config.debug) {
+                        DisplayMonitor.log(
+                            RUN_CONTEXT,
+                            "$actionClass ${result.resultType.name}: ${result.message}"
+                        )
+                    }
                 } catch (e: Exception) {
                     DisplayMonitor.error(
                         RUN_CONTEXT,

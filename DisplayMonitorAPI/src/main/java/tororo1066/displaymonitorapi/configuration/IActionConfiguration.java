@@ -10,6 +10,12 @@ import tororo1066.displaymonitorapi.actions.IActionContext;
 public interface IActionConfiguration {
 
     /**
+     * ActionのKeyを取得する
+     * @return ActionのKey
+     */
+    @NotNull String getKey();
+
+    /**
      * Actionを実行する
      * @param context {@link IActionContext}
      * @param async 非同期で実行するかどうか

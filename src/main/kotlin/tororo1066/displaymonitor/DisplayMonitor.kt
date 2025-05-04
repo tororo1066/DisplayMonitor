@@ -10,6 +10,7 @@ import tororo1066.displaymonitor.commands.DisplayCommands
 import tororo1066.displaymonitor.elements.SettableProcessor
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
+import tororo1066.displaymonitor.storage.VariableStorage
 import tororo1066.displaymonitorapi.IDisplayMonitor
 import tororo1066.displaymonitorapi.IDisplayMonitor.DisplayMonitorInstance
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
@@ -50,6 +51,7 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
 
         Bukkit.getScheduler().runTaskLater(this, Runnable {
             ActionStorage
+            VariableStorage
 
             Config.load()
             registerBundle()

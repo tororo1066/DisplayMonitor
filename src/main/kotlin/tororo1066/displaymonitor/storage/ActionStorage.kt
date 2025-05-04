@@ -68,15 +68,15 @@ object ActionStorage: IActionStorage {
         actions[name] = action
     }
 
-    override fun getActionConfiguration(section: IAdvancedConfigurationSection): IActionConfiguration {
-        return ActionConfiguration(section)
+    override fun getActionConfiguration(key: String, section: IAdvancedConfigurationSection): IActionConfiguration {
+        return ActionConfiguration(key, section)
     }
 
     override fun getActionConfigurations(configuration: IAdvancedConfiguration): List<IActionConfiguration> {
         val actions = mutableListOf<IActionConfiguration>()
         configuration.getKeys(false).forEach { key ->
             val actionSection = configuration.getAdvancedConfigurationSection(key) ?: return@forEach
-            actions.add(ActionConfiguration(actionSection))
+            actions.add(ActionConfiguration(key, actionSection))
         }
 
         return actions
@@ -90,7 +90,7 @@ object ActionStorage: IActionStorage {
     fun loadDisplayMonitorActions(configuration: AdvancedConfiguration) {
         configuration.getKeys(false).forEach { key ->
             val actionSection = configuration.getAdvancedConfigurationSection(key) ?: return@forEach
-            loadedConfigActions[key] = ActionConfiguration(actionSection)
+            loadedConfigActions[key] = ActionConfiguration(key, actionSection)
         }
     }
 
