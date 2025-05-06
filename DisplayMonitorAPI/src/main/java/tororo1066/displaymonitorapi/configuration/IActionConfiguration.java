@@ -4,6 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tororo1066.displaymonitorapi.actions.IActionContext;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 1つのActionを纏めたクラス
  */
@@ -14,6 +17,18 @@ public interface IActionConfiguration {
      * @return ActionのKey
      */
     @NotNull String getKey();
+
+    /**
+     * 実行するActionのリストを取得する
+     * @return {@link IAdvancedConfigurationSection}のリスト
+     */
+    @NotNull List<@NotNull IAdvancedConfigurationSection> getActions();
+
+    /**
+     * Triggerのマップを取得する
+     * @return Triggerのマップ
+     */
+    @NotNull Map<@NotNull String, @NotNull IAdvancedConfigurationSection> getTriggers();
 
     /**
      * Actionを実行する

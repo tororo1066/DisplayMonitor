@@ -15,7 +15,7 @@ public interface IActionRunner {
      * @param root            Configurationのルート
      * @param actions         実行するActionのリスト
      * @param context         Actionの実行に関する情報 {@link IActionContext}
-     * @param actionName
+     * @param actionName      Actionの名前
      * @param async           非同期で実行するかどうか
      * @param disableAutoStop 自動停止を無効にするかどうか
      */

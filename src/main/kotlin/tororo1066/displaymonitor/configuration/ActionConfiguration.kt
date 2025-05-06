@@ -8,9 +8,9 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
 class ActionConfiguration(private val key: String, configuration: IAdvancedConfigurationSection): IActionConfiguration {
 
-    val actions: MutableList<IAdvancedConfigurationSection> = mutableListOf()
+    private val actions: MutableList<IAdvancedConfigurationSection> = mutableListOf()
 
-    val triggers = mutableMapOf<String, IAdvancedConfigurationSection>()
+    private val triggers = mutableMapOf<String, IAdvancedConfigurationSection>()
 
     val variables = mutableMapOf<String, Any>()
 
@@ -34,6 +34,14 @@ class ActionConfiguration(private val key: String, configuration: IAdvancedConfi
 
     override fun getKey(): String {
         return key
+    }
+
+    override fun getActions(): List<IAdvancedConfigurationSection> {
+        return actions
+    }
+
+    override fun getTriggers(): Map<String, IAdvancedConfigurationSection> {
+        return triggers
     }
 
     override fun run(context: IActionContext, async: Boolean, actionName: String?) {

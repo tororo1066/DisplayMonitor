@@ -1,6 +1,7 @@
 package tororo1066.displaymonitor.actions
 
 import org.bukkit.Bukkit
+import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitorapi.actions.IAbstractAction
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
@@ -54,6 +55,12 @@ abstract class AbstractAction: IAbstractAction {
                 async = isAsync,
                 disableAutoStop = false
             )
+        }
+    }
+
+    protected fun checkAsync(actionName: String) {
+        if (Bukkit.isPrimaryThread()) {
+            throw IllegalStateException(DisplayMonitor.translate("action.must.async", actionName))
         }
     }
 }

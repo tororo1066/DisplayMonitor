@@ -74,4 +74,13 @@ public interface IActionStorage {
      * @param condition 条件
      */
     void trigger(@NotNull String name, @NotNull IActionContext context, @Nullable Function<@NotNull IAdvancedConfigurationSection, @NotNull Boolean> condition);
+
+    /**
+     * Triggerを発生させる
+     * @param storedActions 対象にしたいActionのリスト
+     * @param name Triggerの名前
+     * @param context {@link IActionContext}
+     * @param condition 条件
+     */
+    void trigger(@NotNull List<@NotNull IActionConfiguration> storedActions, @NotNull String name, @NotNull IActionContext context, @Nullable Function<@NotNull IAdvancedConfigurationSection, @NotNull Boolean> condition);
 }

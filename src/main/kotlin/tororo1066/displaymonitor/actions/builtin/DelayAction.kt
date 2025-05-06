@@ -22,6 +22,7 @@ class DelayAction: AbstractAction() {
     var delay = 0L
 
     override fun run(context: IActionContext): ActionResult {
+        checkAsync("DelayAction")
         Thread.sleep(delay)
         return ActionResult.success()
     }

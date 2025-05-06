@@ -45,25 +45,25 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
 
     override fun evaluate(value: String): Any {
         //$[key] or $[key]$ or $[key]:default$
-        Bukkit.getLogger().info("=== Evaluate ===")
-        Bukkit.getLogger().info("parameters: $parameters")
-        Bukkit.getLogger().info("value: $value")
+//        Bukkit.getLogger().info("=== Evaluate ===")
+//        Bukkit.getLogger().info("parameters: $parameters")
+//        Bukkit.getLogger().info("value: $value")
         val replace = value.replace(Regex("\\$[a-zA-Z0-9_.]+(:[a-zA-Z0-9_.]+)?\\$?")) {
             val replace = if (it.value.endsWith("$")) it.value.substring(1, it.value.length - 1) else it.value.substring(1)
-            Bukkit.getLogger().info("Found replace: $replace")
+//            Bukkit.getLogger().info("Found replace: $replace")
             val split = replace.split(":")
             val key = split[0]
             val def = if (split.size == 2) split[1] else null
-            Bukkit.getLogger().info("Key $key")
-            Bukkit.getLogger().info("Value ${(parameters[key] ?: def ?: it.value)}")
+//            Bukkit.getLogger().info("Key $key")
+//            Bukkit.getLogger().info("Value ${(parameters[key] ?: def ?: it.value)}")
             (parameters[key] ?: def ?: it.value).toString()
         }
-        Bukkit.getLogger().info("Replace: $replace")
-        Bukkit.getLogger().info("=== End ===")
+//        Bukkit.getLogger().info("Replace: $replace")
+//        Bukkit.getLogger().info("=== End ===")
 
         return try {
             Expression(replace).evaluate().value
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             replace
         }
     }

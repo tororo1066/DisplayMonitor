@@ -125,10 +125,19 @@ object ActionStorage: IActionStorage {
         context: IActionContext,
         condition: Function<IAdvancedConfigurationSection, Boolean>?
     ) {
-        loadedConfigActions.filter { it.value.triggers.contains(name) }.forEach {
-            val triggerSection = it.value.triggers[name] ?: return@forEach
+        trigger(loadedConfigActions.values.toList(), name, context, condition)
+    }
+
+    override fun trigger(
+        storedActions: List<IActionConfiguration>,
+        name: String,
+        context: IActionContext,
+        condition: Function<IAdvancedConfigurationSection, Boolean>?
+    ) {
+        storedActions.filter { it.triggers.contains(name) }.forEach {
+            val triggerSection = it.triggers[name] ?: return@forEach
             if (condition == null || condition.apply(triggerSection)) {
-                it.value.run(context, async = true, actionName = null)
+                it.run(context, true, null)
             }
         }
     }
