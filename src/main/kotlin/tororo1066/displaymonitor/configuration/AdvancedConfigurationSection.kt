@@ -10,6 +10,8 @@ import org.bukkit.util.Vector
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import tororo1066.displaymonitor.actions.ActionRunner
+import tororo1066.displaymonitorapi.configuration.AsyncExecute
+import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import tororo1066.tororopluginapi.sItem.SItem
@@ -22,9 +24,6 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     constructor(parent: IAdvancedConfigurationSection, path: String): super(parent, path)
 
     constructor(copy: ConfigurationSection): super(copy.parent!!, copy.name)
-
-    companion object {
-    }
 
     protected fun createAdvancedSection(key: String): AdvancedConfigurationSection {
         return AdvancedConfigurationSection(this, key)
@@ -65,9 +64,9 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     override fun getConfigurationSection(path: String): ConfigurationSection? {
         var value = get(path, null)
         if (value != null) {
-            if (value is Map<*, *>) {
+            (value as? Map<*, *>)?.let {
                 return createAdvancedSection(path).apply {
-                    (value as Map<*, *>).forEach { (key, value) ->
+                    it.forEach { (key, value) ->
                         set(key.toString(), value)
                     }
                 }
@@ -126,7 +125,6 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
 
         val root = root ?: return value
         if (root is AdvancedConfiguration) {
-            Bukkit.getLogger().info("evaluating $value")
             return root.evaluate(value)
         }
 
@@ -140,7 +138,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         if (split.size != 3) return null
         return try {
             Vector(split[0].toDouble(), split[1].toDouble(), split[2].toDouble())
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
     }
@@ -190,7 +188,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         return try {
             Vector3f(split[0].toFloat(), split[1].toFloat(), split[2].toFloat())
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
     }
@@ -200,17 +198,11 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     }
 
     override fun <T : Enum<T>> getEnum(path: String, clazz: Class<T>): T? {
-        return clazz.enumConstants.firstOrNull { it.name == getString(path) }
+        return clazz.enumConstants.firstOrNull { it.name == getString(path)?.uppercase() }
     }
 
     override fun <T : Enum<T>> getEnum(path: String, clazz: Class<T>, def: T): T {
         return getEnum(path, clazz) ?: def
-    }
-
-    inline fun <reified T: Enum<T>> getEnum(key: String, def: T? = null): T? {
-        return UsefulUtility.sTry({
-            enumValueOf<T>(getString(key, "")?.uppercase() ?: return@sTry def)
-        }, { def })
     }
 
     override fun getStringItemStack(path: String): ItemStack? {
@@ -229,27 +221,27 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return getStringItemStack(path) ?: def
     }
 
-    override fun getConfigExecute(path: String): tororo1066.displaymonitorapi.configuration.Execute? {
+    override fun getConfigExecute(path: String): Execute? {
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
-        return tororo1066.displaymonitorapi.configuration.Execute {
+        return Execute {
             ActionRunner.run(root as AdvancedConfiguration, list, it, null, async = false, disableAutoStop = false)
         }
     }
 
-    override fun getConfigExecute(path: String, def: tororo1066.displaymonitorapi.configuration.Execute): tororo1066.displaymonitorapi.configuration.Execute {
+    override fun getConfigExecute(path: String, def: Execute): Execute {
         return getConfigExecute(path) ?: def
     }
 
-    override fun getAsyncConfigExecute(path: String): tororo1066.displaymonitorapi.configuration.AsyncExecute? {
+    override fun getAsyncConfigExecute(path: String): AsyncExecute? {
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
-        return tororo1066.displaymonitorapi.configuration.AsyncExecute {
+        return AsyncExecute {
             ActionRunner.run(root as AdvancedConfiguration, list, it, null, async = true, disableAutoStop = false)
         }
     }
 
-    override fun getAsyncConfigExecute(path: String, def: tororo1066.displaymonitorapi.configuration.AsyncExecute): tororo1066.displaymonitorapi.configuration.AsyncExecute {
+    override fun getAsyncConfigExecute(path: String, def: AsyncExecute): AsyncExecute {
         return getAsyncConfigExecute(path) ?: def
     }
 
@@ -314,7 +306,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
                     return Quaternionf(x, y, z, w)
                 }
             }
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             return null
         }
     }
@@ -341,6 +333,23 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         }
 
         return value
+    }
+
+    override fun getValues(deep: Boolean): Map<String, Any?> {
+        val map = mutableMapOf<String, Any?>()
+        getKeys(false).forEach { key ->
+            val value = get(key)
+            if (value is ConfigurationSection) {
+                map[key] = if (deep) {
+                    value.getValues(true)
+                } else {
+                    value
+                }
+            } else {
+                map[key] = value
+            }
+        }
+        return map
     }
 
     override fun toString(): String {

@@ -47,7 +47,7 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
         context.caster = caster
         context.target = target
         context.location = location
-        context.configuration = configuration
+        context.configuration = configuration?.clone()
         return context
     }
 

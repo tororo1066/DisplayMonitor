@@ -12,6 +12,7 @@ group = "tororo1066"
 
 repositories {
     mavenCentral()
+    maven(url = "https://repo.onarandombox.com/dumptruckman-snapshots")
 }
 
 dependencies {

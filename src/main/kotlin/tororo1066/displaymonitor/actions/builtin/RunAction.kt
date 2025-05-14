@@ -35,12 +35,12 @@ class RunAction: AbstractAction() {
     var variables = mutableMapOf<String, String>()
 
     override fun run(context: IActionContext): ActionResult {
-        val action = ActionStorage.loadedConfigActions[action] ?: return ActionResult.noParameters("Action $action not found.")
+        val action = context.publicContext.workspace.actionConfigurations[action] ?: return ActionResult.noParameters("Action $action not found.")
         val newContext = if (cloneContext) context.cloneWithRandomUUID() else context
         variables.forEach { (key, value) ->
             newContext.configuration?.parameters?.put(key, value)
         }
-        action.run(newContext, async = false, actionName = null)
+        action.run(newContext, false, null)
         return ActionResult.success()
     }
 

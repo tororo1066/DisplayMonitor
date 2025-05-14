@@ -14,4 +14,6 @@ public interface IAdvancedConfiguration extends IAdvancedConfigurationSection, C
     void setParameters(@NotNull Map<String, Object> parameters);
 
     @NotNull Object evaluate(@NotNull String value);
+
+    @NotNull IAdvancedConfiguration clone();
 }

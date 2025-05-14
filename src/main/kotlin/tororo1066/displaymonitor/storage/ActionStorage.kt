@@ -16,7 +16,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.events.ActionRegisteringEvent
 import tororo1066.displaymonitorapi.storage.IActionStorage
-import tororo1066.tororopluginapi.SJavaPlugin
+import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace
 import java.io.File
 import java.util.UUID
 import java.util.function.Function
@@ -25,8 +25,6 @@ object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
     val contextStorage = mutableMapOf<UUID, MutableMap<UUID, IActionContext>>()
     val contextByName = mutableMapOf<String, UUID>()
-
-    val loadedConfigActions = mutableMapOf<String, ActionConfiguration>()
 
     init {
         actions["SummonElement"] = SummonElement::class.java
@@ -56,12 +54,11 @@ object ActionStorage: IActionStorage {
         actions["RunAction"] = RunAction::class.java
         actions["Random"] = RandomAction::class.java
         actions["Package"] = PackageAction::class.java
+        actions["SetWorkspace"] = SetWorkspaceAction::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 
         ActionRegisteringEvent().callEvent()
-
-        loadDisplayMonitorActions()
     }
 
     override fun registerAction(name: String, action: Class<out IAbstractAction>) {
@@ -87,31 +84,6 @@ object ActionStorage: IActionStorage {
         return getActionConfigurations(yaml)
     }
 
-    fun loadDisplayMonitorActions(configuration: AdvancedConfiguration) {
-        configuration.getKeys(false).forEach { key ->
-            val actionSection = configuration.getAdvancedConfigurationSection(key) ?: return@forEach
-            loadedConfigActions[key] = ActionConfiguration(key, actionSection)
-        }
-    }
-
-    fun loadDisplayMonitorActions(file: File) {
-        if (!file.exists()) return
-        if (file.isDirectory) {
-            file.listFiles()?.forEach { loadDisplayMonitorActions(it) }
-            return
-        }
-
-        val yaml = AdvancedConfiguration().mergeConfiguration(YamlConfiguration.loadConfiguration(file))
-        loadDisplayMonitorActions(yaml)
-    }
-
-    fun loadDisplayMonitorActions() {
-        loadedConfigActions.clear()
-        val directory = File(SJavaPlugin.plugin.dataFolder, "actions")
-        directory.mkdirs()
-        loadDisplayMonitorActions(directory)
-    }
-
     override fun createPublicContext(): IPublicActionContext {
         return PublicActionContext()
     }
@@ -121,23 +93,17 @@ object ActionStorage: IActionStorage {
     }
 
     override fun trigger(
+        workspaces: Collection<IAbstractWorkspace>,
         name: String,
         context: IActionContext,
         condition: Function<IAdvancedConfigurationSection, Boolean>?
     ) {
-        trigger(loadedConfigActions.values.toList(), name, context, condition)
-    }
-
-    override fun trigger(
-        storedActions: List<IActionConfiguration>,
-        name: String,
-        context: IActionContext,
-        condition: Function<IAdvancedConfigurationSection, Boolean>?
-    ) {
-        storedActions.filter { it.triggers.contains(name) }.forEach {
-            val triggerSection = it.triggers[name] ?: return@forEach
-            if (condition == null || condition.apply(triggerSection)) {
-                it.run(context, true, null)
+        workspaces.forEach { workspace ->
+            workspace.actionConfigurations.values.forEach { actionConfiguration ->
+                val triggerSection = actionConfiguration.triggers[name] ?: return@forEach
+                if (condition == null || condition.apply(triggerSection)) {
+                    actionConfiguration.run(context, true, null)
+                }
             }
         }
     }

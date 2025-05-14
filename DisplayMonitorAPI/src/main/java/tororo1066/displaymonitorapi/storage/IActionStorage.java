@@ -8,8 +8,10 @@ import tororo1066.displaymonitorapi.actions.IPublicActionContext;
 import tororo1066.displaymonitorapi.configuration.IActionConfiguration;
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration;
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
+import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -69,18 +71,21 @@ public interface IActionStorage {
 
     /**
      * Triggerを発生させる
+     * @param workspaces {@link IAbstractWorkspace}のリスト
      * @param name Triggerの名前
      * @param context {@link IActionContext}
      * @param condition 条件
      */
-    void trigger(@NotNull String name, @NotNull IActionContext context, @Nullable Function<@NotNull IAdvancedConfigurationSection, @NotNull Boolean> condition);
+    void trigger(@NotNull Collection<@NotNull IAbstractWorkspace> workspaces, @NotNull String name, @NotNull IActionContext context, @Nullable Function<@NotNull IAdvancedConfigurationSection, @NotNull Boolean> condition);
 
     /**
      * Triggerを発生させる
-     * @param storedActions 対象にしたいActionのリスト
+     * @param workspace {@link IAbstractWorkspace}
      * @param name Triggerの名前
      * @param context {@link IActionContext}
      * @param condition 条件
      */
-    void trigger(@NotNull List<@NotNull IActionConfiguration> storedActions, @NotNull String name, @NotNull IActionContext context, @Nullable Function<@NotNull IAdvancedConfigurationSection, @NotNull Boolean> condition);
+    default void trigger(@NotNull IAbstractWorkspace workspace, @NotNull String name, @NotNull IActionContext context, @Nullable Function<@NotNull IAdvancedConfigurationSection, @NotNull Boolean> condition) {
+        trigger(List.of(workspace), name, context, condition);
+    }
 }

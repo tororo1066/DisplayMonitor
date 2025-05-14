@@ -1,13 +1,16 @@
 package tororo1066.displaymonitor.actions
 
+import tororo1066.displaymonitor.storage.WorkspaceStorage
 import tororo1066.displaymonitorapi.actions.IPublicActionContext
 import tororo1066.displaymonitorapi.elements.IAbstractElement
+import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace
 
 class PublicActionContext: IPublicActionContext {
 
     private val elements = HashMap<String, IAbstractElement>()
     private var stop = false
     private var shouldAutoStop = true
+    private var workspace: IAbstractWorkspace = WorkspaceStorage.DisplayMonitorWorkspace.instance
 
     override fun getElements(): HashMap<String, IAbstractElement> {
         return elements
@@ -27,5 +30,13 @@ class PublicActionContext: IPublicActionContext {
 
     override fun setStop(stop: Boolean) {
         this.stop = stop
+    }
+
+    override fun getWorkspace(): IAbstractWorkspace {
+        return workspace
+    }
+
+    override fun setWorkspace(workspace: IAbstractWorkspace) {
+        this.workspace = workspace
     }
 }

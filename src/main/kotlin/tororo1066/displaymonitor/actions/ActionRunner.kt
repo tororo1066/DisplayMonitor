@@ -1,7 +1,7 @@
 package tororo1066.displaymonitor.actions
 
 import org.bukkit.entity.Player
-import tororo1066.displaymonitor.Config
+import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.parameters.ActionParameters
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration

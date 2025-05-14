@@ -2,6 +2,7 @@ package tororo1066.displaymonitorapi.actions;
 
 import org.jetbrains.annotations.NotNull;
 import tororo1066.displaymonitorapi.elements.IAbstractElement;
+import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace;
 
 import java.util.HashMap;
 
@@ -41,4 +42,8 @@ public interface IPublicActionContext {
      * @param shouldStop 自動的に停止(削除)するかどうか
      */
     void setShouldAutoStop(@NotNull Boolean shouldStop);
+
+    @NotNull IAbstractWorkspace getWorkspace();
+
+    void setWorkspace(@NotNull IAbstractWorkspace workspace);
 }

@@ -17,15 +17,10 @@ class RepeatAction: AbstractAction() {
 
     @ParameterDoc(
         name = "times",
-        description = "繰り返す回数。",
+        description = "繰り返す回数。\n`infinity` で無限に繰り返す。",
         type = ParameterType.Int
     )
     var times = 1
-    @ParameterDoc(
-        name = "isInfinity",
-        description = "無限に繰り返すか。 times が無視される。",
-        type = ParameterType.Boolean
-    )
     var isInfinity = false
     @ParameterDoc(
         name = "actions",
@@ -46,6 +41,9 @@ class RepeatAction: AbstractAction() {
         fun step(): ActionResult? {
             if (context.publicContext.stop) {
                 return ActionResult.success()
+            }
+            if (count == Int.MAX_VALUE) {
+                return ActionResult.failed("Too many repeat")
             }
             val cloneContext = context.cloneWithRandomUUID()
             variableName?.let {

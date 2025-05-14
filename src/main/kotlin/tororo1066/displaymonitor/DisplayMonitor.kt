@@ -7,15 +7,18 @@ import net.kyori.adventure.translation.Translator
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.commands.DisplayCommands
+import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.elements.SettableProcessor
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitor.storage.VariableStorage
+import tororo1066.displaymonitor.storage.WorkspaceStorage
 import tororo1066.displaymonitorapi.IDisplayMonitor
 import tororo1066.displaymonitorapi.IDisplayMonitor.DisplayMonitorInstance
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.storage.IElementStorage
+import tororo1066.displaymonitorapi.storage.IWorkspaceStorage
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 import java.util.Locale
@@ -139,6 +142,10 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
 
     override fun getElementStorage(): IElementStorage {
         return ElementStorage
+    }
+
+    override fun getWorkspaceStorage(): IWorkspaceStorage {
+        return WorkspaceStorage
     }
 
     override fun getSettableProcessor(): ISettableProcessor {

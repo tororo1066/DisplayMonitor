@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import tororo1066.displaymonitorapi.elements.ISettableProcessor;
 import tororo1066.displaymonitorapi.storage.IActionStorage;
 import tororo1066.displaymonitorapi.storage.IElementStorage;
+import tororo1066.displaymonitorapi.storage.IWorkspaceStorage;
 
 public interface IDisplayMonitor extends Plugin {
 
@@ -31,6 +32,12 @@ public interface IDisplayMonitor extends Plugin {
      * @return {@link IElementStorage}
      */
     @NotNull IElementStorage getElementStorage();
+
+    /**
+     * WorkspaceStorageを取得する
+     * @return {@link IWorkspaceStorage}
+     */
+    @NotNull IWorkspaceStorage getWorkspaceStorage();
 
     /**
      * SettableProcessorを取得する

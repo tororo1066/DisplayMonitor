@@ -40,6 +40,7 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/groups/public/")
     maven(url = "https://libraries.minecraft.net")
     maven(url = "https://jitpack.io")
+    maven(url = "https://repo.onarandombox.com/dumptruckman-snapshots")
 }
 
 dependencies {
@@ -50,6 +51,9 @@ dependencies {
     compileOnly("com.mojang:brigadier:1.0.18")
     compileOnly("com.ezylang:EvalEx:3.1.2")
     implementation(project(":DisplayMonitorAPI"))
+
+    implementation("com.dumptruckman.minecraft:JsonConfiguration:1.2-SNAPSHOT")
+    implementation("net.minidev:json-smart:2.5.2")
 }
 
 tasks.withType<ShadowJar> {
