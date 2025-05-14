@@ -3,138 +3,6 @@
     "name": "Action",
     "classes": [
       {
-        "name": "WaitCommand",
-        "description": "指定したコマンドが実行されるまで待機する。",
-        "parameters": [
-          {
-            "name": "command",
-            "description": "待機するコマンド。",
-            "type": "String"
-          },
-          {
-            "name": "then",
-            "description": "コマンドが実行された場合のアクション。",
-            "type": "Actions"
-          },
-          {
-            "name": "else",
-            "description": "タイムアウトした場合のアクション。",
-            "type": "Actions"
-          },
-          {
-            "name": "timeout",
-            "description": "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。",
-            "type": "Long"
-          },
-          {
-            "name": "server",
-            "description": "サーバーからコマンドを実行されるのを待機するか。",
-            "type": "Boolean"
-          },
-          {
-            "name": "cancelCommand",
-            "description": "コマンドの実行をキャンセルするか。",
-            "type": "Boolean"
-          }
-        ]
-      },
-      {
-        "name": "Delay",
-        "description": "指定した時間だけ待機する。",
-        "parameters": [
-          {
-            "name": "delay",
-            "description": "待機する時間。",
-            "type": "Long"
-          }
-        ]
-      },
-      {
-        "name": "End",
-        "description": "全てのElementを削除し、Actionを終了する。",
-        "parameters": [
-          {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "type": "Boolean"
-          }
-        ]
-      },
-      {
-        "name": "AccessAction",
-        "description": "実行中のActionのコンテキストにアクセスする。",
-        "parameters": [
-          {
-            "name": "action",
-            "description": "アクセスするActionの名前。",
-            "type": "String"
-          },
-          {
-            "name": "actions",
-            "description": "アクセスしたActionに対して実行するアクション。",
-            "type": "Actions"
-          }
-        ]
-      },
-      {
-        "name": "SetBlock",
-        "description": "指定した位置にブロックを設置する。",
-        "parameters": [
-          {
-            "name": "block",
-            "description": "設置するブロック。",
-            "type": "Block"
-          },
-          {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "type": "Boolean"
-          }
-        ]
-      },
-      {
-        "name": "StoreData",
-        "description": "Unsupported",
-        "parameters": []
-      },
-      {
-        "name": "EditElement",
-        "description": "Elementを編集する。",
-        "parameters": [
-          {
-            "name": "name",
-            "description": "編集するElementの名前。",
-            "type": "String"
-          },
-          {
-            "name": "edit",
-            "description": "編集する内容。",
-            "type": "AdvancedConfigurationSection"
-          },
-          {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "type": "Boolean"
-          }
-        ]
-      },
-      {
-        "name": "UpdateParameters",
-        "description": "デフォルトのパラメータを更新する。",
-        "parameters": []
-      },
-      {
-        "name": "Package",
-        "description": "複数のアクションを一つのアクションに纏めて実行する。",
-        "parameters": [
-          {
-            "name": "actions",
-            "description": "実行するアクション。",
-            "type": "Actions"
-          }
-        ]
-      },
-      {
         "name": "If",
         "description": "指定した条件を満たすかどうかを確認する。",
         "parameters": [
@@ -156,55 +24,72 @@
         ]
       },
       {
-        "name": "RemoveElement",
-        "description": "Elementを削除する。",
+        "name": "Package",
+        "description": "複数のアクションを一つのアクションに纏めて実行する。",
         "parameters": [
           {
-            "name": "name",
-            "description": "削除するElementの名前。",
-            "type": "String"
-          },
-          {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "type": "Boolean"
+            "name": "actions",
+            "description": "実行するアクション。",
+            "type": "Actions"
           }
         ]
       },
       {
-        "name": "RestoreData",
-        "description": "Unsupported",
-        "parameters": []
-      },
-      {
-        "name": "RemoveEntity",
-        "description": "Entityを削除する。",
+        "name": "Target",
+        "description": "位置を指定してアクションを実行する。",
         "parameters": [
           {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "type": "Boolean"
+            "name": "location",
+            "description": "実行する位置。",
+            "type": "Location"
+          },
+          {
+            "name": "offset",
+            "description": "位置のオフセット。",
+            "type": "Vector"
+          },
+          {
+            "name": "relativeOffset",
+            "description": "位置の相対オフセット。",
+            "type": "Vector"
+          },
+          {
+            "name": "actions",
+            "description": "実行するアクションのリスト。",
+            "type": "Actions"
           }
         ]
       },
       {
-        "name": "RunAction",
-        "description": "指定されたActionを実行する。",
+        "name": "Delay",
+        "description": "指定した時間だけ待機する。",
         "parameters": [
           {
-            "name": "action",
-            "description": "実行するActionの名前。",
-            "type": "String"
-          },
+            "name": "delay",
+            "description": "待機する時間。",
+            "type": "Long"
+          }
+        ]
+      },
+      {
+        "name": "Asynchronous",
+        "description": "非同期でアクションを実行する。",
+        "parameters": [
           {
-            "name": "cloneContext",
-            "description": "コンテキストを複製するか。",
-            "type": "Boolean"
-          },
+            "name": "actions",
+            "description": "非同期で実行するアクションのリスト。",
+            "type": "Actions"
+          }
+        ]
+      },
+      {
+        "name": "Message",
+        "description": "対象にメッセージを送信する。",
+        "parameters": [
           {
-            "name": "variables",
-            "description": "実行時の変数。 コンテキストを複製していると終了後に破棄される。",
-            "type": "AdvancedConfigurationSection"
+            "name": "message",
+            "description": "送信するメッセージ。",
+            "type": "Component"
           }
         ]
       },
@@ -245,22 +130,22 @@
         ]
       },
       {
-        "name": "ModifyVariable",
-        "description": "変数を変更する。",
+        "name": "RunAction",
+        "description": "指定されたActionを実行する。",
         "parameters": [
           {
-            "name": "variable",
-            "description": "変更する変数の名前。",
+            "name": "action",
+            "description": "実行するActionの名前。",
             "type": "String"
           },
           {
-            "name": "value",
-            "description": "変数に代入する値。",
-            "type": "String"
+            "name": "cloneContext",
+            "description": "コンテキストを複製するか。",
+            "type": "Boolean"
           },
           {
             "name": "variables",
-            "description": "変数のマップ。",
+            "description": "実行時の変数。 コンテキストを複製していると終了後に破棄される。",
             "type": "AdvancedConfigurationSection"
           }
         ]
@@ -287,50 +172,182 @@
         ]
       },
       {
-        "name": "Target",
-        "description": "位置を指定してアクションを実行する。",
+        "name": "RemoveElement",
+        "description": "Elementを削除する。",
         "parameters": [
+          {
+            "name": "name",
+            "description": "削除するElementの名前。",
+            "type": "String"
+          },
+          {
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "UpdateParameters",
+        "description": "デフォルトのパラメータを更新する。",
+        "parameters": []
+      },
+      {
+        "name": "StoreData",
+        "description": "Unsupported",
+        "parameters": []
+      },
+      {
+        "name": "RestoreData",
+        "description": "Unsupported",
+        "parameters": []
+      },
+      {
+        "name": "SetBlock",
+        "description": "指定した位置にブロックを設置する。",
+        "parameters": [
+          {
+            "name": "block",
+            "description": "設置するブロック。",
+            "type": "Block"
+          },
+          {
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "WaitCommand",
+        "description": "指定したコマンドが実行されるまで待機する。",
+        "parameters": [
+          {
+            "name": "command",
+            "description": "待機するコマンド。",
+            "type": "String"
+          },
+          {
+            "name": "then",
+            "description": "コマンドが実行された場合のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "else",
+            "description": "タイムアウトした場合のアクション。",
+            "type": "Actions"
+          },
+          {
+            "name": "timeout",
+            "description": "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。",
+            "type": "Long"
+          },
+          {
+            "name": "server",
+            "description": "サーバーからコマンドを実行されるのを待機するか。",
+            "type": "Boolean"
+          },
+          {
+            "name": "cancelCommand",
+            "description": "コマンドの実行をキャンセルするか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "Repeat",
+        "description": "指定した回数だけアクションを繰り返す。",
+        "parameters": [
+          {
+            "name": "times",
+            "description": "繰り返す回数。\n`infinity` で無限に繰り返す。",
+            "type": "Int"
+          },
+          {
+            "name": "actions",
+            "description": "繰り返すアクションのリスト。",
+            "type": "Actions"
+          },
+          {
+            "name": "variableName",
+            "description": "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。",
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "AccessAction",
+        "description": "実行中のActionのコンテキストにアクセスする。",
+        "parameters": [
+          {
+            "name": "action",
+            "description": "アクセスするActionの名前。",
+            "type": "String"
+          },
+          {
+            "name": "actions",
+            "description": "アクセスしたActionに対して実行するアクション。",
+            "type": "Actions"
+          }
+        ]
+      },
+      {
+        "name": "MoveElement",
+        "description": "Elementを移動する。",
+        "parameters": [
+          {
+            "name": "element",
+            "description": "移動するElementの名前。",
+            "type": "String"
+          },
           {
             "name": "location",
-            "description": "実行する位置。",
+            "description": "移動先の座標。",
             "type": "Location"
-          },
-          {
-            "name": "offset",
-            "description": "位置のオフセット。",
-            "type": "Vector"
-          },
-          {
-            "name": "relativeOffset",
-            "description": "位置の相対オフセット。",
-            "type": "Vector"
-          },
-          {
-            "name": "actions",
-            "description": "実行するアクションのリスト。",
-            "type": "Actions"
           }
         ]
       },
       {
-        "name": "Asynchronous",
-        "description": "非同期でアクションを実行する。",
+        "name": "End",
+        "description": "全てのElementを削除し、Actionを終了する。",
         "parameters": [
           {
-            "name": "actions",
-            "description": "非同期で実行するアクションのリスト。",
-            "type": "Actions"
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "type": "Boolean"
           }
         ]
       },
       {
-        "name": "Message",
-        "description": "対象にメッセージを送信する。",
+        "name": "RemoveAllElement",
+        "description": "全てのElementを削除する。",
         "parameters": [
           {
-            "name": "message",
-            "description": "送信するメッセージ。",
-            "type": "Component"
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "RemoveEntity",
+        "description": "Entityを削除する。",
+        "parameters": [
+          {
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "SetWorkspace",
+        "description": "Workspaceを設定する。",
+        "parameters": [
+          {
+            "name": "workspace",
+            "description": "Workspace名",
+            "type": "String"
           }
         ]
       },
@@ -361,62 +378,25 @@
         ]
       },
       {
-        "name": "RemoveAllElement",
-        "description": "全てのElementを削除する。",
+        "name": "ModifyVariable",
+        "description": "変数を変更する。",
         "parameters": [
           {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "type": "Boolean"
-          }
-        ]
-      },
-      {
-        "name": "MoveElement",
-        "description": "Elementを移動する。",
-        "parameters": [
-          {
-            "name": "element",
-            "description": "移動するElementの名前。",
+            "name": "variable",
+            "description": "変更する変数の名前。",
             "type": "String"
           },
           {
-            "name": "location",
-            "description": "移動先の座標。",
-            "type": "Location"
-          }
-        ]
-      },
-      {
-        "name": "Repeat",
-        "description": "指定した回数だけアクションを繰り返す。",
-        "parameters": [
-          {
-            "name": "times",
-            "description": "繰り返す回数。",
-            "type": "Int"
-          },
-          {
-            "name": "isInfinity",
-            "description": "無限に繰り返すか。 times が無視される。",
-            "type": "Boolean"
-          },
-          {
-            "name": "actions",
-            "description": "繰り返すアクションのリスト。",
-            "type": "Actions"
-          },
-          {
-            "name": "variableName",
-            "description": "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。",
+            "name": "value",
+            "description": "変数に代入する値。",
             "type": "String"
+          },
+          {
+            "name": "variables",
+            "description": "変数のマップ。",
+            "type": "AdvancedConfigurationSection"
           }
         ]
-      },
-      {
-        "name": "Stop",
-        "description": "現在のセクションの実行を停止する。\nAsynchronousやRepeatなどでセクションが分岐している場合、そのセクションのみが停止される。 \n非推奨。",
-        "parameters": []
       },
       {
         "name": "Random",
@@ -428,6 +408,32 @@
             "type": "Actions"
           }
         ]
+      },
+      {
+        "name": "EditElement",
+        "description": "Elementを編集する。",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "編集するElementの名前。",
+            "type": "String"
+          },
+          {
+            "name": "edit",
+            "description": "編集する内容。",
+            "type": "AdvancedConfigurationSection"
+          },
+          {
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "Stop",
+        "description": "現在のセクションの実行を停止する。\nAsynchronousやRepeatなどでセクションが分岐している場合、そのセクションのみが停止される。 \n非推奨。",
+        "parameters": []
       }
     ]
   },
@@ -435,13 +441,18 @@
     "name": "Element",
     "classes": [
       {
-        "name": "BlockElement",
-        "description": "ブロックを表示するElement。",
+        "name": "ItemElement",
+        "description": "アイテムを表示するElement。",
         "parameters": [
           {
-            "name": "block",
-            "description": "表示するブロック。",
-            "type": "Block"
+            "name": "itemStack",
+            "description": "表示するアイテム。",
+            "type": "Item"
+          },
+          {
+            "name": "itemDisplayTransform",
+            "description": "アイテムの表示方法。",
+            "type": "ItemDisplayTransform"
           },
           {
             "name": "displayParameters.translation",
@@ -712,34 +723,13 @@
         ]
       },
       {
-        "name": "GroupElement",
-        "description": "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。",
+        "name": "BlockElement",
+        "description": "ブロックを表示するElement。",
         "parameters": [
           {
-            "name": "elements",
-            "description": "グループに含まれるElement。",
-            "type": "AdvancedConfigurationSection"
-          },
-          {
-            "name": "edit",
-            "description": "Elementの編集内容。",
-            "type": "AdvancedConfigurationSection"
-          }
-        ]
-      },
-      {
-        "name": "ItemElement",
-        "description": "アイテムを表示するElement。",
-        "parameters": [
-          {
-            "name": "itemStack",
-            "description": "表示するアイテム。",
-            "type": "Item"
-          },
-          {
-            "name": "itemDisplayTransform",
-            "description": "アイテムの表示方法。",
-            "type": "ItemDisplayTransform"
+            "name": "block",
+            "description": "表示するブロック。",
+            "type": "Block"
           },
           {
             "name": "displayParameters.translation",
@@ -850,6 +840,22 @@
             "name": "public",
             "description": "他のプレイヤーが操作できるようにするか。",
             "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "GroupElement",
+        "description": "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。",
+        "parameters": [
+          {
+            "name": "elements",
+            "description": "グループに含まれるElement。",
+            "type": "AdvancedConfigurationSection"
+          },
+          {
+            "name": "edit",
+            "description": "Elementの編集内容。",
+            "type": "AdvancedConfigurationSection"
           }
         ]
       }
