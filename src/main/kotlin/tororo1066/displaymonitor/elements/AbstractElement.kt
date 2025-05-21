@@ -9,7 +9,6 @@ import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.tororopluginapi.SJavaPlugin
-import java.lang.reflect.Field
 import java.util.UUID
 
 abstract class AbstractElement: IAbstractElement {
@@ -26,10 +25,6 @@ abstract class AbstractElement: IAbstractElement {
 
     protected fun runExecute(execute: Execute) {
         val context = getContext() ?: return
-        execute(context)
-    }
-
-    protected fun runExecute(execute: Execute, context: IActionContext) {
         execute(context)
     }
 
@@ -53,10 +48,6 @@ abstract class AbstractElement: IAbstractElement {
 
     override fun setContextUUID(uuid: UUID?) {
         contextUUID = uuid
-    }
-
-    private fun Field.isNullable(): Boolean {
-        return this.annotations.any { it.annotationClass.simpleName == "Nullable" }
     }
 
     override fun syncGroup(): Boolean {

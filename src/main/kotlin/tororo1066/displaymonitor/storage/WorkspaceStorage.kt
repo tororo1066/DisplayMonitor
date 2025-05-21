@@ -34,11 +34,11 @@ object WorkspaceStorage: IWorkspaceStorage {
             val instance by lazy { DisplayMonitorWorkspace() }
         }
 
+        val loadedConfigActions = mutableMapOf<String, ActionConfiguration>()
+
         init {
             loadDisplayMonitorActions()
         }
-
-        val loadedConfigActions = mutableMapOf<String, ActionConfiguration>()
 
         override fun getName(): String {
             return "DisplayMonitor"

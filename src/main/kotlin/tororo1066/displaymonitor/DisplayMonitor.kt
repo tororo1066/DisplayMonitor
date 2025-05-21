@@ -55,6 +55,7 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
         Bukkit.getScheduler().runTaskLater(this, Runnable {
             ActionStorage
             VariableStorage
+            WorkspaceStorage
 
             Config.load()
             registerBundle()

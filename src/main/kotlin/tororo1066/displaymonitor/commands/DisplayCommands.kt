@@ -49,8 +49,15 @@ class DisplayCommands: SCommandV2("dmonitor") {
                     return
                 }
 
+                val workspace = WorkspaceStorage.getWorkspace(args.getArgument("workspace", String::class.java))
+
+                if (workspace == null) {
+                    sender.sendMessage(Component.text("Workspace not found"))
+                    return
+                }
+
                 val name = args.getArgument("name", String::class.java)
-                val configuration = WorkspaceStorage.DisplayMonitorWorkspace.instance.loadedConfigActions[name] ?: run {
+                val configuration = workspace.actionConfigurations[name] ?: run {
                     sender.sendMessage(Component.text("Configuration not found"))
                     return
                 }
@@ -98,7 +105,11 @@ class DisplayCommands: SCommandV2("dmonitor") {
                     context.prepareParameters.putAll(parameters)
                 }
 
-                configuration.run(context, async = true, actionName)
+                configuration.run(
+                    context,
+                    true,
+                    actionName
+                )
             } catch (e: Exception) {
                 sender.sendMessage(Component.text("An error occurred"))
                 e.printStackTrace()
@@ -107,39 +118,50 @@ class DisplayCommands: SCommandV2("dmonitor") {
 
         literal("runLoaded") {
 
-            argument("name", StringArg(StringArg.StringType.SINGLE_WORD)) {
+            argument("workspace", StringArg(StringArg.StringType.SINGLE_WORD)) {
 
                 suggest { _, _, _ ->
-                    WorkspaceStorage.DisplayMonitorWorkspace.instance.loadedConfigActions.keys.map { it toolTip null }
+                    WorkspaceStorage.workspaces.keys.map { it toolTip null }
                 }
 
-                setPlayerFunctionExecutor { sender, _, args ->
-                    runLoaded(sender, args)
-                }
+                argument("name", StringArg(StringArg.StringType.SINGLE_WORD)) {
 
-                argument("caster", EntityArg(singleTarget = true, playersOnly = false)) {
-                    setPlayerFunctionExecutor { sender, _, args ->
+                    suggest { _, _, args ->
+                        val workspace = WorkspaceStorage.getWorkspace(args.getArgument("workspace", String::class.java))
+                        if (workspace == null) {
+                            return@suggest emptyList()
+                        }
+                        workspace.actionConfigurations.keys.map { it toolTip null }
+                    }
+
+                    setFunctionExecutor { sender, _, args ->
                         runLoaded(sender, args)
                     }
 
-                    argument("target", EntityArg(singleTarget = true, playersOnly = false)) {
-                        setPlayerFunctionExecutor { sender, _, args ->
+                    argument("caster", EntityArg(singleTarget = true, playersOnly = false)) {
+                        setFunctionExecutor { sender, _, args ->
                             runLoaded(sender, args)
                         }
 
-                        argument("location", StringArg(StringArg.StringType.QUOTABLE_PHRASE)) {
-                            setPlayerFunctionExecutor { sender, _, args ->
+                        argument("target", EntityArg(singleTarget = true, playersOnly = false)) {
+                            setFunctionExecutor { sender, _, args ->
                                 runLoaded(sender, args)
                             }
 
-                            argument("parameters", StringArg(StringArg.StringType.QUOTABLE_PHRASE)) {
-                                setPlayerFunctionExecutor { sender, _, args ->
+                            argument("location", StringArg(StringArg.StringType.QUOTABLE_PHRASE)) {
+                                setFunctionExecutor { sender, _, args ->
                                     runLoaded(sender, args)
                                 }
 
-                                argument("actionName", StringArg(StringArg.StringType.SINGLE_WORD)) {
-                                    setPlayerFunctionExecutor { sender, _, args ->
+                                argument("parameters", StringArg(StringArg.StringType.QUOTABLE_PHRASE)) {
+                                    setFunctionExecutor { sender, _, args ->
                                         runLoaded(sender, args)
+                                    }
+
+                                    argument("actionName", StringArg(StringArg.StringType.SINGLE_WORD)) {
+                                        setFunctionExecutor { sender, _, args ->
+                                            runLoaded(sender, args)
+                                        }
                                     }
                                 }
                             }
@@ -150,7 +172,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
         }
 
         literal("reload") {
-            setPlayerFunctionExecutor { sender, _, _ ->
+            setFunctionExecutor { sender, _, _ ->
                 try {
                     Config.load()
                     WorkspaceStorage.DisplayMonitorWorkspace.instance.loadDisplayMonitorActions()

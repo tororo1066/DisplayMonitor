@@ -17,7 +17,7 @@ class SetWorkspaceAction: AbstractAction() {
 
     @ParameterDoc(
         name = "workspace",
-        description = "Workspace名",
+        description = "Workspace名。",
         type = ParameterType.String
     )
     var workspace: String = ""

@@ -57,20 +57,32 @@ object ActionRunner: IActionRunner {
         }
 
         fun invokeActions() {
-            for (action in actionList) {
+
+            fun checkStop(): Boolean {
                 if (context.publicContext.stop) {
+                    ActionStorage.contextByName.entries.removeIf {
+                        it.value == context.groupUUID
+                    }
                     ActionStorage.contextStorage.remove(context.groupUUID)
-                    break
+                    return true
                 }
                 if (context.stop) {
                     ActionStorage.contextStorage[context.groupUUID]?.let {
                         it.remove(context.uuid)
                         if (it.isEmpty()) {
+                            ActionStorage.contextByName.entries.removeIf {
+                                it.value == context.groupUUID
+                            }
                             ActionStorage.contextStorage.remove(context.groupUUID)
                         }
                     }
-                    break
+                    return true
                 }
+                return false
+            }
+
+            for (action in actionList) {
+                if (checkStop()) break
                 val actionClass = action.getString("class")
                 val actionData = ActionStorage.actions[actionClass]
                 if (actionData == null) {
@@ -108,9 +120,14 @@ object ActionRunner: IActionRunner {
                     )
                     e.printStackTrace()
                 }
+
+                if (checkStop()) break
             }
 
             if (context.publicContext.shouldAutoStop) {
+                ActionStorage.contextByName.entries.removeIf {
+                    it.value == context.groupUUID
+                }
                 ActionStorage.contextStorage.remove(context.groupUUID)
             }
         }

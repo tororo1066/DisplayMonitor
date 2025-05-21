@@ -31,8 +31,8 @@ class AccessAction: AbstractAction() {
     var actions: Execute = Execute.empty()
 
     override fun run(context: IActionContext): ActionResult {
-        val uuid = ActionStorage.contextByName[action] ?: return ActionResult.failed()
-        val contexts = ActionStorage.contextStorage[uuid] ?: return ActionResult.failed()
+        val uuid = ActionStorage.contextByName[action] ?: return ActionResult.failed("Failed to find action $action")
+        val contexts = ActionStorage.contextStorage[uuid] ?: return ActionResult.failed("Failed to find action $action by uuid $uuid")
         if (contexts.isEmpty()) return ActionResult.failed()
         val firstContext = contexts.values.first()
         val newContext = context.cloneWithNewPublicContext(firstContext.publicContext).apply {

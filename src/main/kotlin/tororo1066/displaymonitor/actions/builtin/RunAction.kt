@@ -33,14 +33,27 @@ class RunAction: AbstractAction() {
         type = ParameterType.AdvancedConfigurationSection
     )
     var variables = mutableMapOf<String, String>()
+    @ParameterDoc(
+        name = "actionName",
+        description = "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。",
+        type = ParameterType.String
+    )
+    var actionName = ""
+    @ParameterDoc(
+        name = "override",
+        description = "既に存在するactionNameのActionを上書きするか。",
+        type = ParameterType.Boolean
+    )
+    var override = false
 
     override fun run(context: IActionContext): ActionResult {
+        if (!override && ActionStorage.contextByName.containsKey(actionName)) return ActionResult.failed("Action $actionName already exists.")
         val action = context.publicContext.workspace.actionConfigurations[action] ?: return ActionResult.noParameters("Action $action not found.")
         val newContext = if (cloneContext) context.cloneWithRandomUUID() else context
         variables.forEach { (key, value) ->
             newContext.configuration?.parameters?.put(key, value)
         }
-        action.run(newContext, false, null)
+        action.run(newContext, false, actionName.ifEmpty { null })
         return ActionResult.success()
     }
 
@@ -53,5 +66,7 @@ class RunAction: AbstractAction() {
                 variables[key] = variablesSection.getString(key) ?: ""
             }
         }
+        actionName = section.getString("actionName", "")!!
+        override = section.getBoolean("override", false)
     }
 }

@@ -10,6 +10,7 @@ import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.utils.addYaw
 import java.util.UUID
 
@@ -77,8 +78,8 @@ class SummonElement: AbstractAction() {
         val clone = location.clone()
         location
             .add(clone.direction.normalize().multiply(relativeOffset.z))
-            .add(clone.direction.rotateAroundY(90.0).normalize().multiply(relativeOffset.x))
-            .add(clone.direction.rotateAroundZ(-90.0).normalize().multiply(relativeOffset.y))
+            .add(clone.direction.normalize().rotateAroundY(Math.toRadians(90.0)).multiply(relativeOffset.x))
+            .add(clone.direction.normalize().rotateAroundZ(Math.toRadians(-90.0)).multiply(relativeOffset.y))
             .add(offset)
             .addYaw(180f)
 

@@ -93,8 +93,8 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         }
     }
 
-    private fun toAdvancedConfigurationSection(map: Map<*, *>, path: String = ""): AdvancedConfigurationSection {
-        val section = createAdvancedSection(path)
+    private fun toAdvancedConfigurationSection(map: Map<*, *>): AdvancedConfigurationSection {
+        val section = createAdvancedSection("")
         map.forEach { (key, value) ->
             section.set(key.toString(), value)
         }
@@ -129,6 +129,21 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         }
 
         return value
+    }
+
+    override fun getList(path: String, def: List<*>?): List<*>? {
+        val value = super.getList(path, def) ?: return null
+        val newList = mutableListOf<Any?>()
+        val root = root as? AdvancedConfiguration
+        value.forEach {
+            if (it is String) {
+                newList.add(root?.evaluate(it))
+            } else {
+                newList.add(it)
+            }
+        }
+
+        return newList
     }
 
     override fun getBukkitVector(path: String): Vector? {

@@ -27,8 +27,14 @@ object Utils {
 
     fun hexToBukkitColor(hex: String): Color? {
         try {
-            val colorInt = Integer.parseInt(hex.removePrefix("#"), 16)
-            return Color.fromRGB(colorInt)
+            val removePrefix = hex.removePrefix("#")
+            val colorInt = Integer.parseInt(removePrefix, 16)
+            val isArgb = removePrefix.length == 8
+            return if (isArgb) {
+                Color.fromARGB(colorInt)
+            } else {
+                Color.fromRGB(colorInt)
+            }
         } catch (e: Exception) {
             return null
         }

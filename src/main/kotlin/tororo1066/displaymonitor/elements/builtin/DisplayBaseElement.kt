@@ -129,7 +129,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         val dropInteract = arrayListOf<UUID>()
 
         sEvent.register<PlayerInteractEvent> { e ->
-            if (!public && e.player != entity) return@register
+            if (!public && e.player.uniqueId != entity?.uniqueId) return@register
             if (dropInteract.contains(e.player.uniqueId)) return@register
             if (Utils.isPointInsideRotatedRect(
                     e.player,
@@ -147,7 +147,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         }
 
         sEvent.register<PlayerDropItemEvent> { e ->
-            if (!public && e.player != entity) return@register
+            if (!public && e.player.uniqueId != entity?.uniqueId) return@register
             dropInteract.add(e.player.uniqueId)
 
             Bukkit.getScheduler().runTaskLater(SJavaPlugin.plugin, Runnable {
@@ -177,7 +177,11 @@ abstract class DisplayBaseElement : AbstractElement() {
 
         runExecute(onTick)
 
-        val players = if (public) this.entity.location.getNearbyPlayers(interactionScale.x + interactionDistance) else listOfNotNull(entity as? Player)
+        val players = if (public) {
+            this.entity.location.getNearbyPlayers(interactionScale.x + interactionDistance)
+        } else {
+            listOfNotNull(entity?.uniqueId?.let { Bukkit.getPlayer(it) })
+        }
         players.forEach { player ->
             val onCursor = Utils.isPointInsideRotatedRect(
                 player,
