@@ -951,7 +951,7 @@
       },
       {
         "name": "Rotation",
-        "description": "回転\n\n例:\n  \u003cyaw\u003e,\u003cpitch\u003e",
+        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
         "parameters": []
       },
       {
