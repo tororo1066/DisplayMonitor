@@ -98,7 +98,12 @@ enum class ParameterType {
     @ParameterTypeDoc("回転")
     Rotation {
         override val example = """
-            <yaw>,<pitch>
+            euler,<x>,<y>,<z>
+            axis,<angle>,<x>,<y>,<z>
+            quaternion,<x>,<y>,<z>,<w>
+            euler_radians,<x>,<y>,<z>
+            axis_radians,<angle>,<x>,<y>,<z>
+            quaternion_radians,<x>,<y>,<z>,<w>
         """.trimIndent()
     },
     @ParameterTypeDoc("Actionのリスト")
