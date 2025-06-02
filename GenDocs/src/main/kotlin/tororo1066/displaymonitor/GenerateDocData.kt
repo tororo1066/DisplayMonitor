@@ -102,11 +102,11 @@ object GenerateDocData {
                     jsonWriter.name("type").value(getParameterType(parameter.type).name)
                     jsonWriter.endObject()
                 }
-
-                jsonWriter.endArray()
-                jsonWriter.endObject()
             }
         }
+        jsonWriter.endArray()
+        jsonWriter.endObject()
+
 
         jsonWriter.endArray()
         jsonWriter.close()
