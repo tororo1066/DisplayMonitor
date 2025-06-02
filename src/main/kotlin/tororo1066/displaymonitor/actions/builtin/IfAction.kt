@@ -1,6 +1,5 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import com.ezylang.evalex.Expression
 import tororo1066.displaymonitor.actions.CheckAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
@@ -16,13 +15,12 @@ class IfAction: CheckAction() {
 
     @ParameterDoc(
         name = "expression",
-        description = "評価する式。",
-        type = ParameterType.String
+        description = "評価する式。"
     )
     var expression = ""
 
     override fun isAllowed(context: IActionContext): Boolean {
-        return Expression(expression).withValues(context.configuration?.parameters ?: mapOf<String, Any>()).evaluate().booleanValue
+        return expression.toBoolean()
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {

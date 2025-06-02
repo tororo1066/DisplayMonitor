@@ -1,10 +1,12 @@
 package tororo1066.displaymonitor
 
 import com.google.gson.Gson
+import tororo1066.displaymonitor.configuration.expression.AbstractFunction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
-import tororo1066.displaymonitor.documentation.ParameterTypeDoc
+import tororo1066.displaymonitor.documentation.getParameterType
+import tororo1066.displaymonitor.documentation.parameterTypeDocs
+import tororo1066.displaymonitorapi.configuration.expression.IAbstractFunction
 import tororo1066.displaymonitorapi.elements.Settable
 import java.io.File
 import java.net.JarURLConnection
@@ -39,16 +41,17 @@ object GenerateDocData {
                 fun checkField(clazz: Class<*>, name: String) {
                     clazz.declaredFields.forEach third@ { field ->
                         if (field.isAnnotationPresent(Settable::class.java)) {
-                            val annotation = field.getAnnotation(Settable::class.java)
+                            val annotation = field.getAnnotation(Settable::class.java)!!
                             if (annotation.childOnly) {
                                 checkField(field.type, if (name.isEmpty()) field.name else "$name.${field.name}")
                             }
                         }
                         val parameterDoc = field.getAnnotation(ParameterDoc::class.java) ?: return@third
+                        val docName = parameterDoc.name.ifEmpty { field.name }
                         jsonWriter.beginObject()
-                        jsonWriter.name("name").value(if (name.isEmpty()) parameterDoc.name else "$name.${parameterDoc.name}")
+                        jsonWriter.name("name").value(if (name.isEmpty()) docName else "$name.${docName}")
                         jsonWriter.name("description").value(parameterDoc.description)
-                        jsonWriter.name("type").value(parameterDoc.type.name)
+                        jsonWriter.name("type").value(getParameterType(field).name)
                         jsonWriter.endObject()
                     }
                 }
@@ -70,18 +73,40 @@ object GenerateDocData {
         jsonWriter.beginObject()
         jsonWriter.name("name").value("Type")
         jsonWriter.name("classes").beginArray()
-        ParameterType.values().forEach second@ { parameterType ->
+        parameterTypeDocs.forEach second@ { (type, parameterType) ->
             jsonWriter.beginObject()
-            jsonWriter.name("name").value(parameterType.name)
-            val annotation = parameterType.javaClass.getField(parameterType.name).getAnnotation(ParameterTypeDoc::class.java) ?: return@second
-            jsonWriter.name("description").value(
-                annotation.name + "\n\n" + "例:\n  " + parameterType.example
-            )
+            jsonWriter.name("name").value(type.simpleName ?: "Unknown")
+            jsonWriter.name("description").value(parameterType.description + "\n\n例:\n  " + parameterType.example)
             jsonWriter.name("parameters").beginArray().endArray()
             jsonWriter.endObject()
         }
         jsonWriter.endArray()
         jsonWriter.endObject()
+
+        jsonWriter.beginObject()
+        jsonWriter.name("name").value("Function")
+        jsonWriter.name("classes").beginArray()
+        javaClass.protectionDomain.codeSource.location.getClasses("tororo1066.displaymonitor.configuration.expression.functions").forEach second@ { clazz ->
+            if (AbstractFunction::class.java.isAssignableFrom(clazz)) {
+                val constructor = clazz.getConstructor()
+                val function = constructor.newInstance() as AbstractFunction
+                jsonWriter.beginObject()
+                jsonWriter.name("name").value(function.name)
+                jsonWriter.name("description").value(function.getDescription())
+                jsonWriter.name("parameters").beginArray()
+
+                function.getParameters().forEachIndexed { index, parameter ->
+                    jsonWriter.beginObject()
+                    jsonWriter.name("name").value(index.toString() + ". " + parameter.name)
+                    jsonWriter.name("description").value(parameter.description)
+                    jsonWriter.name("type").value(getParameterType(parameter.type).name)
+                    jsonWriter.endObject()
+                }
+
+                jsonWriter.endArray()
+                jsonWriter.endObject()
+            }
+        }
 
         jsonWriter.endArray()
         jsonWriter.close()
@@ -92,9 +117,9 @@ object GenerateDocData {
         val src = ArrayList<File>()
         val srcFile = try {
             File(toURI())
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             File((openConnection() as JarURLConnection).jarFileURL.toURI())
-        } catch (e: URISyntaxException) {
+        } catch (_: URISyntaxException) {
             File(path)
         }
 

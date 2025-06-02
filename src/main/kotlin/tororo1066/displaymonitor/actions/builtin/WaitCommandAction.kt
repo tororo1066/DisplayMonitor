@@ -2,6 +2,7 @@ package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Entity
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.server.ServerCommandEvent
 import tororo1066.displaymonitor.actions.AbstractAction
@@ -25,71 +26,79 @@ class WaitCommandAction: AbstractAction() {
         private val sEvent = SEvent()
     }
 
+    enum class CommandType {
+        TARGET,
+        SERVER,
+        ANY_PLAYER
+    }
+
     @ParameterDoc(
         name = "command",
-        description = "待機するコマンド。",
-        type = ParameterType.String
+        description = "待機するコマンド。"
     )
     var command = ""
     @ParameterDoc(
         name = "then",
-        description = "コマンドが実行された場合のアクション。",
-        type = ParameterType.Actions
+        description = "コマンドが実行された場合のアクション。"
     )
     var actions: Execute = Execute.empty()
     @ParameterDoc(
         name = "else",
-        description = "タイムアウトした場合のアクション。",
-        type = ParameterType.Actions
+        description = "タイムアウトした場合のアクション。"
     )
     var failActions: Execute = Execute.empty()
     @ParameterDoc(
         name = "timeout",
-        description = "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。",
-        type = ParameterType.Long
+        description = "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。"
     )
     var timeout = -1L
     var infinity = false
+
     @ParameterDoc(
-        name = "server",
-        description = "サーバーからコマンドを実行されるのを待機するか。",
-        type = ParameterType.Boolean
+        name = "commandType",
+        description = "コマンドを実行する対象を指定する。",
+        default = "target"
     )
-    var server = false
+    var commandType = CommandType.TARGET
     @ParameterDoc(
         name = "cancelCommand",
-        description = "コマンドの実行をキャンセルするか。",
-        type = ParameterType.Boolean
+        description = "コマンドの実行をキャンセルするか。"
     )
     var cancelCommand = false
 
     override fun run(context: IActionContext): ActionResult {
         if (command.isBlank()) return ActionResult.noParameters("Command is empty")
-        val sender = if (server) Bukkit.getConsoleSender() else context.target ?: return ActionResult.targetRequired()
         var complete = false
+
+        val target = context.target
+        if (commandType == CommandType.TARGET && target == null) return ActionResult.targetRequired()
 
         fun process(sender: CommandSender, command: String, unit: BiSEventUnit<*>): Boolean {
             if (context.publicContext.stop) {
                 unit.unregister()
                 return false
             }
-            if (!server && sender != context.target) return false
+            if (commandType == CommandType.TARGET && target != sender) return false
             if (command != this.command) return false
-            actions(context)
+            val cloneContext = context.clone()
+            if (commandType != CommandType.SERVER) {
+                cloneContext.target = sender as Entity
+            }
+            actions(cloneContext)
             unit.unregister()
             complete = true
             return true
         }
 
-        if (server) {
+        if (commandType == CommandType.SERVER) {
             sEvent.biRegister(ServerCommandEvent::class.java) { e, unit ->
-                if (process(sender, e.command, unit)) {
+                if (process(e.sender, e.command, unit)) {
                     if (cancelCommand) e.isCancelled = true
                 }
             }
         } else {
             sEvent.biRegister(PlayerCommandPreprocessEvent::class.java) { e, unit ->
-                if (process(sender, e.message.removePrefix("/"), unit)) {
+                if (process(e.player, e.message.removePrefix("/"), unit)) {
                     if (cancelCommand) e.isCancelled = true
                 }
             }
@@ -120,7 +129,7 @@ class WaitCommandAction: AbstractAction() {
                 infinity = true
             }
         }
-        server = section.getBoolean("server", false)
+        commandType = section.getEnum("commandType", CommandType::class.java, CommandType.TARGET)
         cancelCommand = section.getBoolean("cancelCommand", false)
     }
 }

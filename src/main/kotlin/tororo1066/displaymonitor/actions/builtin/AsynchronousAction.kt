@@ -19,8 +19,7 @@ class AsynchronousAction: AbstractAction() {
 
     @ParameterDoc(
         name = "actions",
-        description = "非同期で実行するアクションのリスト。",
-        type = ParameterType.Actions
+        description = "非同期で実行するアクションのリスト。"
     )
     var actions: AsyncExecute = AsyncExecute.empty()
 

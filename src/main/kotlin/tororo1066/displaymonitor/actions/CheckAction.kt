@@ -11,14 +11,12 @@ abstract class CheckAction: AbstractAction() {
 
     @ParameterDoc(
         name = "then",
-        description = "条件を満たした場合に実行するアクション。",
-        type = ParameterType.Actions
+        description = "条件を満たした場合に実行するアクション。"
     )
     var actions: Execute = Execute.empty()
     @ParameterDoc(
         name = "else",
-        description = "条件を満たさなかった場合に実行するアクション。",
-        type = ParameterType.Actions
+        description = "条件を満たさなかった場合に実行するアクション。"
     )
     var failActions: Execute = Execute.empty()
 

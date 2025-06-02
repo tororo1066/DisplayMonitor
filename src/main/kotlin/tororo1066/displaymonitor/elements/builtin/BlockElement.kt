@@ -6,7 +6,6 @@ import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Display
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.elements.Settable
 
 @ClassDoc(
@@ -18,7 +17,6 @@ class BlockElement: DisplayBaseElement() {
     @ParameterDoc(
         name = "block",
         description = "表示するブロック。",
-        type = ParameterType.Block,
         default = "minecraft:stone"
     )
     @Settable

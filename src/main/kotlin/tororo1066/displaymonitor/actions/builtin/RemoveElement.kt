@@ -17,14 +17,12 @@ class RemoveElement: AbstractAction() {
 
     @ParameterDoc(
         name = "name",
-        description = "削除するElementの名前。",
-        type = ParameterType.String
+        description = "削除するElementの名前。"
     )
     var name = ""
     @ParameterDoc(
         name = "forceSync",
-        description = "強制的に同期的に実行するか。",
-        type = ParameterType.Boolean
+        description = "強制的に同期的に実行するか。"
     )
     var forceSync = false
 

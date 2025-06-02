@@ -8,6 +8,7 @@ import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import java.util.UUID
 
 @ClassDoc(
     name = "Repeat",
@@ -17,21 +18,18 @@ class RepeatAction: AbstractAction() {
 
     @ParameterDoc(
         name = "times",
-        description = "繰り返す回数。\n`infinity` で無限に繰り返す。",
-        type = ParameterType.Int
+        description = "繰り返す回数。\n`infinity` で無限に繰り返す。"
     )
     var times = 1
     var isInfinity = false
     @ParameterDoc(
         name = "actions",
-        description = "繰り返すアクションのリスト。",
-        type = ParameterType.Actions
+        description = "繰り返すアクションのリスト。"
     )
     var actions: Execute = Execute.empty()
     @ParameterDoc(
         name = "variableName",
-        description = "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。",
-        type = ParameterType.String
+        description = "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。"
     )
     var variableName: String? = null
 

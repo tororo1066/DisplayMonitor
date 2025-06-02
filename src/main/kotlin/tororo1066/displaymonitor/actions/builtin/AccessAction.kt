@@ -19,14 +19,12 @@ class AccessAction: AbstractAction() {
 
     @ParameterDoc(
         name = "action",
-        description = "アクセスするActionの名前。",
-        type = ParameterType.String
+        description = "アクセスするActionの名前。"
     )
     var action = ""
     @ParameterDoc(
         name = "actions",
-        description = "アクセスしたActionに対して実行するアクション。",
-        type = ParameterType.Actions
+        description = "アクセスしたActionに対して実行するアクション。"
     )
     var actions: Execute = Execute.empty()
 
@@ -36,7 +34,6 @@ class AccessAction: AbstractAction() {
         if (contexts.isEmpty()) return ActionResult.failed()
         val firstContext = contexts.values.first()
         val newContext = context.cloneWithNewPublicContext(firstContext.publicContext).apply {
-            configuration = firstContext.configuration
             setUUID(UUID.randomUUID())
             setGroupUUID(firstContext.groupUUID)
         }

@@ -5,12 +5,11 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Marker
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
+import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.IAbstractElement
-import tororo1066.tororopluginapi.SJavaPlugin
 
 @ClassDoc(
     name = "GroupElement",
@@ -21,7 +20,7 @@ class GroupElement: AbstractElement() {
     @ParameterDoc(
         name = "elements",
         description = "新規に追加するElement。",
-        type = ParameterType.AdvancedConfigurationSection
+        type = IAdvancedConfigurationSection::class,
     )
     var elements = mutableMapOf<String, IAbstractElement>()
 
@@ -29,7 +28,7 @@ class GroupElement: AbstractElement() {
     @ParameterDoc(
         name = "edit",
         description = "Elementの編集内容。",
-        type = ParameterType.AdvancedConfigurationSection
+        type = IAdvancedConfigurationSection::class
     )
     val edit = null
 
@@ -37,7 +36,7 @@ class GroupElement: AbstractElement() {
     @ParameterDoc(
         name = "remove",
         description = "削除するElementの名前。",
-        type = ParameterType.StringList
+        type = StringList::class
     )
     val remove = null
 

@@ -19,8 +19,7 @@ class MessageAction: AbstractAction() {
 
     @ParameterDoc(
         name = "message",
-        description = "送信するメッセージ。",
-        type = ParameterType.Component
+        description = "送信するメッセージ。"
     )
     var message: Component? = null
 

@@ -1,25 +1,19 @@
 package tororo1066.displaymonitor.actions
 
-import org.bukkit.entity.Player
-import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.parameters.ActionParameters
-import tororo1066.displaymonitor.configuration.AdvancedConfiguration
+import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.actions.IActionRunner
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.tororopluginapi.SJavaPlugin
 import java.util.concurrent.CompletableFuture
 
 object ActionRunner: IActionRunner {
 
     private const val RUN_CONTEXT = "ActionRunner"
-
-    fun run(config: AdvancedConfiguration, p: Player) {
-        val configActions = config.getAdvancedConfigurationSectionList("actions")
-        run(config, configActions, ActionContext(PublicActionContext(), p), null, async = false, disableAutoStop = false)
-    }
 
     override fun run(
         root: IAdvancedConfiguration,
@@ -36,6 +30,8 @@ object ActionRunner: IActionRunner {
         }
 
         context.configuration = root
+        root.set("temp", actionList)
+        val newActionList = root.getAdvancedConfigurationSectionList("temp")
 
         root.parameters.putAll(context.prepareParameters)
         root.parameters.putAll(context.getDefaultParameters())
@@ -70,8 +66,8 @@ object ActionRunner: IActionRunner {
                     ActionStorage.contextStorage[context.groupUUID]?.let {
                         it.remove(context.uuid)
                         if (it.isEmpty()) {
-                            ActionStorage.contextByName.entries.removeIf {
-                                it.value == context.groupUUID
+                            ActionStorage.contextByName.entries.removeIf { condition ->
+                                condition.value == context.groupUUID
                             }
                             ActionStorage.contextStorage.remove(context.groupUUID)
                         }
@@ -81,7 +77,7 @@ object ActionRunner: IActionRunner {
                 return false
             }
 
-            for (action in actionList) {
+            for (action in newActionList) {
                 if (checkStop()) break
                 val actionClass = action.getString("class")
                 val actionData = ActionStorage.actions[actionClass]

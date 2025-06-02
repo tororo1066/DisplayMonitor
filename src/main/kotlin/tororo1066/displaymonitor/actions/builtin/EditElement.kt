@@ -18,20 +18,17 @@ class EditElement: AbstractAction() {
 
     @ParameterDoc(
         name = "name",
-        description = "編集するElementの名前。",
-        type = ParameterType.String
+        description = "編集するElementの名前。"
     )
     var name = ""
     @ParameterDoc(
         name = "edit",
-        description = "編集する内容。",
-        type = ParameterType.AdvancedConfigurationSection
+        description = "編集する内容。"
     )
     var edit: IAdvancedConfigurationSection? = null
     @ParameterDoc(
         name = "forceSync",
-        description = "強制的に同期的に実行するか。",
-        type = ParameterType.Boolean
+        description = "強制的に同期的に実行するか。"
     )
     var forceSync = false
 

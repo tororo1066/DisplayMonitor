@@ -1,5 +1,6 @@
 package tororo1066.displaymonitor.actions.builtin
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.actions.AbstractAction
@@ -10,41 +11,53 @@ import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import java.util.UUID
 
 @ClassDoc(
     name = "Target",
-    description = "位置を指定してアクションを実行する。"
+    description = "データを変更してアクションを実行する。"
 )
 class TargetAction: AbstractAction() {
 
     @ParameterDoc(
+        name = "target",
+        description = "変更する対象。プレイヤーのUUIDまたは名前を指定する。"
+    )
+    var target: String? = null
+    @ParameterDoc(
         name = "location",
-        description = "実行する位置。",
-        type = ParameterType.Location
+        description = "実行する位置。"
     )
     var location: Location? = null
     @ParameterDoc(
         name = "offset",
-        description = "位置のオフセット。",
-        type = ParameterType.Vector
+        description = "位置のオフセット。"
     )
     var offset: Vector? = null
     @ParameterDoc(
         name = "relativeOffset",
-        description = "位置の相対オフセット。",
-        type = ParameterType.Vector
+        description = "位置の相対オフセット。"
     )
     var relativeOffset: Vector? = null
     @ParameterDoc(
         name = "actions",
-        description = "実行するアクションのリスト。",
-        type = ParameterType.Actions
+        description = "実行するアクションのリスト。"
     )
     var actions: Execute = Execute.empty()
 
     override fun run(context: IActionContext): ActionResult {
 
-        val cloneContext = context.cloneWithRandomUUID()
+        val cloneContext = context.clone()
+
+        target?.let {
+            try {
+                Bukkit.getPlayer(UUID.fromString(it))?.let { player ->
+                    cloneContext.target = player
+                }
+            } catch (_: IllegalArgumentException) {
+                Bukkit.getPlayer(it)?.let { player -> cloneContext.target = player }
+            }
+        }
 
         location?.let {
             val contextLocation = cloneContext.location
@@ -73,6 +86,7 @@ class TargetAction: AbstractAction() {
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
+        target = section.getString("target")
         location = section.getStringLocation("location")
         offset = section.getBukkitVector("offset")
         relativeOffset = section.getBukkitVector("relativeOffset")

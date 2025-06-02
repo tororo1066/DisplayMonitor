@@ -49,7 +49,6 @@ dependencies {
     compileOnly("tororo1066:base:$apiVersion")
     implementation("tororo1066:tororopluginapi:$apiVersion")
     compileOnly("com.mojang:brigadier:1.0.18")
-    compileOnly("com.ezylang:EvalEx:3.1.2")
     implementation(project(":DisplayMonitorAPI"))
 
     implementation("com.dumptruckman.minecraft:JsonConfiguration:1.2-SNAPSHOT")

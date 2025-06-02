@@ -3,6 +3,7 @@ package tororo1066.displaymonitor.config
 import net.kyori.adventure.text.Component
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.DisplayMonitor
+import tororo1066.displaymonitor.Utils.getClasses
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 import java.net.JarURLConnection
@@ -52,32 +53,5 @@ object Config {
 
     inline fun <reified T: AbstractConfig> getConfig(): T? {
         return subConfigs.firstOrNull { it is T } as? T
-    }
-
-    private fun URL.getClasses(packageName: String): List<Class<*>> {
-        val classes = ArrayList<Class<*>>()
-        val src = ArrayList<File>()
-        val srcFile = try {
-            File(toURI())
-        } catch (e: IllegalArgumentException) {
-            File((openConnection() as JarURLConnection).jarFileURL.toURI())
-        } catch (e: URISyntaxException) {
-            File(path)
-        }
-
-        src += srcFile
-
-        src.forEach { s ->
-            JarFile(s).stream().filter { it.name.endsWith(".class") }.forEach second@ {
-                val name = it.name.replace('/', '.').substring(0, it.name.length - 6)
-                if (!name.contains(packageName)) return@second
-
-                kotlin.runCatching {
-                    classes.add(Class.forName(name, false, DisplayMonitor::class.java.classLoader))
-                }
-            }
-        }
-
-        return classes
     }
 }

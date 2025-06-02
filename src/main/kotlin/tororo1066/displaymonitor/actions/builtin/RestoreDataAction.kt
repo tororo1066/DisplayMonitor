@@ -77,7 +77,7 @@ class RestoreDataAction: AbstractAction() {
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
-        storeType = section.getEnum("storeType", StoreDataAction.StoreType::class.java, StoreDataAction.StoreType.RAW)!!
+        storeType = section.getEnum("storeType", StoreDataAction.StoreType::class.java, StoreDataAction.StoreType.RAW)
         val sectionPath = section.getAdvancedConfigurationSection("path")
         if (sectionPath != null) {
             fun deep(section: IAdvancedConfigurationSection, path: String) {

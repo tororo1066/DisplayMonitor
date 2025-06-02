@@ -18,14 +18,12 @@ class MoveElement: AbstractAction() {
 
     @ParameterDoc(
         name = "element",
-        description = "移動するElementの名前。",
-        type = ParameterType.String
+        description = "移動するElementの名前。"
     )
     var element = ""
     @ParameterDoc(
         name = "location",
-        description = "移動先の座標。",
-        type = ParameterType.Location
+        description = "移動先の座標。"
     )
     var location: Location? = null
 

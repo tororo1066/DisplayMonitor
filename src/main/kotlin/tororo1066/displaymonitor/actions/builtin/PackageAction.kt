@@ -17,8 +17,7 @@ class PackageAction: AbstractAction() {
 
     @ParameterDoc(
         name = "actions",
-        description = "実行するアクション。",
-        type = ParameterType.Actions,
+        description = "実行するアクション。"
     )
     var actions: Execute = Execute.empty()
 

@@ -109,7 +109,7 @@ public interface IAdvancedConfigurationSection extends ConfigurationSection {
      * @return Enum
      * @param <T> Enumの型
      */
-    @Nullable <T extends @NotNull Enum<T>> T getEnum(@NotNull String path, @NotNull Class<T> clazz, @NotNull T def);
+    @NotNull <T extends @NotNull Enum<T>> T getEnum(@NotNull String path, @NotNull Class<T> clazz, @NotNull T def);
 
     /**
      * ItemStackを取得する<br>
@@ -198,5 +198,5 @@ public interface IAdvancedConfigurationSection extends ConfigurationSection {
      */
     @Nullable <T extends @NotNull Object>  T withParameters(@NotNull Map<String, Object> parameters, @NotNull Function<IAdvancedConfigurationSection, @Nullable T> function);
 
-
+    @NotNull Map<@NotNull String, @Nullable Object> getEvaluatedValues(boolean deep);
 }

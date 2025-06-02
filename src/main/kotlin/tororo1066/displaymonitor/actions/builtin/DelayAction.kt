@@ -16,8 +16,7 @@ class DelayAction: AbstractAction() {
 
     @ParameterDoc(
         name = "delay",
-        description = "待機する時間。",
-        type = ParameterType.Long
+        description = "待機する時間。"
     )
     var delay = 0L
 

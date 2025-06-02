@@ -4,6 +4,7 @@ import tororo1066.displaymonitor.actions.CheckAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.ParameterType
+import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
@@ -16,13 +17,13 @@ class CheckEntityAction: CheckAction() {
     @ParameterDoc(
         name = "allowedEntities",
         description = "許可するエンティティのリスト。",
-        type = ParameterType.StringList
+        type = StringList::class
     )
     var allowedEntities = ArrayList<String>()
     @ParameterDoc(
         name = "disallowedEntities",
         description = "許可しないエンティティのリスト。",
-        type = ParameterType.StringList
+        type = StringList::class
     )
     var disallowedEntities = ArrayList<String>()
 

@@ -13,6 +13,7 @@ import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitorapi.configuration.AsyncExecute
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import tororo1066.tororopluginapi.sItem.SItem
 import java.util.function.Function
@@ -88,8 +89,18 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     }
 
     override fun getAdvancedConfigurationSectionList(path: String): List<AdvancedConfigurationSection> {
-        return getMapList(path).map {
-            toAdvancedConfigurationSection(it)
+//        return getMapList(path).map {
+//            toAdvancedConfigurationSection(it)
+//        }
+
+        val sections = getList(path) ?: return emptyList()
+        return sections.mapNotNull {
+            it as? AdvancedConfigurationSection
+                ?: if (it is Map<*, *>) {
+                    toAdvancedConfigurationSection(it)
+                } else {
+                    null
+                }
         }
     }
 
@@ -113,6 +124,27 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
                     set(key, value)
                 }
             })
+            return
+        }
+
+        if (value is List<*>) {
+            val list = mutableListOf<Any?>()
+            value.forEach {
+                if (it is Map<*, *>) {
+                    list.add(mapToSection(path, it))
+                    return@forEach
+                }
+                if (it is ConfigurationSection) {
+                    list.add(createAdvancedSection(path).apply {
+                        it.getValues(true).forEach { (key, value) ->
+                            set(key, value)
+                        }
+                    })
+                    return@forEach
+                }
+                list.add(it)
+            }
+            super.set(path, list)
             return
         }
 
@@ -240,7 +272,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
         return Execute {
-            ActionRunner.run(root as AdvancedConfiguration, list, it, null, async = false, disableAutoStop = false)
+            ActionRunner.run(it.configuration ?: root as AdvancedConfiguration, list, it, null, async = false, disableAutoStop = false)
         }
     }
 
@@ -252,7 +284,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
         return AsyncExecute {
-            ActionRunner.run(root as AdvancedConfiguration, list, it, null, async = true, disableAutoStop = false)
+            ActionRunner.run(it.configuration ?: root as AdvancedConfiguration, list, it, null, async = true, disableAutoStop = false)
         }
     }
 
@@ -350,13 +382,34 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return value
     }
 
-    override fun getValues(deep: Boolean): Map<String, Any?> {
+//    override fun getValues(deep: Boolean): Map<String, Any?> {
+//        val map = mutableMapOf<String, Any?>()
+//        getKeys(false).forEach { key ->
+//            val value = get(key)
+//            if (value is ConfigurationSection) {
+//                map[key] = if (deep) {
+//                    value.getValues(true)
+//                } else {
+//                    value
+//                }
+//            } else {
+//                map[key] = value
+//            }
+//        }
+//        return map
+//    }
+
+    override fun getEvaluatedValues(deep: Boolean): Map<String, Any?> {
         val map = mutableMapOf<String, Any?>()
         getKeys(false).forEach { key ->
             val value = get(key)
             if (value is ConfigurationSection) {
                 map[key] = if (deep) {
-                    value.getValues(true)
+                    if (value is AdvancedConfigurationSection) {
+                        value.getEvaluatedValues(true)
+                    } else {
+                        value.getValues(true)
+                    }
                 } else {
                     value
                 }

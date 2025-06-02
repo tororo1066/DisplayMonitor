@@ -14,28 +14,38 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 )
 class ModifyVariableAction: AbstractAction() {
 
+    enum class Scope {
+        GLOBAL, LOCAL
+    }
+
     @ParameterDoc(
         name = "variable",
-        description = "変更する変数の名前。",
-        type = ParameterType.String
+        description = "変更する変数の名前。"
     )
     var variable = ""
     @ParameterDoc(
         name = "value",
-        description = "変数に代入する値。",
-        type = ParameterType.String
+        description = "変数に代入する値。"
     )
     var value: Any = ""
     @ParameterDoc(
         name = "variables",
         description = "変数のマップ。",
-        type = ParameterType.AdvancedConfigurationSection
+        type = IAdvancedConfigurationSection::class
     )
     var variables = mutableMapOf<String, Any>()
+    @ParameterDoc(
+        name = "scope",
+        description = "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。"
+    )
+    var scope: Scope = Scope.LOCAL
 
     override fun run(context: IActionContext): ActionResult {
-        val configuration = context.configuration ?: return ActionResult.failed("No configuration found")
-        val parameters = configuration.parameters
+        val parameters = if (scope == Scope.GLOBAL) {
+            context.publicContext.parameters
+        } else {
+            context.configuration?.parameters ?: return ActionResult.failed("No local parameters found")
+        }
         variables.forEach { (key, value) ->
             parameters[key] = value
         }
@@ -53,5 +63,6 @@ class ModifyVariableAction: AbstractAction() {
                 variables[key] = variablesSection.get(key) ?: ""
             }
         }
+        scope = section.getEnum("scope", Scope::class.java, Scope.LOCAL)
     }
 }

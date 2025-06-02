@@ -1,6 +1,7 @@
 package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.documentation.ClassDoc
@@ -18,20 +19,17 @@ class CommandAction: AbstractAction() {
 
     @ParameterDoc(
         name = "command",
-        description = "実行するコマンド。",
-        type = ParameterType.String
+        description = "実行するコマンド。"
     )
     var command = ""
     @ParameterDoc(
         name = "console",
-        description = "コンソールから実行するか。",
-        type = ParameterType.Boolean
+        description = "コンソールから実行するか。"
     )
     var console = false
     @ParameterDoc(
         name = "forceSync",
-        description = "強制的に同期的に実行するか。",
-        type = ParameterType.Boolean
+        description = "強制的に同期的に実行するか。"
     )
     var forceSync = false
 
@@ -39,7 +37,11 @@ class CommandAction: AbstractAction() {
         if (command.isBlank()) return ActionResult.noParameters(DisplayMonitor.translate("action.command.empty"))
         val sender = if (console) Bukkit.getConsoleSender() else context.target ?: return ActionResult.targetRequired()
         forceSync.orBlockingTask {
-            Bukkit.dispatchCommand(sender, command)
+            if (sender is Player) {
+                sender.chat("/$command") //イベントの発火をさせるために必要
+            } else {
+                Bukkit.dispatchCommand(sender, command)
+            }
         }
 
         return ActionResult.success()

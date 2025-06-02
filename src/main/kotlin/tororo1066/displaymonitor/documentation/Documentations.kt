@@ -1,5 +1,19 @@
 package tororo1066.displaymonitor.documentation
 
+import net.kyori.adventure.text.Component
+import org.bukkit.Color
+import org.bukkit.Location
+import org.bukkit.block.data.BlockData
+import org.bukkit.inventory.ItemStack
+import org.bukkit.util.Vector
+import org.joml.Quaternionf
+import org.joml.Vector3f
+import tororo1066.displaymonitorapi.configuration.AsyncExecute
+import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import java.lang.reflect.Field
+import kotlin.reflect.KClass
+
 @Target(AnnotationTarget.CLASS)
 annotation class ClassDoc(
     val name: String,
@@ -9,95 +23,81 @@ annotation class ClassDoc(
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ParameterDoc(
-    val name: String,
+    val name: String = "",
     val description: String,
-    val type: ParameterType,
+    val type: KClass<*> = Any::class,
     val default: String = "",
 )
 
-@Target(AnnotationTarget.PROPERTY)
-annotation class ParameterTypeDoc(
-    val name: String,
-)
+class StringList
 
-enum class ParameterType {
-    @ParameterTypeDoc("文字列")
-    String {
-        override val example = "\"example\""
-    },
-    @ParameterTypeDoc("文字列のリスト")
-    StringList {
-        override val example = """
+val parameterTypeDocs = hashMapOf<KClass<*>, ParameterType>(
+    String::class to ParameterType("String", "文字列", "\"example\""),
+    StringList::class to ParameterType(
+        "StringList",
+        "文字列のリスト",
+        """
             - example1
             - example2
         """.trimIndent()
-    },
-    @ParameterTypeDoc("真偽値")
-    Boolean {
-        override val example = "true"
-    },
-    @ParameterTypeDoc("整数")
-    Int {
-        override val example = "1000"
-    },
-    @ParameterTypeDoc("整数")
-    Long {
-        override val example = "1000"
-    },
-    @ParameterTypeDoc("実数")
-    Double {
-        override val example = "1000.0"
-    },
-    @ParameterTypeDoc("実数")
-    Float {
-        override val example = "1000.0"
-    },
-    @ParameterTypeDoc("装飾可能な文字列")
-    Component {
-        override val example = "\"<red>Hello!</red>\""
-    },
-    @ParameterTypeDoc("色")
-    Color {
-        override val example = """
+    ),
+    Boolean::class to ParameterType("Boolean", "真偽値", "true/false"),
+    Number::class to ParameterType("Number", "数値", "1000"),
+    Int::class to ParameterType("Int", "整数", "1000"),
+    Long::class to ParameterType("Long", "整数", "1000"),
+    Double::class to ParameterType("Double", "実数", "1000.0"),
+    Float::class to ParameterType("Float", "実数", "1000.0"),
+    Component::class to ParameterType("Component", "装飾可能な文字列", "\"<red>Hello!</red>\""),
+    Color::class to ParameterType(
+        "Color",
+        "色(ARGBまたはRGB)",
+        """
             #ff0000
+            #00000000
         """.trimIndent()
-    },
-    @ParameterTypeDoc("位置")
-    Location {
-        override val example = """
+    ),
+    Location::class to ParameterType(
+        "Location",
+        "位置",
+        """
             <world>,<x>,<y>,<z>
             <world>,<x>,<y>,<z>,<yaw>,<pitch>
             <x>,<y>,<z>
             <x>,<y>,<z>,<yaw>,<pitch>
         """.trimIndent()
-    },
-    @ParameterTypeDoc("ブロック")
-    Block {
-        override val example = """
+    ),
+    BlockData::class to ParameterType(
+        "Block",
+        "ブロック",
+        """
             minecraft:oak_stairs[shape=straight]
         """.trimIndent()
-    },
-    @ParameterTypeDoc("アイテム")
-    Item {
-        override val example = """
+    ),
+    ItemStack::class to ParameterType(
+        "Item",
+        "アイテム",
+        """
             minecraft:diamond_sword{Enchantments:[{id:"minecraft:sharpness",lvl:5}]}
         """.trimIndent()
-    },
-    @ParameterTypeDoc("ベクトル")
-    Vector {
-        override val example = """
+    ),
+    Vector::class to ParameterType(
+        "Vector",
+        "ベクトル",
+        """
             <x>,<y>,<z>
         """.trimIndent()
-    },
-    @ParameterTypeDoc("ベクトル")
-    Vector3f {
-        override val example = """
+    ),
+    Vector3f::class to ParameterType(
+        "Vector3f",
+        "ベクトル",
+        """
             <x>,<y>,<z>
         """.trimIndent()
-    },
-    @ParameterTypeDoc("回転")
-    Rotation {
-        override val example = """
+    ),
+    Quaternionf::class to ParameterType(
+        "Rotation",
+        "回転",
+        """
             euler,<x>,<y>,<z>
             axis,<angle>,<x>,<y>,<z>
             quaternion,<x>,<y>,<z>,<w>
@@ -105,63 +105,67 @@ enum class ParameterType {
             axis_radians,<angle>,<x>,<y>,<z>
             quaternion_radians,<x>,<y>,<z>,<w>
         """.trimIndent()
-    },
-    @ParameterTypeDoc("Actionのリスト")
-    Actions {
-        override val example = """
+    ),
+    Execute::class to ParameterType(
+        "Actions",
+        "Actionのリスト",
+        """
             - class: Message
               message: "Hello!"
         """.trimIndent()
-    },
-    @ParameterTypeDoc("セクション")
-    AdvancedConfigurationSection {
-        override val example = """
+    ),
+    AsyncExecute::class to ParameterType(
+        "AsyncActions",
+        "非同期Actionのリスト",
+        """
+            - class: AsyncMessage
+              message: "Hello!"
+        """.trimIndent()
+    ),
+    IAdvancedConfigurationSection::class to ParameterType(
+        "AdvancedConfigurationSection",
+        "セクション",
+        """
             key: value
         """.trimIndent()
-    },
+    ),
+)
 
-    @ParameterTypeDoc("ビルボード")
-    Billboard {
-        override val example = """
-            選択
-            FIXED
-            VERTICAL
-            HORIZONTAL
-            CENTER
-        """.trimIndent()
-    },
-    @ParameterTypeDoc("輝き")
-    Brightness {
-        override val example = """
-            block: <0~15>
-            sky: <0~15>
-        """.trimIndent()
-    },
-    @ParameterTypeDoc("アイテム表示")
-    ItemDisplayTransform {
-        override val example = """
-            選択
-            NONE
-            THIRDPERSON_LEFTHAND
-            THIRDPERSON_RIGHTHAND
-            FIRSTPERSON_LEFTHAND
-            FIRSTPERSON_RIGHTHAND
-            HEAD
-            GUI
-            GROUND
-            FIXED
-        """.trimIndent()
-    },
-    @ParameterTypeDoc("テキストの位置")
-    TextAlignment {
-        override val example = """
-            選択
-            LEFT
-            CENTER
-            RIGHT
-        """.trimIndent()
-    },
-    ;
+fun getParameterType(type: KClass<*>): ParameterType {
+    val doc = parameterTypeDocs[type]
+    if (doc != null) {
+        return doc
+    }
 
-    abstract val example: kotlin.String
+    if (type.java.isEnum) {
+        val newType = ParameterType(
+            type.simpleName ?: "Enum",
+            "選択可能な値のリスト",
+            type.java.enumConstants.joinToString("\n") { it.toString() }
+        )
+        parameterTypeDocs[type] = newType
+        return newType
+    }
+
+    return ParameterType(
+        "Unknown",
+        "不明な型",
+        "未定義"
+    )
+}
+
+fun getParameterType(field: Field): ParameterType {
+    val annotation = field.getAnnotation(ParameterDoc::class.java)
+    val type = annotation?.type ?: field.type.kotlin
+    return getParameterType(type)
+}
+
+class ParameterType(
+    val name: String,
+    val description: String = "",
+    val example: String = ""
+) {
+    override fun toString(): String {
+        return "ParameterTypeDoc(name='$name', description='$description', example='$example')"
+    }
 }

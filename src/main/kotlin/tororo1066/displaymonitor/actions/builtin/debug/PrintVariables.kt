@@ -12,6 +12,9 @@ class PrintVariables: AbstractAction() {
         variables.forEach { (key, value) ->
             context.target?.sendMessage("$key: $value")
         }
+        context.publicContext.parameters.forEach { (key, value) ->
+            context.target?.sendMessage("Public $key: $value")
+        }
         return ActionResult.success()
     }
 

@@ -49,12 +49,12 @@ object ActionStorage: IActionStorage {
         actions["Target"] = TargetAction::class.java
         actions["StoreData"] = StoreDataAction::class.java
         actions["RestoreData"] = RestoreDataAction::class.java
-        actions["Lightning"] = LightningAction::class.java
         actions["AccessAction"] = AccessAction::class.java
         actions["RunAction"] = RunAction::class.java
         actions["Random"] = RandomAction::class.java
         actions["Package"] = PackageAction::class.java
         actions["SetWorkspace"] = SetWorkspaceAction::class.java
+        actions["PlaySound"] = PlaySoundAction::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 
@@ -99,8 +99,8 @@ object ActionStorage: IActionStorage {
         condition: Function<IAdvancedConfigurationSection, Boolean>?
     ) {
         workspaces.forEach { workspace ->
-            workspace.actionConfigurations.values.forEach { actionConfiguration ->
-                val triggerSection = actionConfiguration.triggers[name] ?: return@forEach
+            workspace.actionConfigurations.values.forEach second@ { actionConfiguration ->
+                val triggerSection = actionConfiguration.triggers[name] ?: return@second
                 if (condition == null || condition.apply(triggerSection)) {
                     actionConfiguration.run(context, true, null)
                 }

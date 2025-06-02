@@ -7,6 +7,7 @@ import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
@@ -19,7 +20,7 @@ class RandomAction: AbstractAction() {
     @ParameterDoc(
         name = "actions",
         description = "実行するアクションのリスト。そのセクション内にrandom_weightを指定することで重みを指定できる。",
-        type = ParameterType.Actions,
+        type = Execute::class
     )
     var actions: List<IAdvancedConfigurationSection> = listOf()
 

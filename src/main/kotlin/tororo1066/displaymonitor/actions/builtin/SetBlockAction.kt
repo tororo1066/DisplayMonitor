@@ -19,14 +19,12 @@ class SetBlockAction: AbstractAction() {
 
     @ParameterDoc(
         name = "block",
-        description = "設置するブロック。",
-        type = ParameterType.Block
+        description = "設置するブロック。"
     )
     var block: BlockData? = null
     @ParameterDoc(
         name = "forceSync",
-        description = "強制的に同期的に実行するか。",
-        type = ParameterType.Boolean
+        description = "強制的に同期的に実行するか。"
     )
     var forceSync = false
 

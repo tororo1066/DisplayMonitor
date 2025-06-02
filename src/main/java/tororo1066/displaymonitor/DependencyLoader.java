@@ -11,7 +11,7 @@ public class DependencyLoader extends AbstractDependencyLoader {
     public Library[] getDependencies() {
         return new Library[]{
 //                LibraryType.KOTLIN.createLibrary(),
-                LibraryType.EVALEX.createLibrary()
+//                LibraryType.EVALEX.createLibrary()
         };
     }
 }

@@ -89,7 +89,7 @@ class StoreDataAction: AbstractAction() {
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
-        storeType = section.getEnum<StoreType>("storeType", StoreType::class.java, StoreType.RAW)!!
+        storeType = section.getEnum<StoreType>("storeType", StoreType::class.java, StoreType.RAW)
         data = section.getAdvancedConfigurationSection("data")
     }
 

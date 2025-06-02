@@ -16,8 +16,7 @@ class EndAction : AbstractAction() {
 
     @ParameterDoc(
         name = "forceSync",
-        description = "強制的に同期的に実行するか。",
-        type = ParameterType.Boolean
+        description = "強制的に同期的に実行するか。"
     )
     var forceSync = false
 

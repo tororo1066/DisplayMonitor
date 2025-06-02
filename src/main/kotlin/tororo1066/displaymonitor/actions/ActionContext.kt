@@ -2,7 +2,6 @@ package tororo1066.displaymonitor.actions
 
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.actions.IPublicActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
@@ -76,6 +75,7 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
     }
 
     override fun setConfiguration(configuration: IAdvancedConfiguration?) {
+        configuration?.publicContext = publicContext
         this.configuration = configuration
     }
 

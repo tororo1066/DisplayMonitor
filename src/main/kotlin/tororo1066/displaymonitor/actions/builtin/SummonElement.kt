@@ -24,38 +24,32 @@ class SummonElement: AbstractAction() {
 
     @ParameterDoc(
         name = "name",
-        description = "Elementの名前。",
-        type = ParameterType.String
+        description = "Elementの名前。"
     )
     var name = ""
     @ParameterDoc(
         name = "preset",
-        description = "Elementのプリセット名。 presetが指定されている場合、typeは無視される。",
-        type = ParameterType.String
+        description = "Elementのプリセット名。 presetが指定されている場合、typeは無視される。"
     )
     var presetName = ""
     @ParameterDoc(
         name = "offset",
-        description = "Elementの位置のオフセット。",
-        type = ParameterType.Vector
+        description = "Elementの位置のオフセット。"
     )
     var offset = Vector(0, 0, 0)
     @ParameterDoc(
         name = "relativeOffset",
-        description = "Elementの位置の相対オフセット。",
-        type = ParameterType.Vector
+        description = "Elementの位置の相対オフセット。"
     )
     var relativeOffset = Vector(0, 0, 0)
     @ParameterDoc(
         name = "type",
-        description = "Elementのクラス名。",
-        type = ParameterType.String
+        description = "Elementのクラス名。"
     )
     var clazz = ""
     @ParameterDoc(
         name = "parameters",
-        description = "Elementのパラメータ。",
-        type = ParameterType.AdvancedConfigurationSection
+        description = "Elementのパラメータ。"
     )
     var overrideParameters: IAdvancedConfigurationSection? = null
 

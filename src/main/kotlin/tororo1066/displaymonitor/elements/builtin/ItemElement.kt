@@ -20,14 +20,12 @@ class ItemElement: DisplayBaseElement() {
     @ParameterDoc(
         name = "itemStack",
         description = "表示するアイテム。",
-        type = ParameterType.Item,
         default = "minecraft:stone"
     )
     @Settable var itemStack = ItemStack(Material.STONE)
     @ParameterDoc(
         name = "itemDisplayTransform",
         description = "アイテムの表示方法。",
-        type = ParameterType.ItemDisplayTransform,
         default = "FIXED"
     )
     @Settable var itemDisplayTransform = ItemDisplayTransform.FIXED

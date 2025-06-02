@@ -17,32 +17,28 @@ class RunAction: AbstractAction() {
 
     @ParameterDoc(
         name = "action",
-        description = "実行するActionの名前。",
-        type = ParameterType.String
+        description = "実行するActionの名前。"
     )
     var action = ""
     @ParameterDoc(
         name = "cloneContext",
-        description = "コンテキストを複製するか。",
-        type = ParameterType.Boolean
+        description = "コンテキストを複製するか。"
     )
     var cloneContext = false
     @ParameterDoc(
         name = "variables",
         description = "実行時の変数。 コンテキストを複製していると終了後に破棄される。",
-        type = ParameterType.AdvancedConfigurationSection
+        type = IAdvancedConfigurationSection::class
     )
     var variables = mutableMapOf<String, String>()
     @ParameterDoc(
         name = "actionName",
-        description = "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。",
-        type = ParameterType.String
+        description = "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。"
     )
     var actionName = ""
     @ParameterDoc(
         name = "override",
-        description = "既に存在するactionNameのActionを上書きするか。",
-        type = ParameterType.Boolean
+        description = "既に存在するactionNameのActionを上書きするか。"
     )
     var override = false
 

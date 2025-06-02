@@ -5,6 +5,7 @@ import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.Utils.mergeConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.elements.builtin.*
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.displaymonitorapi.events.ElementRegisteringEvent
@@ -47,9 +48,12 @@ object ElementStorage: IElementStorage {
                 continue
             }
             if (file.extension != "yml") continue
-            val yaml = AdvancedConfiguration().mergeConfiguration(YamlConfiguration.loadConfiguration(file))
-            yaml.getKeys(false).forEach { key ->
-                val section = yaml.getAdvancedConfigurationSection(key)
+            val yaml = YamlConfiguration()
+            yaml.options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+            yaml.load(file)
+            val advancedConfiguration = AdvancedConfiguration().mergeConfiguration(yaml)
+            advancedConfiguration.getKeys(false).forEach { key ->
+                val section = advancedConfiguration.getAdvancedConfigurationSection(key)
                 if (section == null) {
                     DisplayMonitor.warn(context, DisplayMonitor.translate("element.section.not.found", key))
                     return@forEach

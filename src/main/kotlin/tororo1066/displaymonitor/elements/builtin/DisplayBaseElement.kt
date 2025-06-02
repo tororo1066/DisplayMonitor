@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
-import tororo1066.displaymonitor.configuration.DisplayParameters
+import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.elements.AbstractElement
@@ -27,72 +27,61 @@ abstract class DisplayBaseElement : AbstractElement() {
     @ParameterDoc(
         name = "interactionScale",
         description = "クリックの判定範囲。",
-        type = ParameterType.Vector,
         default = "1,1,1"
     )
     @Settable var interactionScale = Vector(1.0, 1.0, 1.0)
     @ParameterDoc(
         name = "onSpawn",
-        description = "スポーン時のアクション。",
-        type = ParameterType.Actions
+        description = "スポーン時のアクション。"
     )
     @Settable var onSpawn: Execute = Execute.empty()
     @ParameterDoc(
         name = "onTick",
-        description = "1Tick毎に実行されるアクション。",
-        type = ParameterType.Actions
+        description = "1Tick毎に実行されるアクション。"
     )
     @Settable var onTick: Execute = Execute.empty()
     @ParameterDoc(
         name = "onInteract",
-        description = "クリック時のアクション。",
-        type = ParameterType.Actions
+        description = "クリック時のアクション。"
     )
     @Settable var onInteract: Execute = Execute.empty()
     @ParameterDoc(
         name = "onHover",
-        description = "ホバー時のアクション。",
-        type = ParameterType.Actions
+        description = "ホバー時のアクション。"
     )
     @Settable var onHover: Execute = Execute.empty()
     @ParameterDoc(
         name = "onUnhover",
-        description = "ホバー解除時のアクション。",
-        type = ParameterType.Actions
+        description = "ホバー解除時のアクション。"
     )
     @Settable var onUnhover: Execute = Execute.empty()
     @ParameterDoc(
         name = "interactionDistance",
         description = "クリックの判定距離。",
-        type = ParameterType.Double,
         default = "4"
     )
     @Settable var interactionDistance = 4.0
     @ParameterDoc(
         name = "switchHover",
         description = "ホバー時のアクションを切り替えた時のみに実行するか。",
-        type = ParameterType.Boolean,
         default = "true"
     )
     @Settable var switchHover = true
     @ParameterDoc(
         name = "visualizeHitbox",
         description = "クリックの判定範囲を表示するか。 (デバッグ用)",
-        type = ParameterType.Boolean,
         default = "false"
     )
     @Settable var visualizeHitbox = false
     @ParameterDoc(
         name = "visibleAll",
         description = "全てのプレイヤーに表示するか。",
-        type = ParameterType.Boolean,
         default = "false"
     )
     @Settable var visibleAll = false
     @ParameterDoc(
         name = "public",
         description = "他のプレイヤーが操作できるようにするか。",
-        type = ParameterType.Boolean,
         default = "false"
     )
     @Settable var public = false

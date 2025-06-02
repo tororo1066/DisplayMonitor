@@ -5,6 +5,7 @@ import tororo1066.displaymonitorapi.elements.IAbstractElement;
 import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Actionの実行に関する情報を保持するクラス
@@ -42,6 +43,10 @@ public interface IPublicActionContext {
      * @param shouldStop 自動的に停止(削除)するかどうか
      */
     void setShouldAutoStop(@NotNull Boolean shouldStop);
+
+    @NotNull Map<@NotNull String, @NotNull Object> getParameters();
+
+    void setParameters(@NotNull Map<@NotNull String, @NotNull Object> parameters);
 
     @NotNull IAbstractWorkspace getWorkspace();
 
