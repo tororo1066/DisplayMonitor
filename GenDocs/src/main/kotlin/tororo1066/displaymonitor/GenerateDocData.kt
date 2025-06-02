@@ -103,6 +103,7 @@ object GenerateDocData {
                     jsonWriter.endObject()
                 }
                 jsonWriter.endArray()
+                jsonWriter.endObject()
             }
         }
         jsonWriter.endArray()
