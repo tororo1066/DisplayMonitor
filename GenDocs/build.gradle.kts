@@ -17,10 +17,12 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
     implementation(rootProject)
     implementation(project(":DisplayMonitorAPI"))
     implementation("io.papermc.paper:paper-api:$pluginVersion-R0.1-SNAPSHOT")
     implementation("com.google.code.gson:gson:2.12.1")
+
 }
 kotlin {
     jvmToolchain(17)

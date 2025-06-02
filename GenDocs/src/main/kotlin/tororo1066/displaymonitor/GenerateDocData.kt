@@ -97,7 +97,7 @@ object GenerateDocData {
 
                 function.getParameters().forEachIndexed { index, parameter ->
                     jsonWriter.beginObject()
-                    jsonWriter.name("name").value(index.toString() + ". " + parameter.name)
+                    jsonWriter.name("name").value(index.toString() + "." + parameter.name)
                     jsonWriter.name("description").value(parameter.description)
                     jsonWriter.name("type").value(getParameterType(parameter.type).name)
                     jsonWriter.endObject()

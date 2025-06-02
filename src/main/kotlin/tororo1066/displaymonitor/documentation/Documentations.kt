@@ -132,6 +132,7 @@ val parameterTypeDocs = hashMapOf<KClass<*>, ParameterType>(
 )
 
 fun getParameterType(type: KClass<*>): ParameterType {
+    println("getParameterType: $type")
     val doc = parameterTypeDocs[type]
     if (doc != null) {
         return doc
@@ -156,7 +157,11 @@ fun getParameterType(type: KClass<*>): ParameterType {
 
 fun getParameterType(field: Field): ParameterType {
     val annotation = field.getAnnotation(ParameterDoc::class.java)
-    val type = annotation?.type ?: field.type.kotlin
+    val type = if (annotation != null && annotation.type != Any::class) {
+        annotation.type
+    } else {
+        field.type.kotlin
+    }
     return getParameterType(type)
 }
 
