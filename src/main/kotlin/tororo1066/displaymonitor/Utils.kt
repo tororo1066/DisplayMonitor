@@ -14,13 +14,6 @@ import java.net.URL
 import java.util.jar.JarFile
 
 object Utils {
-    fun AdvancedConfigurationSection.clone(): AdvancedConfigurationSection {
-        val yaml = AdvancedConfigurationSection(this)
-        getValues(true).forEach { (key, value) ->
-            yaml.set(key, value)
-        }
-        return yaml
-    }
 
     fun AdvancedConfiguration.mergeConfiguration(second: ConfigurationSection): AdvancedConfiguration {
         val yaml = this.clone()

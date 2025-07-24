@@ -382,23 +382,6 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return value
     }
 
-//    override fun getValues(deep: Boolean): Map<String, Any?> {
-//        val map = mutableMapOf<String, Any?>()
-//        getKeys(false).forEach { key ->
-//            val value = get(key)
-//            if (value is ConfigurationSection) {
-//                map[key] = if (deep) {
-//                    value.getValues(true)
-//                } else {
-//                    value
-//                }
-//            } else {
-//                map[key] = value
-//            }
-//        }
-//        return map
-//    }
-
     override fun getEvaluatedValues(deep: Boolean): Map<String, Any?> {
         val map = mutableMapOf<String, Any?>()
         getKeys(false).forEach { key ->

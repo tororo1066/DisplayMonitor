@@ -31,7 +31,7 @@ annotation class ParameterDoc(
 
 class StringList
 
-val parameterTypeDocs = hashMapOf<KClass<*>, ParameterType>(
+val parameterTypeDocs = hashMapOf(
     String::class to ParameterType("String", "文字列", "\"example\""),
     StringList::class to ParameterType(
         "StringList",
@@ -132,7 +132,6 @@ val parameterTypeDocs = hashMapOf<KClass<*>, ParameterType>(
 )
 
 fun getParameterType(type: KClass<*>): ParameterType {
-    println("getParameterType: $type")
     val doc = parameterTypeDocs[type]
     if (doc != null) {
         return doc
