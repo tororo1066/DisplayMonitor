@@ -6,7 +6,11 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration;
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+/**
+ * Actionを実行するためのインターフェース
+ */
 public interface IActionRunner {
 
     /**
@@ -18,8 +22,10 @@ public interface IActionRunner {
      * @param actionName      Actionの名前
      * @param async           非同期で実行するかどうか
      * @param disableAutoStop 自動停止を無効にするかどうか
+     *
+     * @return CompletableFuture<Void> 完了時に返されるFuture
      */
-    void run(
+    @NotNull CompletableFuture<@NotNull Void> run(
             @NotNull IAdvancedConfiguration root,
             @NotNull List<IAdvancedConfigurationSection> actions,
             @NotNull IActionContext context,

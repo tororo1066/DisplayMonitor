@@ -6,6 +6,7 @@ import tororo1066.displaymonitorapi.actions.IActionContext;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 1つのActionを纏めたクラス
@@ -35,6 +36,7 @@ public interface IActionConfiguration {
      * @param context {@link IActionContext}
      * @param async 非同期で実行するかどうか
      * @param actionName Actionの名前
+     * @return CompletableFuture<Void> 完了時に返されるFuture
      */
-    void run(@NotNull IActionContext context, boolean async, @Nullable String actionName);
+    @NotNull CompletableFuture<@NotNull Void> run(@NotNull IActionContext context, boolean async, @Nullable String actionName);
 }
