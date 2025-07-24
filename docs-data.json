@@ -14,17 +14,17 @@
           {
             "name": "expression",
             "description": "評価する式。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "then",
             "description": "条件を満たした場合に実行するアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "else",
             "description": "条件を満たさなかった場合に実行するアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           }
         ]
       },
@@ -46,17 +46,17 @@
           {
             "name": "name",
             "description": "編集するElementの名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "edit",
             "description": "編集する内容。",
-            "type": "Unknown"
+            "type": "AdvancedConfigurationSection"
           },
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -67,27 +67,27 @@
           {
             "name": "sound",
             "description": "再生するサウンドの名前。例: minecraft:entity.player.levelup",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "volume",
             "description": "サウンドの音量。",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "pitch",
             "description": "サウンドのピッチ。",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "public",
             "description": "サウンドが周りのプレイヤーにも聞こえるかどうか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "targetLocation",
             "description": "サウンドを再生する位置を対象の位置にするかどうか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -98,7 +98,7 @@
           {
             "name": "actions",
             "description": "非同期で実行するアクションのリスト。",
-            "type": "Unknown"
+            "type": "AsyncActions"
           }
         ]
       },
@@ -114,7 +114,7 @@
           {
             "name": "message",
             "description": "送信するメッセージ。",
-            "type": "Unknown"
+            "type": "Component"
           }
         ]
       },
@@ -125,7 +125,7 @@
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -136,7 +136,7 @@
           {
             "name": "workspace",
             "description": "Workspace名。",
-            "type": "Unknown"
+            "type": "String"
           }
         ]
       },
@@ -147,7 +147,7 @@
           {
             "name": "delay",
             "description": "待機する時間。",
-            "type": "Unknown"
+            "type": "Long"
           }
         ]
       },
@@ -163,12 +163,12 @@
           {
             "name": "block",
             "description": "設置するブロック。",
-            "type": "Unknown"
+            "type": "Block"
           },
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -189,12 +189,12 @@
           {
             "name": "then",
             "description": "条件を満たした場合に実行するアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "else",
             "description": "条件を満たさなかった場合に実行するアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           }
         ]
       },
@@ -205,27 +205,27 @@
           {
             "name": "target",
             "description": "変更する対象。プレイヤーのUUIDまたは名前を指定する。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "location",
             "description": "実行する位置。",
-            "type": "Unknown"
+            "type": "Location"
           },
           {
             "name": "offset",
             "description": "位置のオフセット。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "relativeOffset",
             "description": "位置の相対オフセット。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "actions",
             "description": "実行するアクションのリスト。",
-            "type": "Unknown"
+            "type": "Actions"
           }
         ]
       },
@@ -236,7 +236,7 @@
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -247,7 +247,7 @@
           {
             "name": "actions",
             "description": "実行するアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           }
         ]
       },
@@ -258,12 +258,12 @@
           {
             "name": "action",
             "description": "実行するActionの名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "cloneContext",
             "description": "コンテキストを複製するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "variables",
@@ -273,12 +273,12 @@
           {
             "name": "actionName",
             "description": "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "override",
             "description": "既に存在するactionNameのActionを上書きするか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -289,12 +289,12 @@
           {
             "name": "action",
             "description": "アクセスするActionの名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "actions",
             "description": "アクセスしたActionに対して実行するアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           }
         ]
       },
@@ -305,7 +305,7 @@
           {
             "name": "variable",
             "description": "変更する変数の名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "value",
@@ -320,7 +320,7 @@
           {
             "name": "scope",
             "description": "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。",
-            "type": "Unknown"
+            "type": "Scope"
           }
         ]
       },
@@ -331,17 +331,17 @@
           {
             "name": "times",
             "description": "繰り返す回数。\n`infinity` で無限に繰り返す。",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "actions",
             "description": "繰り返すアクションのリスト。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "variableName",
             "description": "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。",
-            "type": "Unknown"
+            "type": "String"
           }
         ]
       },
@@ -352,12 +352,12 @@
           {
             "name": "name",
             "description": "削除するElementの名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -368,32 +368,32 @@
           {
             "name": "name",
             "description": "Elementの名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "preset",
             "description": "Elementのプリセット名。 presetが指定されている場合、typeは無視される。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "offset",
             "description": "Elementの位置のオフセット。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "relativeOffset",
             "description": "Elementの位置の相対オフセット。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "type",
             "description": "Elementのクラス名。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "parameters",
             "description": "Elementのパラメータ。",
-            "type": "Unknown"
+            "type": "AdvancedConfigurationSection"
           }
         ]
       },
@@ -409,12 +409,12 @@
           {
             "name": "element",
             "description": "移動するElementの名前。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "location",
             "description": "移動先の座標。",
-            "type": "Unknown"
+            "type": "Location"
           }
         ]
       },
@@ -425,17 +425,17 @@
           {
             "name": "command",
             "description": "実行するコマンド。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "console",
             "description": "コンソールから実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -446,32 +446,32 @@
           {
             "name": "command",
             "description": "待機するコマンド。",
-            "type": "Unknown"
+            "type": "String"
           },
           {
             "name": "then",
             "description": "コマンドが実行された場合のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "else",
             "description": "タイムアウトした場合のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "timeout",
             "description": "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。",
-            "type": "Unknown"
+            "type": "Long"
           },
           {
             "name": "commandType",
             "description": "コマンドを実行する対象を指定する。",
-            "type": "Unknown"
+            "type": "CommandType"
           },
           {
             "name": "cancelCommand",
             "description": "コマンドの実行をキャンセルするか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -482,7 +482,7 @@
           {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       }
@@ -498,92 +498,92 @@
           {
             "name": "text",
             "description": "表示するテキスト。",
-            "type": "Unknown"
+            "type": "Component"
           },
           {
             "name": "backgroundColor",
             "description": "背景色。",
-            "type": "Unknown"
+            "type": "Color"
           },
           {
             "name": "lineWidth",
             "description": "行の幅。",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "seeThrough",
             "description": "透過するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "defaultBackground",
             "description": "デフォルトの背景色を使用するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "shadow",
             "description": "影を表示するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "alignment",
             "description": "テキストの配置。",
-            "type": "Unknown"
+            "type": "TextAlignment"
           },
           {
             "name": "textOpacity",
             "description": "テキストの透明度。",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.translation",
             "description": "オフセット",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.scale",
             "description": "大きさ",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.leftRotation",
             "description": "左回転",
-            "type": "Unknown"
+            "type": "Rotation"
           },
           {
             "name": "displayParameters.rightRotation",
             "description": "右回転",
-            "type": "Unknown"
+            "type": "Rotation"
           },
           {
             "name": "displayParameters.billboard",
             "description": "ビルボード",
-            "type": "Unknown"
+            "type": "Billboard"
           },
           {
             "name": "displayParameters.interpolationDuration",
             "description": "補間時間",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.interpolationDelay",
             "description": "補間遅延",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.teleportDuration",
             "description": "テレポート時間",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.shadowRadius",
             "description": "影の半径",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "displayParameters.shadowStrength",
             "description": "影の強さ",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "displayParameters.brightness",
@@ -593,57 +593,57 @@
           {
             "name": "interactionScale",
             "description": "クリックの判定範囲。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "onSpawn",
             "description": "スポーン時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onTick",
             "description": "1Tick毎に実行されるアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onInteract",
             "description": "クリック時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onHover",
             "description": "ホバー時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onUnhover",
             "description": "ホバー解除時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "interactionDistance",
             "description": "クリックの判定距離。",
-            "type": "Unknown"
+            "type": "Double"
           },
           {
             "name": "switchHover",
             "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "visualizeHitbox",
             "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "visibleAll",
             "description": "全てのプレイヤーに表示するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "public",
             "description": "他のプレイヤーが操作できるようにするか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -654,62 +654,62 @@
           {
             "name": "itemStack",
             "description": "表示するアイテム。",
-            "type": "Unknown"
+            "type": "Item"
           },
           {
             "name": "itemDisplayTransform",
             "description": "アイテムの表示方法。",
-            "type": "Unknown"
+            "type": "ItemDisplayTransform"
           },
           {
             "name": "displayParameters.translation",
             "description": "オフセット",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.scale",
             "description": "大きさ",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.leftRotation",
             "description": "左回転",
-            "type": "Unknown"
+            "type": "Rotation"
           },
           {
             "name": "displayParameters.rightRotation",
             "description": "右回転",
-            "type": "Unknown"
+            "type": "Rotation"
           },
           {
             "name": "displayParameters.billboard",
             "description": "ビルボード",
-            "type": "Unknown"
+            "type": "Billboard"
           },
           {
             "name": "displayParameters.interpolationDuration",
             "description": "補間時間",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.interpolationDelay",
             "description": "補間遅延",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.teleportDuration",
             "description": "テレポート時間",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.shadowRadius",
             "description": "影の半径",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "displayParameters.shadowStrength",
             "description": "影の強さ",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "displayParameters.brightness",
@@ -719,57 +719,57 @@
           {
             "name": "interactionScale",
             "description": "クリックの判定範囲。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "onSpawn",
             "description": "スポーン時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onTick",
             "description": "1Tick毎に実行されるアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onInteract",
             "description": "クリック時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onHover",
             "description": "ホバー時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onUnhover",
             "description": "ホバー解除時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "interactionDistance",
             "description": "クリックの判定距離。",
-            "type": "Unknown"
+            "type": "Double"
           },
           {
             "name": "switchHover",
             "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "visualizeHitbox",
             "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "visibleAll",
             "description": "全てのプレイヤーに表示するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "public",
             "description": "他のプレイヤーが操作できるようにするか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       },
@@ -801,57 +801,57 @@
           {
             "name": "block",
             "description": "表示するブロック。",
-            "type": "Unknown"
+            "type": "Block"
           },
           {
             "name": "displayParameters.translation",
             "description": "オフセット",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.scale",
             "description": "大きさ",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.leftRotation",
             "description": "左回転",
-            "type": "Unknown"
+            "type": "Rotation"
           },
           {
             "name": "displayParameters.rightRotation",
             "description": "右回転",
-            "type": "Unknown"
+            "type": "Rotation"
           },
           {
             "name": "displayParameters.billboard",
             "description": "ビルボード",
-            "type": "Unknown"
+            "type": "Billboard"
           },
           {
             "name": "displayParameters.interpolationDuration",
             "description": "補間時間",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.interpolationDelay",
             "description": "補間遅延",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.teleportDuration",
             "description": "テレポート時間",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "displayParameters.shadowRadius",
             "description": "影の半径",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "displayParameters.shadowStrength",
             "description": "影の強さ",
-            "type": "Unknown"
+            "type": "Float"
           },
           {
             "name": "displayParameters.brightness",
@@ -861,57 +861,57 @@
           {
             "name": "interactionScale",
             "description": "クリックの判定範囲。",
-            "type": "Unknown"
+            "type": "Vector"
           },
           {
             "name": "onSpawn",
             "description": "スポーン時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onTick",
             "description": "1Tick毎に実行されるアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onInteract",
             "description": "クリック時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onHover",
             "description": "ホバー時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "onUnhover",
             "description": "ホバー解除時のアクション。",
-            "type": "Unknown"
+            "type": "Actions"
           },
           {
             "name": "interactionDistance",
             "description": "クリックの判定距離。",
-            "type": "Unknown"
+            "type": "Double"
           },
           {
             "name": "switchHover",
             "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "visualizeHitbox",
             "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "visibleAll",
             "description": "全てのプレイヤーに表示するか。",
-            "type": "Unknown"
+            "type": "Boolean"
           },
           {
             "name": "public",
             "description": "他のプレイヤーが操作できるようにするか。",
-            "type": "Unknown"
+            "type": "Boolean"
           }
         ]
       }
@@ -931,28 +931,48 @@
         "parameters": []
       },
       {
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
+        "parameters": []
+      },
+      {
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
+        "parameters": []
+      },
+      {
+        "name": "ItemDisplayTransform",
+        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "parameters": []
+      },
+      {
+        "name": "ItemStack",
+        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}",
+        "parameters": []
+      },
+      {
         "name": "Vector",
         "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
         "parameters": []
       },
       {
-        "name": "Execute",
-        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
         "parameters": []
       },
       {
-        "name": "Vector3f",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "Color",
+        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
         "parameters": []
       },
       {
-        "name": "Location",
-        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "Long",
-        "description": "整数\n\n例:\n  1000",
+        "name": "BlockData",
+        "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
         "parameters": []
       },
       {
@@ -966,13 +986,18 @@
         "parameters": []
       },
       {
+        "name": "Long",
+        "description": "整数\n\n例:\n  1000",
+        "parameters": []
+      },
+      {
         "name": "String",
         "description": "文字列\n\n例:\n  \"example\"",
         "parameters": []
       },
       {
-        "name": "Color",
-        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
+        "name": "Execute",
+        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
         "parameters": []
       },
       {
@@ -981,28 +1006,18 @@
         "parameters": []
       },
       {
+        "name": "Location",
+        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Vector3f",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
         "name": "Number",
         "description": "数値\n\n例:\n  1000",
-        "parameters": []
-      },
-      {
-        "name": "Component",
-        "description": "装飾可能な文字列\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
-        "parameters": []
-      },
-      {
-        "name": "BlockData",
-        "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
-        "parameters": []
-      },
-      {
-        "name": "ItemStack",
-        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}",
-        "parameters": []
-      },
-      {
-        "name": "AsyncExecute",
-        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
         "parameters": []
       },
       {
@@ -1013,6 +1028,16 @@
       {
         "name": "Boolean",
         "description": "真偽値\n\n例:\n  true/false",
+        "parameters": []
+      },
+      {
+        "name": "AsyncExecute",
+        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "Component",
+        "description": "装飾可能な文字列\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
         "parameters": []
       }
     ]
@@ -1025,7 +1050,7 @@
         "description": "与えられた数値の中で最大の値を返す。",
         "parameters": [
           {
-            "name": "0. numbers",
+            "name": "0.numbers",
             "description": "数値のリスト。少なくとも1つの数値が必要。",
             "type": "Unknown"
           }
@@ -1036,7 +1061,7 @@
         "description": "与えられた数値の小数点以下を切り捨てた値を返す。",
         "parameters": [
           {
-            "name": "0. number",
+            "name": "0.number",
             "description": "切り捨てる対象の数値。",
             "type": "Unknown"
           }
