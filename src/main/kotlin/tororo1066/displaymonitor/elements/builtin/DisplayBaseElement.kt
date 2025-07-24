@@ -7,14 +7,14 @@ import org.bukkit.entity.Display
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
-import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.elements.AbstractElement
+import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
@@ -118,6 +118,25 @@ abstract class DisplayBaseElement : AbstractElement() {
         val dropInteract = arrayListOf<UUID>()
 
         sEvent.register<PlayerInteractEvent> { e ->
+            if (!public && e.player.uniqueId != entity?.uniqueId) return@register
+            if (dropInteract.contains(e.player.uniqueId)) return@register
+            if (Utils.isPointInsideRotatedRect(
+                    e.player,
+                    this.entity,
+                    interactionScale,
+                    interactionDistance,
+                )
+            ) {
+                e.isCancelled = true
+                runExecute(onInteract) {
+                    it.target = e.player
+                    it.location = e.player.location
+                }
+            }
+        }
+
+        // エンティティをクリックした時はPlayerInteractEventが発火しないため、PlayerInteractEntityEventを使用
+        sEvent.register<PlayerInteractEntityEvent> { e ->
             if (!public && e.player.uniqueId != entity?.uniqueId) return@register
             if (dropInteract.contains(e.player.uniqueId)) return@register
             if (Utils.isPointInsideRotatedRect(
