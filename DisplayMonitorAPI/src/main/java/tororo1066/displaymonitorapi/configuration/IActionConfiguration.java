@@ -36,7 +36,7 @@ public interface IActionConfiguration {
      * @param context {@link IActionContext}
      * @param async 非同期で実行するかどうか
      * @param actionName Actionの名前
-     * @return CompletableFuture<Void> 完了時に返されるFuture
+     * @return 完了時に返されるFuture
      */
     @NotNull CompletableFuture<@NotNull Void> run(@NotNull IActionContext context, boolean async, @Nullable String actionName);
 }

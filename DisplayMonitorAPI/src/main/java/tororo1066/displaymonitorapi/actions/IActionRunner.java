@@ -23,7 +23,7 @@ public interface IActionRunner {
      * @param async           非同期で実行するかどうか
      * @param disableAutoStop 自動停止を無効にするかどうか
      *
-     * @return CompletableFuture<Void> 完了時に返されるFuture
+     * @return 完了時に返されるFuture
      */
     @NotNull CompletableFuture<@NotNull Void> run(
             @NotNull IAdvancedConfiguration root,
