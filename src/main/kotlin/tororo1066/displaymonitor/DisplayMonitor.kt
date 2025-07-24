@@ -5,7 +5,9 @@ import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
 import net.kyori.adventure.translation.Translator
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.persistence.PersistentDataType
 import tororo1066.displaymonitor.commands.DisplayCommands
 import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.elements.SettableProcessor
@@ -52,6 +54,18 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
 
     override fun onStart() {
         DisplayMonitorInstance.setInstance(this)
+
+        Bukkit.getWorlds().forEach { world ->
+            world.entities.forEach { entity ->
+                if (entity.persistentDataContainer.has(
+                        NamespacedKey(this, "displayentity"),
+                        PersistentDataType.STRING
+                    )
+                ) {
+                    entity.remove()
+                }
+            }
+        }
 
         Bukkit.getScheduler().runTaskLater(this, Runnable {
             FunctionStorage
