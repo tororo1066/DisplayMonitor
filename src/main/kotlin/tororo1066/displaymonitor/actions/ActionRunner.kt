@@ -22,8 +22,8 @@ object ActionRunner: IActionRunner {
         actionName: String?,
         async: Boolean,
         disableAutoStop: Boolean
-    ) {
-        if (actionList.isEmpty()) return
+    ): CompletableFuture<Void> {
+        if (actionList.isEmpty()) return CompletableFuture.completedFuture(null)
 
         if (disableAutoStop) {
             context.publicContext.shouldAutoStop = false
@@ -129,7 +129,7 @@ object ActionRunner: IActionRunner {
         }
 
         if (async) {
-            CompletableFuture.runAsync {
+            return CompletableFuture.runAsync {
                 invokeActions()
             }.exceptionally {
                 DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", it.message))
@@ -143,6 +143,7 @@ object ActionRunner: IActionRunner {
                 DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
                 e.printStackTrace()
             }
+            return CompletableFuture.completedFuture(null)
         }
     }
 }

@@ -5,6 +5,7 @@ import tororo1066.displaymonitor.storage.VariableStorage
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IActionConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import java.util.concurrent.CompletableFuture
 
 class ActionConfiguration(private val key: String, configuration: IAdvancedConfigurationSection): IActionConfiguration {
 
@@ -44,7 +45,7 @@ class ActionConfiguration(private val key: String, configuration: IAdvancedConfi
         return triggers
     }
 
-    override fun run(context: IActionContext, async: Boolean, actionName: String?) {
+    override fun run(context: IActionContext, async: Boolean, actionName: String?): CompletableFuture<Void> {
         val root = context.configuration ?: AdvancedConfiguration()
         val newActions = mutableListOf<AdvancedConfigurationSection>()
         actions.forEach {
@@ -54,7 +55,7 @@ class ActionConfiguration(private val key: String, configuration: IAdvancedConfi
                 }
             })
         }
-        ActionRunner.run(root, newActions, context, actionName, async = async, false)
+        return ActionRunner.run(root, newActions, context, actionName, async = async, false)
     }
 
     override fun toString(): String {
