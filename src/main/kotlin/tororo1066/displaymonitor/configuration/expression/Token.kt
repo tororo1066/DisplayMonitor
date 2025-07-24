@@ -24,59 +24,6 @@ private val precedence = mapOf(
     "&&" to 1, "||" to 1
 )
 
-
-
-//fun tokenize(input: String): List<Token> {
-//    val tokens = mutableListOf<Token>()
-//    // 正規表現
-//    val regex = Regex("""\s*(@?[a-zA-Z_][a-zA-Z0-9_]*|[-+]?\d+(\.\d+)?|"([^"\\]|\\.)*"|\+|-|%|\*|/|\(|\)|,|==|!=|>|<|>=|<=|\s+|&&|\|\||#[0-9a-fA-F]{3,8})\s*""")
-//    val rawTokens = regex.findAll(input).map { it.groupValues[1] }.toList()
-//
-//    var i = 0
-//    while (i < rawTokens.size) {
-//        val token = rawTokens[i]
-//        when {
-//            // クォート付き文字列
-//            token.startsWith("\"") -> {
-//                val content = token.drop(1).dropLast(1).replace("\\\"", "\"").replace("\\n", "\n")
-//                tokens += Token.StringLiteral(content)
-//            }
-//            // 数値
-//            token.matches(Regex("""-?\d+(\.\d+)?""")) -> {
-//                tokens += Token.Number(token.toDouble())
-//            }
-//            // 関数 (@func)
-//            token.startsWith("@") -> {
-//                val name = token.substring(1)
-//                val next = rawTokens.getOrNull(i + 1)
-//                if (next == "(") {
-//                    tokens += Token.Function(FuncMeta(name, 0))
-//                } else {
-//                    throw IllegalArgumentException("Invalid function call: $token")
-//                }
-//            }
-//            // 演算子
-//            token in listOf("+", "-", "*", "/", "%") -> tokens += Token.Operator(token)
-//            token == "(" -> tokens += Token.LParen
-//            token == ")" -> tokens += Token.RParen
-//            token == "," -> tokens += Token.Comma
-//            // 比較演算子
-//            token in listOf("==", "!=", ">", "<", ">=", "<=") -> tokens += Token.Comparison(token)
-//            // 論理演算子
-//            token in listOf("&&", "||") -> tokens += Token.Logical(token)
-//            // その他 → 変数 or 非クォート文字列 → StringLiteralとして解釈
-//            else -> {
-//                if (token.isNotEmpty()) {
-//                    tokens += Token.StringLiteral(token)
-//                }
-//            }
-//        }
-//        i++
-//    }
-//
-//    return tokens
-//}
-
 fun tokenize(input: String): List<Token> {
     var pos = 0
     val tokens = mutableListOf<Token>()
@@ -100,7 +47,7 @@ fun tokenize(input: String): List<Token> {
             c.isWhitespace() -> {
                 pos++
             }
-            c.isDigit() || c == '.' || (c == '-' && (tokens.isEmpty() || tokens.last() is Token.Operator || tokens.last() is Token.LParen)) -> {
+            c.isDigit() || c == '.' || (c == '-' && (tokens.isEmpty() || tokens.last() is Token.Operator || tokens.last() is Token.LParen || tokens.last() is Token.Comma)) -> {
                 val start = pos
                 if (c == '-' && pos + 1 < input.length && input[pos + 1].isDigit()) {
                     pos++ // Skip '-' for negative numbers
@@ -417,6 +364,49 @@ fun evaluateRPN(
 
     return stack.singleOrNull() ?: throw IllegalStateException("Invalid expression")
 }
+
+fun getParametersValue(
+    key: String,
+    parameters: Map<String, Any>
+): Any? {
+    val regex = Regex("""\b([a-zA-Z_][a-zA-Z0-9_]*)((\[[^\[\]]+])+)""")
+    val bracketContentRegex = Regex("""\[([^\[\]]+)]""")
+
+    val matchResult = regex.find(key) ?: return parameters[key]
+    val baseKey = matchResult.groupValues[1]
+    val brackets = matchResult.groupValues[2]
+
+    if (brackets.count { it == '[' } != brackets.count { it == ']' }) {
+        throw IllegalArgumentException("Mismatched brackets in key: $key")
+    }
+
+    val nestedKeys = bracketContentRegex.findAll(brackets).map { it.groupValues[1] }.toList()
+
+    var currentValue: Any? = parameters[baseKey]
+    for (nestedKey in nestedKeys) {
+        val evaluatedKey = evalExpressionRecursive(nestedKey, parameters).toString()
+
+        when (currentValue) {
+            is Map<*, *> -> {
+                currentValue = currentValue[evaluatedKey]
+            }
+            is List<*> -> {
+                val index = evaluatedKey.toIntOrNull()
+                if (index != null && index in currentValue.indices) {
+                    currentValue = currentValue[index]
+                } else {
+                    throw IllegalArgumentException("Invalid index $nestedKey for list: $key")
+                }
+            }
+            else -> {
+                throw IllegalArgumentException("Cannot access nested key '$nestedKey' in value of type '${currentValue?.javaClass?.simpleName}' for key: $key")
+            }
+        }
+    }
+
+    return currentValue
+}
+
 fun expandVariablesRecursive(
     input: String,
     parameters: Map<String, Any>,
@@ -445,16 +435,6 @@ fun expandVariablesRecursive(
                 }
 
                 if (braceCount == 0) {
-//                    val expr = result.substring(i + 2, j - 1)
-//                    val evaluatedKey = try {
-//                        val key = evalExpressionRecursive(
-//                            expr,
-//                            parameters
-//                        ).toString()
-//                        parameters[key]?.toString() ?: "\${$expr}"
-//                    } catch (_: Exception) {
-//                        "\${$expr}"
-//                    }
 
                     val expr = result.substring(i + 2, j - 1)
                     val parts = expr.split(":", limit = 2)
@@ -463,7 +443,7 @@ fun expandVariablesRecursive(
 
                     val evaluatedValue = try {
                         val evaluated = evalExpressionRecursive(key, parameters).toString()
-                        val value = parameters[evaluated]
+                        val value = getParametersValue(evaluated, parameters)
                         if (value != null) {
                             value.toString()
                         } else {
