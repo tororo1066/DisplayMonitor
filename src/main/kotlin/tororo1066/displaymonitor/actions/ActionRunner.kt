@@ -33,6 +33,7 @@ object ActionRunner: IActionRunner {
         root.set("temp", actionList)
         val newActionList = root.getAdvancedConfigurationSectionList("temp")
 
+        root.parameters.putAll(context.publicContext.prepareParameters)
         root.parameters.putAll(context.prepareParameters)
         root.parameters.putAll(context.getDefaultParameters())
         val caster = context.caster

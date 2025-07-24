@@ -48,6 +48,8 @@ public interface IPublicActionContext {
 
     void setParameters(@NotNull Map<@NotNull String, @NotNull Object> parameters);
 
+    @NotNull Map<@NotNull String, @NotNull Object> getPrepareParameters();
+
     @NotNull IAbstractWorkspace getWorkspace();
 
     void setWorkspace(@NotNull IAbstractWorkspace workspace);
