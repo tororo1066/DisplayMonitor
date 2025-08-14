@@ -171,7 +171,7 @@ object SettableProcessor: ISettableProcessor {
             }
 
             Location::class.java -> {
-                return this.getLocation(key) as? Type
+                return this.getStringLocation(key) as? Type
             }
 
             else -> {

@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.persistence.PersistentDataType
+import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitor.commands.DisplayCommands
 import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.elements.SettableProcessor
@@ -19,6 +20,7 @@ import tororo1066.displaymonitor.storage.WorkspaceStorage
 import tororo1066.displaymonitorapi.IDisplayMonitor
 import tororo1066.displaymonitorapi.IDisplayMonitor.DisplayMonitorInstance
 import tororo1066.displaymonitorapi.IDisplayUtils
+import tororo1066.displaymonitorapi.actions.IActionRunner
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.storage.IElementStorage
@@ -166,11 +168,19 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
         return WorkspaceStorage
     }
 
+    override fun getFunctionStorage(): FunctionStorage {
+        return FunctionStorage
+    }
+
     override fun getSettableProcessor(): ISettableProcessor {
         return SettableProcessor
     }
 
     override fun getUtils(): IDisplayUtils {
         return Utils
+    }
+
+    override fun getActionRunner(): IActionRunner {
+        return ActionRunner
     }
 }

@@ -18,8 +18,8 @@ object Config {
     val subConfigs = ArrayList<AbstractConfig>()
 
     fun load() {
-        SJavaPlugin.Companion.plugin.reloadConfig()
-        val config = SJavaPlugin.Companion.plugin.config
+        SJavaPlugin.plugin.reloadConfig()
+        val config = SJavaPlugin.plugin.config
 
         prefix = config.getRichMessage("prefix", prefix)!!
         debug = config.getBoolean("debug", false)

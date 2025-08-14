@@ -2,9 +2,11 @@ package tororo1066.displaymonitorapi;
 
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import tororo1066.displaymonitorapi.actions.IActionRunner;
 import tororo1066.displaymonitorapi.elements.ISettableProcessor;
 import tororo1066.displaymonitorapi.storage.IActionStorage;
 import tororo1066.displaymonitorapi.storage.IElementStorage;
+import tororo1066.displaymonitorapi.storage.IFunctionStorage;
 import tororo1066.displaymonitorapi.storage.IWorkspaceStorage;
 
 public interface IDisplayMonitor extends Plugin {
@@ -39,6 +41,8 @@ public interface IDisplayMonitor extends Plugin {
      */
     @NotNull IWorkspaceStorage getWorkspaceStorage();
 
+    @NotNull IFunctionStorage getFunctionStorage();
+
     /**
      * SettableProcessorを取得する
      * @return {@link ISettableProcessor}
@@ -46,4 +50,6 @@ public interface IDisplayMonitor extends Plugin {
     @NotNull ISettableProcessor getSettableProcessor();
 
     @NotNull IDisplayUtils getUtils();
+
+    @NotNull IActionRunner getActionRunner();
 }
