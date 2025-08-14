@@ -21,9 +21,8 @@ import java.io.File
 class RestoreDataAction: AbstractAction() {
 
     var storeType: StoreDataAction.StoreType = StoreDataAction.StoreType.RAW
-    val paths = mutableListOf<String>()
-
-    private val separator = IAdvancedConfiguration.SEPARATOR
+    var scope: ModifyVariableAction.Scope = ModifyVariableAction.Scope.LOCAL
+    var keys = listOf<String>()
 
     override fun run(context: IActionContext): ActionResult {
         val target = context.target ?: return ActionResult.targetRequired()
@@ -32,15 +31,13 @@ class RestoreDataAction: AbstractAction() {
         when (storeType) {
             StoreDataAction.StoreType.RAW -> {
                 val data = StoreDataAction.rawData[target.uniqueId] ?: return ActionResult.noParameters("Data not found")
-                paths.forEach { path ->
-                    val split = path.split(separator)
-                    var current: HashMap<*, *> = data
-                    for (i in 0 until split.size - 1) {
-                        current = current[split[i]] as? HashMap<*, *> ?: return@forEach
+                keys.forEach { key ->
+                    val value = data[key] ?: return@forEach
+                    if (scope == ModifyVariableAction.Scope.GLOBAL) {
+                        context.publicContext.parameters[key] = value
+                    } else {
+                        configuration.parameters[key] = value
                     }
-                    val key = split.last()
-                    val value = current[key] ?: return@forEach
-                    configuration.parameters[key] = value
                 }
             }
             StoreDataAction.StoreType.FILE -> {
@@ -49,10 +46,17 @@ class RestoreDataAction: AbstractAction() {
                 if (!file.exists()) {
                     return ActionResult.noParameters("File not found")
                 }
-                val yml = YamlConfiguration.loadConfiguration(file)
-                paths.forEach { path ->
-                    val value = yml.get(path) ?: return@forEach
-                    configuration.parameters[path] = value
+                val yml = YamlConfiguration().apply {
+                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+                    load(file)
+                }
+                keys.forEach { key ->
+                    val value = yml.get(key) ?: return@forEach
+                    if (scope == ModifyVariableAction.Scope.GLOBAL) {
+                        context.publicContext.parameters[key] = value
+                    } else {
+                        configuration.parameters[key] = value
+                    }
                 }
             }
             StoreDataAction.StoreType.DATABASE -> {
@@ -64,11 +68,17 @@ class RestoreDataAction: AbstractAction() {
                     return ActionResult.noParameters("Data not found")
                 }
                 val data = result[0].getNullableString("data") ?: return ActionResult.noParameters("Data not found")
-                val json = JsonConfiguration()
+                val json = JsonConfiguration().apply {
+                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+                }
                 json.loadFromString(data)
-                paths.forEach { path ->
-                    val value = json.get(path) ?: return@forEach
-                    configuration.parameters[path] = value
+                keys.forEach { key ->
+                    val value = json.get(key) ?: return@forEach
+                    if (scope == ModifyVariableAction.Scope.GLOBAL) {
+                        context.publicContext.parameters[key] = value
+                    } else {
+                        configuration.parameters[key] = value
+                    }
                 }
             }
         }
@@ -78,26 +88,7 @@ class RestoreDataAction: AbstractAction() {
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         storeType = section.getEnum("storeType", StoreDataAction.StoreType::class.java, StoreDataAction.StoreType.RAW)
-        val sectionPath = section.getAdvancedConfigurationSection("path")
-        if (sectionPath != null) {
-            fun deep(section: IAdvancedConfigurationSection, path: String) {
-                section.getKeys(false).forEach { key ->
-                    section.getAdvancedConfigurationSection(key)?.let {
-                        deep(it, "${path}${separator}${key}")
-                    } ?: run {
-                        val string = section.getString(key, "") ?: ""
-                        if (string.isNotEmpty()) {
-                            paths.add("${path}${separator}${key}${separator}${string}")
-                        }
-                    }
-                }
-            }
-            deep(sectionPath, "")
-        } else {
-            val string = section.getString("path", "") ?: ""
-            if (string.isNotEmpty()) {
-                paths.add(string)
-            }
-        }
+        scope = section.getEnum("scope", ModifyVariableAction.Scope::class.java, ModifyVariableAction.Scope.LOCAL)
+        keys = section.getStringList("keys")
     }
 }

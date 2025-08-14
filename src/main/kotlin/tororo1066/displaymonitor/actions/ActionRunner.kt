@@ -8,7 +8,6 @@ import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.actions.IActionRunner
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
-import tororo1066.tororopluginapi.SJavaPlugin
 import java.util.concurrent.CompletableFuture
 
 object ActionRunner: IActionRunner {
@@ -33,7 +32,6 @@ object ActionRunner: IActionRunner {
         root.set("temp", actionList)
         val newActionList = root.getAdvancedConfigurationSectionList("temp")
 
-        root.parameters.putAll(context.publicContext.prepareParameters)
         root.parameters.putAll(context.prepareParameters)
         root.parameters.putAll(context.getDefaultParameters())
         val caster = context.caster

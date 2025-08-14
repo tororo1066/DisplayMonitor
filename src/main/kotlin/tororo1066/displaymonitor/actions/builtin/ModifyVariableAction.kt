@@ -22,12 +22,12 @@ class ModifyVariableAction: AbstractAction() {
         name = "variable",
         description = "変更する変数の名前。"
     )
-    var variable = ""
+    var variable: String? = null
     @ParameterDoc(
         name = "value",
         description = "変数に代入する値。"
     )
-    var value: Any = ""
+    var value: Any? = null
     @ParameterDoc(
         name = "variables",
         description = "変数のマップ。",
@@ -40,6 +40,22 @@ class ModifyVariableAction: AbstractAction() {
     )
     var scope: Scope = Scope.LOCAL
 
+    private fun formatValue(value: Any): Any {
+        return when (value) {
+            is IAdvancedConfigurationSection -> {
+                value.getEvaluatedValues(true)
+                    .mapNotNull { (k, v) -> k to formatValue(v ?: return@mapNotNull null) }
+                    .toMap()
+            }
+            is List<*> -> {
+                value.mapNotNull { formatValue(it ?: return@mapNotNull null) }
+            }
+            else -> {
+                value
+            }
+        }
+    }
+
     override fun run(context: IActionContext): ActionResult {
         val parameters = if (scope == Scope.GLOBAL) {
             context.publicContext.parameters
@@ -47,17 +63,17 @@ class ModifyVariableAction: AbstractAction() {
             context.configuration?.parameters ?: return ActionResult.failed("No local parameters found")
         }
         variables.forEach { (key, value) ->
-            parameters[key] = value
+            parameters[key] = formatValue(value)
         }
         return ActionResult.success()
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
-        variable = section.getString("variable", "")!!
-        value = section.get("value", "")!!
+        variable = section.getString("variable")
+        value = section.get("value")
 
         variables.clear()
-        variables[variable] = value
+
         section.getAdvancedConfigurationSection("variables")?.let { variablesSection ->
             variablesSection.getKeys(false).forEach { key ->
                 variables[key] = variablesSection.get(key) ?: ""

@@ -18,6 +18,7 @@ import tororo1066.displaymonitor.storage.VariableStorage
 import tororo1066.displaymonitor.storage.WorkspaceStorage
 import tororo1066.displaymonitorapi.IDisplayMonitor
 import tororo1066.displaymonitorapi.IDisplayMonitor.DisplayMonitorInstance
+import tororo1066.displaymonitorapi.IDisplayUtils
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.storage.IElementStorage
@@ -167,5 +168,9 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
 
     override fun getSettableProcessor(): ISettableProcessor {
         return SettableProcessor
+    }
+
+    override fun getUtils(): IDisplayUtils {
+        return Utils
     }
 }

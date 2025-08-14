@@ -53,8 +53,16 @@ class SummonElement: AbstractAction() {
     )
     var overrideParameters: IAdvancedConfigurationSection? = null
 
+    @ParameterDoc(
+        name = "lockPitch",
+        description = "Elementのピッチを0に固定するか。"
+    )
     var lockPitch = false
 
+    @ParameterDoc(
+        name = "forceSync",
+        description = "強制的に同期的に実行するか。"
+    )
     var forceSync = false
 
     override fun run(context: IActionContext): ActionResult {

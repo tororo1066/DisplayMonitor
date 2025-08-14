@@ -117,26 +117,26 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
 
     override fun getDefaultParameters(): MutableMap<String, Any> {
         val map = HashMap<String, Any>()
-        caster?.let {
-            map["caster.name"] = it.name
-            map["caster.uuid"] = it.uniqueId.toString()
-            map["caster.location.x"] = it.location.x
-            map["caster.location.y"] = it.location.y
-            map["caster.location.z"] = it.location.z
-            map["caster.location.yaw"] = it.location.yaw
-            map["caster.location.pitch"] = it.location.pitch
-            map["caster.location.world"] = it.location.world.name
-        }
-        target?.let {
-            map["target.name"] = it.name
-            map["target.uuid"] = it.uniqueId.toString()
-            map["target.location.x"] = it.location.x
-            map["target.location.y"] = it.location.y
-            map["target.location.z"] = it.location.z
-            map["target.location.yaw"] = it.location.yaw
-            map["target.location.pitch"] = it.location.pitch
-            map["target.location.world"] = it.location.world.name
-        }
+//        caster?.let {
+//            map["caster.name"] = it.name
+//            map["caster.uuid"] = it.uniqueId.toString()
+//            map["caster.location.x"] = it.location.x
+//            map["caster.location.y"] = it.location.y
+//            map["caster.location.z"] = it.location.z
+//            map["caster.location.yaw"] = it.location.yaw
+//            map["caster.location.pitch"] = it.location.pitch
+//            map["caster.location.world"] = it.location.world.name
+//        }
+//        target?.let {
+//            map["target.name"] = it.name
+//            map["target.uuid"] = it.uniqueId.toString()
+//            map["target.location.x"] = it.location.x
+//            map["target.location.y"] = it.location.y
+//            map["target.location.z"] = it.location.z
+//            map["target.location.yaw"] = it.location.yaw
+//            map["target.location.pitch"] = it.location.pitch
+//            map["target.location.world"] = it.location.world.name
+//        }
         location?.let {
             map["location.x"] = it.x
             map["location.y"] = it.y

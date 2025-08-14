@@ -245,7 +245,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     }
 
     override fun <T : Enum<T>> getEnum(path: String, clazz: Class<T>): T? {
-        return clazz.enumConstants.firstOrNull { it.name == getString(path)?.uppercase() }
+        return clazz.enumConstants.firstOrNull { getString(path)?.equals(it.name, ignoreCase = true) == true }
     }
 
     override fun <T : Enum<T>> getEnum(path: String, clazz: Class<T>, def: T): T {

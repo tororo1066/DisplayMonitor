@@ -19,12 +19,13 @@ import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Function
 
 object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
-    val contextStorage = mutableMapOf<UUID, MutableMap<UUID, IActionContext>>()
-    val contextByName = mutableMapOf<String, UUID>()
+    val contextStorage = ConcurrentHashMap<UUID, MutableMap<UUID, IActionContext>>()
+    val contextByName = ConcurrentHashMap<String, UUID>()
 
     init {
         actions["SummonElement"] = SummonElement::class.java
@@ -55,6 +56,7 @@ object ActionStorage: IActionStorage {
         actions["Package"] = PackageAction::class.java
         actions["SetWorkspace"] = SetWorkspaceAction::class.java
         actions["PlaySound"] = PlaySoundAction::class.java
+        actions["AttachEntity"] = AttachEntityAction::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 

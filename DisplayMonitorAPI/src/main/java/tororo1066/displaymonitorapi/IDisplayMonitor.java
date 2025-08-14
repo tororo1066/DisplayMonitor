@@ -44,4 +44,6 @@ public interface IDisplayMonitor extends Plugin {
      * @return {@link ISettableProcessor}
      */
     @NotNull ISettableProcessor getSettableProcessor();
+
+    @NotNull IDisplayUtils getUtils();
 }

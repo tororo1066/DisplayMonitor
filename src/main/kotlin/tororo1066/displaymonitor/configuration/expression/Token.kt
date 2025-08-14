@@ -10,6 +10,8 @@ sealed class Token {
     object LParen : Token()
     object RParen : Token()
     object Comma : Token()
+    data class Whitespace(val count: Int = 1) : Token()
+
     sealed class Symbolic(open val symbol: String) : Token()
     data class Operator(override val symbol: String) : Symbolic(symbol)
     data class Comparison(override val symbol: String) : Symbolic(symbol)
@@ -45,7 +47,12 @@ fun tokenize(input: String): List<Token> {
         val c = input[pos]
         when {
             c.isWhitespace() -> {
-                pos++
+                var count = 0
+                while (pos < input.length && input[pos].isWhitespace()) {
+                    count++
+                    pos++
+                }
+                tokens += Token.Whitespace(count)
             }
             c.isDigit() || c == '.' || (c == '-' && (tokens.isEmpty() || tokens.last() is Token.Operator || tokens.last() is Token.LParen || tokens.last() is Token.Comma)) -> {
                 val start = pos
@@ -167,6 +174,9 @@ fun toRPN(tokens: List<Token>): List<Token> {
     var i = 0
     while (i < tokens.size) {
         when (val token = tokens[i]) {
+            is Token.Whitespace -> {
+                // 空白は無視
+            }
             is Token.Number, is Token.StringLiteral -> output += token
             is Token.Function -> {
                 stack.push(token)
@@ -267,16 +277,16 @@ private fun asBoolean(value: Any): Boolean {
 
 fun evalExpressionRecursive(
     expr: String,
-    variables: Map<String, Any>
+    parameters: Map<String, Any>
 ): Any {
     try {
-        val expandExpr = expandVariablesRecursive(expr, variables)
+        val expandExpr = expandVariablesRecursive(expr, parameters)
         try {
             val tokens = tokenize(expandExpr)
             val rpn = toRPN(tokens)
-            return evaluateRPN(rpn) { innerExpr ->
+            return evaluateRPN(rpn, parameters) { innerExpr ->
                 // ネスト式（関数引数など）を再帰的に評価
-                evalExpressionRecursive(innerExpr, variables)
+                evalExpressionRecursive(innerExpr, parameters)
             }
         } catch (_: Exception) {
             return expandExpr
@@ -296,12 +306,16 @@ private fun formatNumber(value: Any): Any {
 
 fun evaluateRPN(
     rpn: List<Token>,
+    parameters: Map<String, Any>,
     nestedEval: (String) -> Any
 ): Any {
     val stack = ArrayDeque<Any>()
 
     for (token in rpn) {
         when (token) {
+            is Token.Whitespace -> {
+                // 空白は無視
+            }
             is Token.Number -> {
                 stack.push(formatNumber(token.value))
             }
@@ -318,7 +332,7 @@ fun evaluateRPN(
                     }
                     it
                 }
-                stack.push(formatNumber(func.eval(evaluatedArgs)))
+                stack.push(formatNumber(func.eval(evaluatedArgs, parameters)))
             }
             is Token.Operator -> {
                 val b = stack.pop()

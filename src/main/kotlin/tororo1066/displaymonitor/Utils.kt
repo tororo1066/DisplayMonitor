@@ -2,18 +2,21 @@ package tororo1066.displaymonitor
 
 import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
+import tororo1066.displaymonitorapi.IDisplayUtils
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import java.io.File
 import java.net.JarURLConnection
 import java.net.URISyntaxException
 import java.net.URL
 import java.util.jar.JarFile
 
-object Utils {
+object Utils: IDisplayUtils {
 
     fun AdvancedConfiguration.mergeConfiguration(second: ConfigurationSection): AdvancedConfiguration {
         val yaml = this.clone()
@@ -91,5 +94,14 @@ object Utils {
         }
 
         return classes
+    }
+
+    override fun toAdvancedConfiguration(config: YamlConfiguration): IAdvancedConfiguration {
+        val advancedConfig = AdvancedConfiguration()
+        config.getValues(true).forEach { (key, value) ->
+            advancedConfig.set(key, value)
+        }
+
+        return advancedConfig
     }
 }

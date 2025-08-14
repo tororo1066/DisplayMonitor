@@ -45,7 +45,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
         fun runLoaded(sender: CommandSender, args: CommandArguments) {
             try {
                 val actionName = args.getNullableArgument("actionName", String::class.java)
-                if (ActionStorage.contextByName.containsKey(actionName)) {
+                if (actionName != null && ActionStorage.contextByName.containsKey(actionName)) {
                     sender.sendMessage(Component.text("Action is already running"))
                     return
                 }

@@ -8,7 +8,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
 @ClassDoc(
     name = "Stop",
-    description = "現在のセクションの実行を停止する。\nAsynchronousやRepeatなどでセクションが分岐している場合、そのセクションのみが停止される。 \n非推奨。"
+    description = "現在のセクションの実行を停止する。\nAsynchronousやRepeatなどでセクションが分岐している場合、そのセクションのみが停止される。"
 )
 class StopAction: AbstractAction() {
 

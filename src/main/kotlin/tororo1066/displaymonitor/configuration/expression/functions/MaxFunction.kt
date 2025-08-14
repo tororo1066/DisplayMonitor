@@ -17,7 +17,7 @@ class MaxFunction: AbstractFunction("max") {
         )
     }
 
-    override fun eval(args: List<Any>): Any {
+    override fun eval(args: List<Any>, parameters: Map<String, Any>): Any {
         if (args.isEmpty()) {
             throw IllegalArgumentException("At least one argument is required for max function.")
         }

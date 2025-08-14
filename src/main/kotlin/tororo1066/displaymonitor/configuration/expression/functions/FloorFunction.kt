@@ -19,7 +19,7 @@ class FloorFunction: AbstractFunction("floor") {
         )
     }
 
-    override fun eval(args: List<Any>): Any {
+    override fun eval(args: List<Any>, parameters: Map<String, Any>): Any {
         return floor((args[0] as Number).toDouble())
     }
 }

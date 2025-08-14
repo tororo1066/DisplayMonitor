@@ -11,7 +11,6 @@ class PublicActionContext: IPublicActionContext {
     private var stop = false
     private var shouldAutoStop = true
     private var parameters: MutableMap<String, Any> = mutableMapOf()
-    private val prepareParameters: MutableMap<String, Any> = mutableMapOf()
     private var workspace: IAbstractWorkspace = WorkspaceStorage.DisplayMonitorWorkspace.instance
 
     override fun getElements(): HashMap<String, IAbstractElement> {
@@ -40,10 +39,6 @@ class PublicActionContext: IPublicActionContext {
 
     override fun setParameters(parameters: MutableMap<String, Any>) {
         this.parameters = parameters
-    }
-
-    override fun getPrepareParameters(): Map<String, Any> {
-        return prepareParameters
     }
 
     override fun getWorkspace(): IAbstractWorkspace {

@@ -8,6 +8,7 @@ import tororo1066.displaymonitor.config.sub.StoreDataConfig
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.database.SDBCondition
@@ -25,14 +26,17 @@ class StoreDataAction: AbstractAction() {
     }
 
     var storeType: StoreType = StoreType.RAW
-    var data: IAdvancedConfigurationSection? = null
+    var data: HashMap<String, Any> = HashMap()
 
     override fun run(context: IActionContext): ActionResult {
         val target = context.target ?: return ActionResult.targetRequired()
-        val data = data ?: return ActionResult.noParameters("")
+        val data = data
         when (storeType) {
             StoreType.RAW -> {
-                rawData.computeIfAbsent(target.uniqueId) { HashMap() }.putAll(data.getValues(true))
+                val rawDataMap = rawData.getOrPut(target.uniqueId) { HashMap() }
+                data.forEach { (key, value) ->
+                    rawDataMap[key] = value
+                }
             }
             StoreType.FILE -> {
                 checkAsync("StoreDataAction")
@@ -43,8 +47,11 @@ class StoreDataAction: AbstractAction() {
                 if (!file.exists()) {
                     file.createNewFile()
                 }
-                val yml = YamlConfiguration.loadConfiguration(file)
-                data.getValues(true).forEach { (key, value) ->
+                val yml = YamlConfiguration().apply {
+                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+                    load(file)
+                }
+                data.forEach { (key, value) ->
                     yml.set(key, value)
                 }
                 yml.save(file)
@@ -57,23 +64,27 @@ class StoreDataAction: AbstractAction() {
                 val table = config.tableName
                 val result = database.select(table, SDBCondition().equal("uuid", target.uniqueId.toString()))
                 if (result.isEmpty()) {
-                    val json = JsonConfiguration()
-                    data.getValues(true).forEach { (key, value) ->
-                        json.set(key, value)
+                    val json = JsonConfiguration().apply {
+                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+                    }
+                    data.forEach { (key, value) ->
+                        json[key] = value
                     }
                     val jsonString = json.saveToString()
-                    return if (database.insert(table, mapOf("data" to jsonString))) {
+                    return if (database.insert(table, mapOf("uuid" to target.uniqueId.toString(), "data" to jsonString))) {
                         ActionResult.success()
                     } else {
                         ActionResult.failed("Insert failed")
                     }
                 } else {
-                    val json = JsonConfiguration()
+                    val json = JsonConfiguration().apply {
+                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+                    }
                     val row = result[0]
                     val jsonString = row.getString("data")
                     json.loadFromString(jsonString)
-                    data.getValues(true).forEach { (key, value) ->
-                        json.set(key, value)
+                    data.forEach { (key, value) ->
+                        json[key] = value
                     }
                     val newJsonString = json.saveToString()
                     return if (database.update(table, mapOf("data" to newJsonString), SDBCondition().equal("uuid", target.uniqueId.toString()))) {
@@ -90,7 +101,12 @@ class StoreDataAction: AbstractAction() {
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         storeType = section.getEnum<StoreType>("storeType", StoreType::class.java, StoreType.RAW)
-        data = section.getAdvancedConfigurationSection("data")
+        val dataList = section.getAdvancedConfigurationSectionList("data")
+        dataList.forEach { dataSection ->
+            val key = dataSection.getString("key") ?: return@forEach
+            val value = dataSection.get("value") ?: return@forEach
+            data[key] = value
+        }
     }
 
     enum class StoreType {
