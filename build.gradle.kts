@@ -75,6 +75,11 @@ tasks.register<Jar>("javadocJar") {
     from(tasks.named("javadoc"))
 }
 
+val javaComponent = components["java"] as AdhocComponentWithVariants
+javaComponent.withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) {
+    skip()
+}
+
 publishing {
     publications {
         create<MavenPublication>("plugin") {
