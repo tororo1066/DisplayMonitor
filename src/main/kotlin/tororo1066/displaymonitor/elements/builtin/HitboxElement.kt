@@ -12,7 +12,7 @@ import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import kotlin.math.max
 
-class HitboxElement: AbstractElement() {
+open class HitboxElement: AbstractElement() {
 
     override val syncGroup = false
 

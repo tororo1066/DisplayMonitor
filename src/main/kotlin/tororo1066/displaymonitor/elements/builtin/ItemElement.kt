@@ -15,7 +15,7 @@ import tororo1066.displaymonitorapi.elements.Settable
     name = "ItemElement",
     description = "アイテムを表示するElement。"
 )
-class ItemElement: DisplayBaseElement() {
+open class ItemElement: DisplayBaseElement() {
 
     @ParameterDoc(
         name = "itemStack",

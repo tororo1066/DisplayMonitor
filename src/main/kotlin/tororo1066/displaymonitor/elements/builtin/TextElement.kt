@@ -14,7 +14,7 @@ import tororo1066.displaymonitorapi.elements.Settable
     name = "TextElement",
     description = "テキストを表示するElement。"
 )
-class TextElement: DisplayBaseElement() {
+open class TextElement: DisplayBaseElement() {
 
     @ParameterDoc(
         name = "text",

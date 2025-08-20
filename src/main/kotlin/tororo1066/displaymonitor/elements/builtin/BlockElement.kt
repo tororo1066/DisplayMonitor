@@ -12,7 +12,7 @@ import tororo1066.displaymonitorapi.elements.Settable
     name = "BlockElement",
     description = "ブロックを表示するElement。"
 )
-class BlockElement: DisplayBaseElement() {
+open class BlockElement: DisplayBaseElement() {
 
     @ParameterDoc(
         name = "block",

@@ -15,7 +15,7 @@ import tororo1066.displaymonitorapi.elements.IAbstractElement
     name = "GroupElement",
     description = "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。"
 )
-class GroupElement: AbstractElement() {
+open class GroupElement: AbstractElement() {
 
     @ParameterDoc(
         name = "elements",
