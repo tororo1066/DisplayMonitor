@@ -43,8 +43,8 @@ class HitboxElement: AbstractElement() {
             min = Vector3f((loc.x - width / 2).toFloat(), (loc.y - height / 2).toFloat(), (loc.z - depth / 2).toFloat()),
             max = Vector3f((loc.x + width / 2).toFloat(), (loc.y + height / 2).toFloat(), (loc.z + depth / 2).toFloat())
         )
-        obb.rotateX(loc.pitch)
-        obb.rotateY(loc.yaw)
+        obb.rotateX(Math.toRadians(loc.pitch.toDouble()).toFloat())
+        obb.rotateY(Math.toRadians(loc.yaw.toDouble()).toFloat())
 
         if (visualizeHitbox) {
             obb.showParticle(loc.world, null)

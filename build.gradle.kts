@@ -47,21 +47,23 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("tororo1066:commandapi:$apiVersion")
     compileOnly("tororo1066:base:$apiVersion")
-    implementation("tororo1066:tororopluginapi:$apiVersion")
+    shadow("tororo1066:tororopluginapi:$apiVersion")
     compileOnly("com.mojang:brigadier:1.0.18")
-    implementation(project(":DisplayMonitorAPI"))
+    shadow(project(":DisplayMonitorAPI"))
 
-    implementation("com.dumptruckman.minecraft:JsonConfiguration:1.2-SNAPSHOT")
-    implementation("net.minidev:json-smart:2.5.2")
+    shadow("com.dumptruckman.minecraft:JsonConfiguration:1.2-SNAPSHOT")
+    shadow("net.minidev:json-smart:2.5.2")
 }
 
 tasks.withType<ShadowJar> {
     archiveClassifier.set("")
+    configurations = listOf(project.configurations.getByName("shadow"))
 }
 
 tasks.named("build") {
     dependsOn("shadowJar")
 }
+
 
 tasks.register<Jar>("sourcesJar") {
     archiveClassifier.set("sources")

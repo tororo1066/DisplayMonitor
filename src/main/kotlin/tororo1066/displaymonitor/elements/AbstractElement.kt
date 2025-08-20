@@ -24,7 +24,7 @@ abstract class AbstractElement: IAbstractElement {
     }
 
     protected fun runExecute(execute: Execute) {
-        val context = getContext() ?: return
+        val context = (getContext() ?: return).clone()
         execute(context)
     }
 

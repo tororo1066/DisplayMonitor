@@ -174,6 +174,13 @@ object SettableProcessor: ISettableProcessor {
                 return this.getStringLocation(key) as? Type
             }
 
+            AllowedPlayers::class.java -> {
+                val section = this.getAdvancedConfigurationSection(key) ?: return null
+                val viewablePlayers = AllowedPlayers()
+                viewablePlayers.load(section)
+                return viewablePlayers as? Type
+            }
+
             else -> {
                 return this.get(key) as? Type
             }

@@ -14,6 +14,7 @@ import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.elements.AbstractElement
+import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.Settable
@@ -74,17 +75,16 @@ abstract class DisplayBaseElement : AbstractElement() {
     )
     @Settable var visualizeHitbox = false
     @ParameterDoc(
-        name = "visibleAll",
-        description = "全てのプレイヤーに表示するか。",
-        default = "false"
+        name = "visiblePlayers",
+        description = "表示するプレイヤーの制限。"
     )
-    @Settable var visibleAll = false
+    @Settable(childOnly = true) var visiblePlayers = AllowedPlayers()
+
     @ParameterDoc(
-        name = "public",
-        description = "他のプレイヤーが操作できるようにするか。",
-        default = "false"
+        name = "interactablePlayers",
+        description = "操作可能なプレイヤーの制限。"
     )
-    @Settable var public = false
+    @Settable(childOnly = true) var interactablePlayers = AllowedPlayers()
 
     abstract val clazz: Class<out Display>
 
@@ -107,8 +107,19 @@ abstract class DisplayBaseElement : AbstractElement() {
             it.shadowStrength = displayParameters.shadowStrength
             it.brightness = displayParameters.brightness
             applyEntity(it)
-            it.isVisibleByDefault = visibleAll
-            (entity as? Player)?.showEntity(SJavaPlugin.plugin, it)
+            it.isVisibleByDefault = visiblePlayers.allowedPlayers.isEmpty()
+
+            if (visiblePlayers.allowedPlayers.isNotEmpty()) {
+                visiblePlayers.allowedPlayersAction { player ->
+                    player.showEntity(SJavaPlugin.plugin, this.entity)
+                }
+            }
+
+            if (visiblePlayers.disallowedPlayers.isNotEmpty()) {
+                visiblePlayers.disallowedPlayersAction { player ->
+                    player.hideEntity(SJavaPlugin.plugin, this.entity)
+                }
+            }
 
             it.persistentDataContainer.set(NamespacedKey(SJavaPlugin.plugin, "displayentity"), PersistentDataType.STRING, "")
         }
@@ -118,7 +129,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         val dropInteract = arrayListOf<UUID>()
 
         sEvent.register<PlayerInteractEvent> { e ->
-            if (!public && e.player.uniqueId != entity?.uniqueId) return@register
+            if (!interactablePlayers.isAllowed(e.player)) return@register
             if (dropInteract.contains(e.player.uniqueId)) return@register
             if (Utils.isPointInsideRotatedRect(
                     e.player,
@@ -137,7 +148,7 @@ abstract class DisplayBaseElement : AbstractElement() {
 
         // エンティティをクリックした時はPlayerInteractEventが発火しないため、PlayerInteractEntityEventを使用
         sEvent.register<PlayerInteractEntityEvent> { e ->
-            if (!public && e.player.uniqueId != entity?.uniqueId) return@register
+            if (!interactablePlayers.isAllowed(e.player)) return@register
             if (dropInteract.contains(e.player.uniqueId)) return@register
             if (Utils.isPointInsideRotatedRect(
                     e.player,
@@ -155,7 +166,7 @@ abstract class DisplayBaseElement : AbstractElement() {
         }
 
         sEvent.register<PlayerDropItemEvent> { e ->
-            if (!public && e.player.uniqueId != entity?.uniqueId) return@register
+            if (!interactablePlayers.isAllowed(e.player)) return@register
             dropInteract.add(e.player.uniqueId)
 
             Bukkit.getScheduler().runTaskLater(SJavaPlugin.plugin, Runnable {
@@ -185,10 +196,14 @@ abstract class DisplayBaseElement : AbstractElement() {
 
         runExecute(onTick)
 
-        val players = if (public) {
-            this.entity.location.getNearbyPlayers(interactionScale.x + interactionDistance)
-        } else {
-            listOfNotNull(entity?.uniqueId?.let { Bukkit.getPlayer(it) })
+//        val players = if (public) {
+//            this.entity.location.getNearbyPlayers(interactionScale.x + interactionDistance)
+//        } else {
+//            listOfNotNull(entity?.uniqueId?.let { Bukkit.getPlayer(it) })
+//        }
+        val players = arrayListOf<Player>()
+        interactablePlayers.allowedPlayersAction { player ->
+            players.add(player)
         }
         players.forEach { player ->
             val onCursor = Utils.isPointInsideRotatedRect(
@@ -239,7 +254,28 @@ abstract class DisplayBaseElement : AbstractElement() {
         entity.interpolationDelay = displayParameters.interpolationDelay
         entity.interpolationDuration = displayParameters.interpolationDuration
         entity.teleportDuration = displayParameters.teleportDuration
-        entity.isVisibleByDefault = visibleAll
+        entity.isVisibleByDefault = visiblePlayers.allowedPlayers.isEmpty()
+
+        Bukkit.getOnlinePlayers().forEach { player ->
+            if (player.canSee(this.entity) != entity.isVisibleByDefault) {
+                if (entity.isVisibleByDefault) {
+                    player.showEntity(SJavaPlugin.plugin, this.entity)
+                } else {
+                    player.hideEntity(SJavaPlugin.plugin, this.entity)
+                }
+            }
+        }
+
+        if (visiblePlayers.allowedPlayers.isNotEmpty()) {
+            visiblePlayers.allowedPlayersAction { player ->
+                player.showEntity(SJavaPlugin.plugin, this.entity)
+            }
+        }
+        if (visiblePlayers.disallowedPlayers.isNotEmpty()) {
+            visiblePlayers.disallowedPlayersAction { player ->
+                player.hideEntity(SJavaPlugin.plugin, this.entity)
+            }
+        }
 
         applyEntity(entity)
     }
