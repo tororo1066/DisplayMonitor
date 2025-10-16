@@ -6,7 +6,6 @@ import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.getParameterType
 import tororo1066.displaymonitor.documentation.parameterTypeDocs
-import tororo1066.displaymonitorapi.configuration.expression.IAbstractFunction
 import tororo1066.displaymonitorapi.elements.Settable
 import java.io.File
 import java.net.JarURLConnection
@@ -51,6 +50,7 @@ object GenerateDocData {
                         jsonWriter.beginObject()
                         jsonWriter.name("name").value(if (name.isEmpty()) docName else "$name.${docName}")
                         jsonWriter.name("description").value(parameterDoc.description)
+                        jsonWriter.name("default").value(parameterDoc.default)
                         jsonWriter.name("type").value(getParameterType(field).name)
                         jsonWriter.endObject()
                     }

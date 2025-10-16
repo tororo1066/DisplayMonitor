@@ -6,6 +6,7 @@ import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.config.sub.StoreDataConfig
 import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
@@ -17,7 +18,7 @@ import java.util.UUID
 
 @ClassDoc(
     name = "StoreData",
-    description = "Unsupported"
+    description = "データを保存する。",
 )
 class StoreDataAction: AbstractAction() {
 
@@ -25,22 +26,43 @@ class StoreDataAction: AbstractAction() {
         val rawData = HashMap<UUID, HashMap<String, Any>>()
     }
 
+    @ParameterDoc(
+        name = "storeType",
+        description = "保存先の種類。\n" +
+                "RAW: メモリ上に保存される。サーバーを再起動すると消える。\n" +
+                "FILE: プラグインのStoreDataフォルダ内に保存される。\n" +
+                "DATABASE: データベースに保存される。config/StoreData.ymlでデータベースの設定が必要。",
+        default = "RAW"
+    )
     var storeType: StoreType = StoreType.RAW
+    @ParameterDoc(
+        name = "data",
+        description = "保存するデータのリスト。\n" +
+                "- key: 保存するキー\n" +
+                "  value: 保存する値\n" +
+                "のように指定する。",
+    )
     var data: HashMap<String, Any> = HashMap()
 
+    @ParameterDoc(
+        name = "uuid",
+        description = "対象のUUID。指定しない場合はアクションのターゲットのUUIDになる。"
+    )
+    var uuid: UUID? = null
+
     override fun run(context: IActionContext): ActionResult {
-        val target = context.target ?: return ActionResult.targetRequired()
+        val uuid = this.uuid ?: context.target?.uniqueId ?: return ActionResult.targetRequired()
         val data = data
         when (storeType) {
             StoreType.RAW -> {
-                val rawDataMap = rawData.getOrPut(target.uniqueId) { HashMap() }
+                val rawDataMap = rawData.getOrPut(uuid) { HashMap() }
                 data.forEach { (key, value) ->
                     rawDataMap[key] = value
                 }
             }
             StoreType.FILE -> {
                 checkAsync("StoreDataAction")
-                val file = File(SJavaPlugin.plugin.dataFolder, "StoreData/${target.uniqueId}.yml")
+                val file = File(SJavaPlugin.plugin.dataFolder, "StoreData/${uuid}.yml")
                 if (!file.parentFile.exists()) {
                     file.parentFile.mkdirs()
                 }
@@ -62,7 +84,7 @@ class StoreDataAction: AbstractAction() {
                 val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
                 val database = config.database ?: return ActionResult.noParameters("Database not found")
                 val table = config.tableName
-                val result = database.select(table, SDBCondition().equal("uuid", target.uniqueId.toString()))
+                val result = database.select(table, SDBCondition().equal("uuid", uuid.toString()))
                 if (result.isEmpty()) {
                     val json = JsonConfiguration().apply {
                         options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
@@ -71,7 +93,7 @@ class StoreDataAction: AbstractAction() {
                         json[key] = value
                     }
                     val jsonString = json.saveToString()
-                    return if (database.insert(table, mapOf("uuid" to target.uniqueId.toString(), "data" to jsonString))) {
+                    return if (database.insert(table, mapOf("uuid" to uuid.toString(), "data" to jsonString))) {
                         ActionResult.success()
                     } else {
                         ActionResult.failed("Insert failed")
@@ -87,7 +109,7 @@ class StoreDataAction: AbstractAction() {
                         json[key] = value
                     }
                     val newJsonString = json.saveToString()
-                    return if (database.update(table, mapOf("data" to newJsonString), SDBCondition().equal("uuid", target.uniqueId.toString()))) {
+                    return if (database.update(table, mapOf("data" to newJsonString), SDBCondition().equal("uuid", uuid.toString()))) {
                         ActionResult.success()
                     } else {
                         ActionResult.failed("Update failed")
@@ -106,6 +128,14 @@ class StoreDataAction: AbstractAction() {
             val key = dataSection.getString("key") ?: return@forEach
             val value = dataSection.get("value") ?: return@forEach
             data[key] = value
+        }
+        val uuidString = section.getString("uuid")
+        if (uuidString != null) {
+            uuid = try {
+                UUID.fromString(uuidString)
+            } catch (_: IllegalArgumentException) {
+                null
+            }
         }
     }
 

@@ -66,7 +66,7 @@ class SummonElement: AbstractAction() {
     var forceSync = false
 
     override fun run(context: IActionContext): ActionResult {
-        val target = context.target ?: return ActionResult.targetRequired()
+        val target = context.target
         val location = context.location?.clone() ?: return ActionResult.locationRequired()
 
         val element = ElementStorage.createElement(presetName, clazz, overrideParameters, "SummonElement")

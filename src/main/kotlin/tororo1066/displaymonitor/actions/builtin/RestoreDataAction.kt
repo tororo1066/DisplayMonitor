@@ -6,6 +6,8 @@ import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.config.sub.StoreDataConfig
 import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
@@ -13,24 +15,48 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.database.SDBCondition
 import java.io.File
+import java.util.UUID
 
 @ClassDoc(
     name = "RestoreData",
-    description = "Unsupported"
+    description = "StoreDataで保存されたデータを復元する。"
 )
 class RestoreDataAction: AbstractAction() {
 
+    @ParameterDoc(
+        name = "storeType",
+        description = "取得先の種類。\n" +
+                "RAW: メモリ上に保存される。サーバーを再起動すると消える。\n" +
+                "FILE: プラグインのStoreDataフォルダ内に保存される。\n" +
+                "DATABASE: データベースに保存される。config/StoreData.ymlでデータベースの設定が必要。",
+        default = "RAW"
+    )
     var storeType: StoreDataAction.StoreType = StoreDataAction.StoreType.RAW
+    @ParameterDoc(
+        name = "scope",
+        description = "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。",
+        default = "LOCAL"
+    )
     var scope: ModifyVariableAction.Scope = ModifyVariableAction.Scope.LOCAL
+    @ParameterDoc(
+        name = "keys",
+        description = "復元するキーのリスト。",
+        type = StringList::class
+    )
     var keys = listOf<String>()
+    @ParameterDoc(
+        name = "uuid",
+        description = "対象のUUID。指定しない場合はアクションのターゲットのUUIDになる。"
+    )
+    var uuid: UUID? = null
 
     override fun run(context: IActionContext): ActionResult {
-        val target = context.target ?: return ActionResult.targetRequired()
+        val uuid = this.uuid ?: context.target?.uniqueId ?: return ActionResult.targetRequired()
         val configuration = context.configuration ?: return ActionResult.noParameters("Configuration not found")
 
         when (storeType) {
             StoreDataAction.StoreType.RAW -> {
-                val data = StoreDataAction.rawData[target.uniqueId] ?: return ActionResult.noParameters("Data not found")
+                val data = StoreDataAction.rawData[uuid] ?: return ActionResult.noParameters("Data not found")
                 keys.forEach { key ->
                     val value = data[key] ?: return@forEach
                     if (scope == ModifyVariableAction.Scope.GLOBAL) {
@@ -42,7 +68,7 @@ class RestoreDataAction: AbstractAction() {
             }
             StoreDataAction.StoreType.FILE -> {
                 checkAsync("RestoreDataAction")
-                val file = File(SJavaPlugin.plugin.dataFolder, "StoreData/${target.uniqueId}.yml")
+                val file = File(SJavaPlugin.plugin.dataFolder, "StoreData/${uuid}.yml")
                 if (!file.exists()) {
                     return ActionResult.noParameters("File not found")
                 }
@@ -63,7 +89,7 @@ class RestoreDataAction: AbstractAction() {
                 checkAsync("RestoreDataAction")
                 val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
                 val database = config.database ?: return ActionResult.noParameters("Database not found")
-                val result = database.select(config.tableName, SDBCondition().equal("uuid", target.uniqueId.toString()))
+                val result = database.select(config.tableName, SDBCondition().equal("uuid", uuid.toString()))
                 if (result.isEmpty()) {
                     return ActionResult.noParameters("Data not found")
                 }
@@ -90,5 +116,13 @@ class RestoreDataAction: AbstractAction() {
         storeType = section.getEnum("storeType", StoreDataAction.StoreType::class.java, StoreDataAction.StoreType.RAW)
         scope = section.getEnum("scope", ModifyVariableAction.Scope::class.java, ModifyVariableAction.Scope.LOCAL)
         keys = section.getStringList("keys")
+        val uuidString = section.getString("uuid", null)
+        if (uuidString != null) {
+            uuid = try {
+                UUID.fromString(uuidString)
+            } catch (_: IllegalArgumentException) {
+                null
+            }
+        }
     }
 }

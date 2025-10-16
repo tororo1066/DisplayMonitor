@@ -47,7 +47,7 @@ val parameterTypeDocs = hashMapOf(
     Long::class to ParameterType("Long", "整数", "1000"),
     Double::class to ParameterType("Double", "実数", "1000.0"),
     Float::class to ParameterType("Float", "実数", "1000.0"),
-    Component::class to ParameterType("Component", "装飾可能な文字列", "\"<red>Hello!</red>\""),
+    Component::class to ParameterType("Component", "装飾可能な文字列(MiniMessage)", "\"<red>Hello!</red>\""),
     Color::class to ParameterType(
         "Color",
         "色(ARGBまたはRGB)",
@@ -78,6 +78,7 @@ val parameterTypeDocs = hashMapOf(
         "アイテム",
         """
             minecraft:diamond_sword{Enchantments:[{id:"minecraft:sharpness",lvl:5}]}
+            minecraft:player_head[profile="tororo_1066"] (1.20.5以降)
         """.trimIndent()
     ),
     Vector::class to ParameterType(
