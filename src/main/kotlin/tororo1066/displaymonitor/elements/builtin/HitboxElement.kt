@@ -74,8 +74,4 @@ open class HitboxElement: AbstractElement() {
     }
 
     override fun applyChanges() {}
-
-    override fun getAllElements(): List<IAbstractElement> {
-        return listOf(this)
-    }
 }

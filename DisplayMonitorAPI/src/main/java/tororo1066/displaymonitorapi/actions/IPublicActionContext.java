@@ -51,4 +51,26 @@ public interface IPublicActionContext {
     @NotNull IAbstractWorkspace getWorkspace();
 
     void setWorkspace(@NotNull IAbstractWorkspace workspace);
+
+    private @NotNull Map<@NotNull String, @NotNull IAbstractElement> getChildElements(@NotNull IAbstractElement element, @NotNull String parentKey) {
+        Map<@NotNull String, @NotNull IAbstractElement> allElements = new HashMap<>();
+        if (element.hasChildren()) {
+            Map<@NotNull String, @NotNull IAbstractElement> children = element.getChildren();
+            for (Map.Entry<@NotNull String, @NotNull IAbstractElement> child: children.entrySet()) {
+                String key = parentKey + "." + child.getKey();
+                allElements.put(key, child.getValue());
+                allElements.putAll(getChildElements(child.getValue(), key));
+            }
+        }
+        return allElements;
+    }
+
+    default @NotNull Map<@NotNull String, @NotNull IAbstractElement> getAllElements() {
+        Map<@NotNull String, @NotNull IAbstractElement> allElements = new HashMap<>();
+        for (Map.Entry<@NotNull String, @NotNull IAbstractElement> entry : getElements().entrySet()) {
+            allElements.put(entry.getKey(), entry.getValue());
+            allElements.putAll(getChildElements(entry.getValue(), entry.getKey()));
+        }
+        return allElements;
+    }
 }

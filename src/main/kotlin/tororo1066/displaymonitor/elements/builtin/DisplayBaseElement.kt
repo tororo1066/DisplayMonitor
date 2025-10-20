@@ -280,8 +280,4 @@ abstract class DisplayBaseElement : AbstractElement() {
 
         applyEntity(entity)
     }
-
-    override fun getAllElements(): List<IAbstractElement> {
-        return listOf(this)
-    }
 }

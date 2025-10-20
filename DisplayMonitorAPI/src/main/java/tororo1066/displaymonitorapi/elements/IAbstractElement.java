@@ -88,7 +88,13 @@ public interface IAbstractElement extends Cloneable {
         applyChanges();
     }
 
-    @NotNull List<@NotNull IAbstractElement> getAllElements();
+    default boolean hasChildren() {
+        return false;
+    }
+
+    default @NotNull Map<@NotNull String, @NotNull IAbstractElement> getChildren() {
+        return Map.of();
+    }
 
     @NotNull IAbstractElement clone();
 }

@@ -139,7 +139,11 @@ open class GroupElement: AbstractElement() {
         }
     }
 
-    override fun getAllElements(): List<IAbstractElement> {
-        return elements.values.toList()
+    override fun hasChildren(): Boolean {
+        return elements.isNotEmpty()
+    }
+
+    override fun getChildren(): Map<String, IAbstractElement> {
+        return elements
     }
 }
