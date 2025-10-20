@@ -17,6 +17,7 @@ import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
@@ -278,5 +279,9 @@ abstract class DisplayBaseElement : AbstractElement() {
         }
 
         applyEntity(entity)
+    }
+
+    override fun getAllElements(): List<IAbstractElement> {
+        return listOf(this)
     }
 }

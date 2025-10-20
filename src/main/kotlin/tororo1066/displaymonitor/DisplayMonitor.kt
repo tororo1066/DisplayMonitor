@@ -58,18 +58,6 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
     override fun onStart() {
         DisplayMonitorInstance.setInstance(this)
 
-        Bukkit.getWorlds().forEach { world ->
-            world.entities.forEach { entity ->
-                if (entity.persistentDataContainer.has(
-                        NamespacedKey(this, "displayentity"),
-                        PersistentDataType.STRING
-                    )
-                ) {
-                    entity.remove()
-                }
-            }
-        }
-
         Bukkit.getScheduler().runTaskLater(this, Runnable {
             FunctionStorage
             ActionStorage
@@ -81,6 +69,20 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
             ElementStorage
             DisplayCommands()
         }, 1)
+
+        Bukkit.getScheduler().runTaskLater(this, Runnable {
+            Bukkit.getWorlds().forEach { world ->
+                world.entities.forEach { entity ->
+                    if (entity.persistentDataContainer.has(
+                            NamespacedKey(this, "displayentity"),
+                            PersistentDataType.STRING
+                        )
+                    ) {
+                        entity.remove()
+                    }
+                }
+            }
+        }, 100)
     }
 
     override fun onEnd() {

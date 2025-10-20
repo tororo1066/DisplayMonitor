@@ -57,6 +57,7 @@ object ActionStorage: IActionStorage {
         actions["SetWorkspace"] = SetWorkspaceAction::class.java
         actions["PlaySound"] = PlaySoundAction::class.java
         actions["AttachEntity"] = AttachEntityAction::class.java
+        actions["HasElement"] = HasElement::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 

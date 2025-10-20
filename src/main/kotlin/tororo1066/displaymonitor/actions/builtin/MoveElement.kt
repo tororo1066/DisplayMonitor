@@ -19,10 +19,18 @@ class MoveElement: AbstractAction() {
     )
     var name = ""
 
+    @ParameterDoc(
+        name = "forceSync",
+        description = "強制的に同期的に実行するか。"
+    )
+    var forceSync = false
+
     override fun run(context: IActionContext): ActionResult {
         val location = context.location ?: return ActionResult.noParameters("Location is not set")
         val element = context.publicContext.elements[name] ?: return ActionResult.noParameters("Element not found")
-        element.move(location)
+        forceSync.orBlockingTask {
+            element.move(location)
+        }
         return ActionResult.success()
     }
 

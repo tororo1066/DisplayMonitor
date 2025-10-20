@@ -83,7 +83,6 @@ class SummonElement: AbstractAction() {
             .add(clone.direction.normalize().rotateAroundY(Math.toRadians(90.0)).multiply(relativeOffset.x))
             .add(clone.direction.normalize().rotateAroundZ(Math.toRadians(-90.0)).multiply(relativeOffset.y))
             .add(offset)
-            .addYaw(180f)
 
         if (lockPitch) {
             location.pitch = 0f

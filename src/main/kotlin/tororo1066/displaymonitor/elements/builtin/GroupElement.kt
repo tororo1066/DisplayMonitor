@@ -138,4 +138,8 @@ open class GroupElement: AbstractElement() {
             }
         }
     }
+
+    override fun getAllElements(): List<IAbstractElement> {
+        return elements.values.toList()
+    }
 }

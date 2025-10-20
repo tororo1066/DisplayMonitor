@@ -8,8 +8,10 @@ import org.joml.Vector3f
 import tororo1066.displaymonitor.OBB
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
+import java.lang.ref.WeakReference
 import kotlin.math.max
 
 open class HitboxElement: AbstractElement() {
@@ -25,6 +27,7 @@ open class HitboxElement: AbstractElement() {
 
     var location: Location? = null
     var removed = false
+    var attachedEntity: WeakReference<Entity>? = null
 
     override fun spawn(entity: Entity?, location: Location) {
         this.location = location
@@ -37,7 +40,7 @@ open class HitboxElement: AbstractElement() {
     }
 
     override fun tick(entity: Entity?) {
-        val loc = location ?: return
+        val loc = attachedEntity?.get()?.location ?: location ?: return
 
         val obb = OBB(
             min = Vector3f((loc.x - width / 2).toFloat(), (loc.y - height / 2).toFloat(), (loc.z - depth / 2).toFloat()),
@@ -63,6 +66,7 @@ open class HitboxElement: AbstractElement() {
 
     override fun attachEntity(entity: Entity) {
         location = entity.location
+        attachedEntity = WeakReference(entity)
     }
 
     override fun move(location: Location) {
@@ -71,5 +75,7 @@ open class HitboxElement: AbstractElement() {
 
     override fun applyChanges() {}
 
-
+    override fun getAllElements(): List<IAbstractElement> {
+        return listOf(this)
+    }
 }

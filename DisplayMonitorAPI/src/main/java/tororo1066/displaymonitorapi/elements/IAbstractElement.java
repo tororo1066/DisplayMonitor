@@ -10,6 +10,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IAbstractElement extends Cloneable {
@@ -43,40 +44,37 @@ public interface IAbstractElement extends Cloneable {
                 .anyMatch(annotation -> annotation.annotationType().getSimpleName().equals("Nullable"));
     }
 
-    default void prepare(@NotNull IAdvancedConfigurationSection configuration) {
-        class PrepareChild {
-            void prepareChild(IAdvancedConfigurationSection section, Field field, Object instance) throws IllegalAccessException {
-                ISettableProcessor processor = IDisplayMonitor.DisplayMonitorInstance.getInstance().getSettableProcessor();
-                boolean defaultAccessible = field.canAccess(instance);
-                field.setAccessible(true);
-                Settable annotation = field.getAnnotation(Settable.class);
-                if (annotation == null) return;
-                String key = annotation.name().isEmpty() ? field.getName() : annotation.name();
-                if (annotation.childOnly()) {
-                    IAdvancedConfigurationSection newSection = section.getAdvancedConfigurationSection(key);
-                    if (newSection == null) return;
-                    Object newInstance = field.get(instance);
-                    List<Field> newFields = processor.getSettableFields(newInstance.getClass());
-                    for (Field newField : newFields) {
-                        prepareChild(newSection, newField, newInstance);
-                    }
-                } else {
-                    Object value = section.withParameters(processor.processVariable(field.get(instance)),
-                            (IAdvancedConfigurationSection sec) -> processor.processValue(sec, key, field.getType()));
-                    if (value != null || isNullable(field)) {
-                        field.set(instance, value);
-                    }
-                }
-                field.setAccessible(defaultAccessible);
+    private void prepareChild(IAdvancedConfigurationSection section, Field field, Object instance) throws IllegalAccessException {
+        ISettableProcessor processor = IDisplayMonitor.DisplayMonitorInstance.getInstance().getSettableProcessor();
+        boolean defaultAccessible = field.canAccess(instance);
+        field.setAccessible(true);
+        Settable annotation = field.getAnnotation(Settable.class);
+        if (annotation == null) return;
+        String key = annotation.name().isEmpty() ? field.getName() : annotation.name();
+        if (annotation.childOnly()) {
+            IAdvancedConfigurationSection newSection = section.getAdvancedConfigurationSection(key);
+            if (newSection == null) return;
+            Object newInstance = field.get(instance);
+            List<Field> newFields = processor.getSettableFields(newInstance.getClass());
+            for (Field newField : newFields) {
+                prepareChild(newSection, newField, newInstance);
+            }
+        } else {
+            Object value = section.withParameters(processor.processVariable(field.get(instance)),
+                    (IAdvancedConfigurationSection sec) -> processor.processValue(sec, key, field.getType()));
+            if (value != null || isNullable(field)) {
+                field.set(instance, value);
             }
         }
+        field.setAccessible(defaultAccessible);
+    }
 
+    default void prepare(@NotNull IAdvancedConfigurationSection configuration) {
         ISettableProcessor processor = IDisplayMonitor.DisplayMonitorInstance.getInstance().getSettableProcessor();
         List<Field> settableFields = processor.getSettableFields(this.getClass());
-        PrepareChild prepareChildInstance = new PrepareChild();
         for (Field field : settableFields) {
             try {
-                prepareChildInstance.prepareChild(configuration, field, this);
+                prepareChild(configuration, field, this);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -89,6 +87,8 @@ public interface IAbstractElement extends Cloneable {
         prepare(configuration);
         applyChanges();
     }
+
+    @NotNull List<@NotNull IAbstractElement> getAllElements();
 
     @NotNull IAbstractElement clone();
 }

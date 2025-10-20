@@ -7,7 +7,6 @@ import org.bukkit.entity.ItemDisplay.ItemDisplayTransform
 import org.bukkit.inventory.ItemStack
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitorapi.elements.Settable
 
