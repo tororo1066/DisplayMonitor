@@ -256,7 +256,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val string = getString(path, "") ?: return null
 
         if (string.startsWith("base64:")) {
-            return SItem.fromBase64(string.substring(7))?.build()
+            return SItem.byBase64(string.substring(7))?.build()
         }
 
         return UsefulUtility.sTry({

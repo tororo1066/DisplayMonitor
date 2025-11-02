@@ -5,10 +5,11 @@ import org.bukkit.entity.Player
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.displaymonitorapi.elements.CustomSettable
 import tororo1066.tororopluginapi.otherClass.AnyObject
 import java.util.UUID
 
-class AllowedPlayers {
+class AllowedPlayers: CustomSettable {
 
     @ParameterDoc(
         name = "allowedPlayers",
@@ -23,7 +24,7 @@ class AllowedPlayers {
     )
     val disallowedPlayers: ArrayList<AnyObject> = ArrayList()
 
-    fun load(section: IAdvancedConfigurationSection) {
+    override fun load(section: IAdvancedConfigurationSection) {
         fun uuidOrName(value: String): AnyObject {
             return try {
                 AnyObject(UUID.fromString(value))
@@ -45,39 +46,33 @@ class AllowedPlayers {
         if (allowedPlayers.isEmpty()) {
             if (disallowedPlayers.isEmpty()) return true
             return !disallowedPlayers.any {
-                it.instanceOf<UUID>() && it.asUUID() == player.uniqueId ||
-                        it.instanceOf<String>() && it.asString() == player.name
+                (it.instanceOf<UUID>() && it.asUUID() == player.uniqueId) ||
+                        (it.instanceOf<String>() && it.asString() == player.name)
             }
         }
 
         return allowedPlayers.any {
-            it.instanceOf<UUID>() && it.asUUID() == player.uniqueId ||
-                    it.instanceOf<String>() && it.asString() == player.name
+            (it.instanceOf<UUID>() && it.asUUID() == player.uniqueId) ||
+                    (it.instanceOf<String>() && it.asString() == player.name)
         } && !disallowedPlayers.any {
-            it.instanceOf<UUID>() && it.asUUID() == player.uniqueId ||
-                    it.instanceOf<String>() && it.asString() == player.name
-        }
-    }
-
-    private fun getPlayer(anyObject: AnyObject): Player? {
-        return when {
-            anyObject.instanceOf<UUID>() -> Bukkit.getPlayer(anyObject.asUUID())
-            anyObject.instanceOf<String>() -> Bukkit.getPlayer(anyObject.asString())
-            else -> null
+            (it.instanceOf<UUID>() && it.asUUID() == player.uniqueId) ||
+                    (it.instanceOf<String>() && it.asString() == player.name)
         }
     }
 
     fun allowedPlayersAction(unit: (Player) -> Unit) {
-        allowedPlayers.forEach {
-            val player = getPlayer(it) ?: return@forEach
-            unit(player)
+        Bukkit.getOnlinePlayers().forEach { player ->
+            if (isAllowed(player)) {
+                unit(player)
+            }
         }
     }
 
     fun disallowedPlayersAction(unit: (Player) -> Unit) {
-        disallowedPlayers.forEach {
-            val player = getPlayer(it) ?: return@forEach
-            unit(player)
+        Bukkit.getOnlinePlayers().forEach { player ->
+            if (!isAllowed(player)) {
+                unit(player)
+            }
         }
     }
 }

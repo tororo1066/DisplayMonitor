@@ -13,7 +13,7 @@ class ItemEntityParameters: AbstractEntityParameters<Item>() {
     override fun getParameters(prefix: String, entity: Item): Map<String, Any> {
         val map = HashMap<String, Any>()
 
-        map["${prefix}.item.base64"] = SItem(entity.itemStack).toBase64()
+        map["${prefix}.item.base64"] = SItem(entity.itemStack).toByteArrayBase64()
         map["${prefix}.item.type"] = entity.itemStack.type.name
         map["${prefix}.item.amount"] = entity.itemStack.amount
         entity.itemStack.itemMeta?.let {

@@ -6,6 +6,7 @@ import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.getParameterType
 import tororo1066.displaymonitor.documentation.parameterTypeDocs
+import tororo1066.displaymonitorapi.elements.CustomSettable
 import tororo1066.displaymonitorapi.elements.Settable
 import java.io.File
 import java.net.JarURLConnection
@@ -45,6 +46,11 @@ object GenerateDocData {
                                 checkField(field.type, if (name.isEmpty()) field.name else "$name.${field.name}")
                             }
                         }
+
+                        if (field.type.isAssignableFrom(CustomSettable::class.java)) {
+                            checkField(field.type, if (name.isEmpty()) field.name else "$name.${field.name}")
+                        }
+
                         val parameterDoc = field.getAnnotation(ParameterDoc::class.java) ?: return@third
                         val docName = parameterDoc.name.ifEmpty { field.name }
                         jsonWriter.beginObject()

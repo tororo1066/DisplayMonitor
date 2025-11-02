@@ -17,6 +17,7 @@ import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.elements.Settable
+import tororo1066.displaymonitorapi.elements.CustomSettable
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import java.lang.reflect.Field
 import java.util.IdentityHashMap
@@ -110,6 +111,15 @@ object SettableProcessor: ISettableProcessor {
     fun <Type: Any> IAdvancedConfigurationSection.processValue(key: String, clazz: Class<Type>): Type? {
         customValueProcessors[clazz]?.let {
             return it.apply(this, key) as? Type
+        }
+
+        if (clazz.isAssignableFrom(CustomSettable::class.java)) {
+            val section = this.getAdvancedConfigurationSection(key) ?: return null
+            val instance = UsefulUtility.sTry({
+                clazz.getDeclaredConstructor().newInstance() as CustomSettable
+            }, { null }) ?: return null
+            instance.load(section)
+            return instance as? Type
         }
 
         if (clazz.isEnum) {

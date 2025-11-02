@@ -79,13 +79,13 @@ abstract class DisplayBaseElement : AbstractElement() {
         name = "visiblePlayers",
         description = "表示するプレイヤーの制限。"
     )
-    @Settable(childOnly = true) var visiblePlayers = AllowedPlayers()
+    @Settable var visiblePlayers = AllowedPlayers()
 
     @ParameterDoc(
         name = "interactablePlayers",
         description = "操作可能なプレイヤーの制限。"
     )
-    @Settable(childOnly = true) var interactablePlayers = AllowedPlayers()
+    @Settable var interactablePlayers = AllowedPlayers()
 
     abstract val clazz: Class<out Display>
 
@@ -112,13 +112,13 @@ abstract class DisplayBaseElement : AbstractElement() {
 
             if (visiblePlayers.allowedPlayers.isNotEmpty()) {
                 visiblePlayers.allowedPlayersAction { player ->
-                    player.showEntity(SJavaPlugin.plugin, this.entity)
+                    player.showEntity(SJavaPlugin.plugin, it)
                 }
             }
 
             if (visiblePlayers.disallowedPlayers.isNotEmpty()) {
                 visiblePlayers.disallowedPlayersAction { player ->
-                    player.hideEntity(SJavaPlugin.plugin, this.entity)
+                    player.hideEntity(SJavaPlugin.plugin, it)
                 }
             }
 
@@ -256,16 +256,6 @@ abstract class DisplayBaseElement : AbstractElement() {
         entity.interpolationDuration = displayParameters.interpolationDuration
         entity.teleportDuration = displayParameters.teleportDuration
         entity.isVisibleByDefault = visiblePlayers.allowedPlayers.isEmpty()
-
-        Bukkit.getOnlinePlayers().forEach { player ->
-            if (player.canSee(this.entity) != entity.isVisibleByDefault) {
-                if (entity.isVisibleByDefault) {
-                    player.showEntity(SJavaPlugin.plugin, this.entity)
-                } else {
-                    player.hideEntity(SJavaPlugin.plugin, this.entity)
-                }
-            }
-        }
 
         if (visiblePlayers.allowedPlayers.isNotEmpty()) {
             visiblePlayers.allowedPlayersAction { player ->
