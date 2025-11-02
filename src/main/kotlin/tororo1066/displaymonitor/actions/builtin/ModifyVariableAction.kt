@@ -74,6 +74,10 @@ class ModifyVariableAction: AbstractAction() {
 
         variables.clear()
 
+        variable?.let {
+            variables[it] = value ?: ""
+        }
+
         section.getAdvancedConfigurationSection("variables")?.let { variablesSection ->
             variablesSection.getKeys(false).forEach { key ->
                 variables[key] = variablesSection.get(key) ?: ""
