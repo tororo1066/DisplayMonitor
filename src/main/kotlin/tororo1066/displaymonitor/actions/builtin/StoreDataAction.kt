@@ -40,9 +40,12 @@ class StoreDataAction: AbstractAction() {
         description = "保存するデータのリスト。\n" +
                 "- key: 保存するキー\n" +
                 "  value: 保存する値\n" +
-                "のように指定する。",
+                "のように指定する。\n" +
+                "- key: 保存するキー\n" +
+                "  remove: true\n" +
+                "とするとそのキーのデータを削除できる。"
     )
-    var data: HashMap<String, Any> = HashMap()
+    var data: HashMap<String, Any?> = HashMap()
 
     @ParameterDoc(
         name = "uuid",
@@ -57,7 +60,14 @@ class StoreDataAction: AbstractAction() {
             StoreType.RAW -> {
                 val rawDataMap = rawData.getOrPut(uuid) { HashMap() }
                 data.forEach { (key, value) ->
-                    rawDataMap[key] = value
+                    if (value == null) {
+                        rawDataMap.remove(key)
+                    } else {
+                        rawDataMap[key] = value
+                    }
+                    if (rawDataMap.isEmpty()) {
+                        rawData.remove(uuid)
+                    }
                 }
             }
             StoreType.FILE -> {
@@ -76,45 +86,50 @@ class StoreDataAction: AbstractAction() {
                 data.forEach { (key, value) ->
                     yml.set(key, value)
                 }
-                yml.save(file)
+                if (yml.getKeys(false).isEmpty()) {
+                    file.delete()
+                } else {
+                    yml.save(file)
+                }
             }
             //Json
             StoreType.DATABASE -> {
-                checkAsync("StoreDataAction")
-                val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
-                val database = config.database ?: return ActionResult.noParameters("Database not found")
-                val table = config.tableName
-                val result = database.select(table, SDBCondition().equal("uuid", uuid.toString()))
-                if (result.isEmpty()) {
-                    val json = JsonConfiguration().apply {
-                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-                    }
-                    data.forEach { (key, value) ->
-                        json[key] = value
-                    }
-                    val jsonString = json.saveToString()
-                    return if (database.insert(table, mapOf("uuid" to uuid.toString(), "data" to jsonString))) {
-                        ActionResult.success()
-                    } else {
-                        ActionResult.failed("Insert failed")
-                    }
-                } else {
-                    val json = JsonConfiguration().apply {
-                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-                    }
-                    val row = result[0]
-                    val jsonString = row.getString("data")
-                    json.loadFromString(jsonString)
-                    data.forEach { (key, value) ->
-                        json[key] = value
-                    }
-                    val newJsonString = json.saveToString()
-                    return if (database.update(table, mapOf("data" to newJsonString), SDBCondition().equal("uuid", uuid.toString()))) {
-                        ActionResult.success()
-                    } else {
-                        ActionResult.failed("Update failed")
-                    }
-                }
+                throw NotImplementedError("Database store type is not implemented yet")
+//                checkAsync("StoreDataAction")
+//                val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
+//                val database = config.database ?: return ActionResult.noParameters("Database not found")
+//                val table = config.tableName
+//                val result = database.select(table, SDBCondition().equal("uuid", uuid.toString()))
+//                if (result.isEmpty()) {
+//                    val json = JsonConfiguration().apply {
+//                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+//                    }
+//                    data.forEach { (key, value) ->
+//                        json[key] = value
+//                    }
+//                    val jsonString = json.saveToString()
+//                    return if (database.insert(table, mapOf("uuid" to uuid.toString(), "data" to jsonString))) {
+//                        ActionResult.success()
+//                    } else {
+//                        ActionResult.failed("Insert failed")
+//                    }
+//                } else {
+//                    val json = JsonConfiguration().apply {
+//                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+//                    }
+//                    val row = result[0]
+//                    val jsonString = row.getString("data")
+//                    json.loadFromString(jsonString)
+//                    data.forEach { (key, value) ->
+//                        json[key] = value
+//                    }
+//                    val newJsonString = json.saveToString()
+//                    return if (database.update(table, mapOf("data" to newJsonString), SDBCondition().equal("uuid", uuid.toString()))) {
+//                        ActionResult.success()
+//                    } else {
+//                        ActionResult.failed("Update failed")
+//                    }
+//                }
             }
         }
 
@@ -126,8 +141,13 @@ class StoreDataAction: AbstractAction() {
         val dataList = section.getAdvancedConfigurationSectionList("data")
         dataList.forEach { dataSection ->
             val key = dataSection.getString("key") ?: return@forEach
-            val value = dataSection.get("value") ?: return@forEach
-            data[key] = value
+            val value = dataSection.get("value")
+            val remove = dataSection.getBoolean("remove", false)
+            if (remove) {
+                data[key] = null
+            } else {
+                data[key] = value ?: return@forEach
+            }
         }
         val uuidString = section.getString("uuid")
         if (uuidString != null) {

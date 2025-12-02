@@ -11,6 +11,7 @@ import org.bukkit.persistence.PersistentDataType
 import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitor.commands.DisplayCommands
 import tororo1066.displaymonitor.config.Config
+import tororo1066.displaymonitor.config.sub.StoreDataConfig
 import tororo1066.displaymonitor.elements.SettableProcessor
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
@@ -94,6 +95,8 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
                 context.publicContext.stop = true
             }
         }
+
+        Config.getConfig<StoreDataConfig>()?.database?.close()
     }
 
     private fun registerBundle() {

@@ -86,26 +86,27 @@ class RestoreDataAction: AbstractAction() {
                 }
             }
             StoreDataAction.StoreType.DATABASE -> {
-                checkAsync("RestoreDataAction")
-                val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
-                val database = config.database ?: return ActionResult.noParameters("Database not found")
-                val result = database.select(config.tableName, SDBCondition().equal("uuid", uuid.toString()))
-                if (result.isEmpty()) {
-                    return ActionResult.noParameters("Data not found")
-                }
-                val data = result[0].getNullableString("data") ?: return ActionResult.noParameters("Data not found")
-                val json = JsonConfiguration().apply {
-                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-                }
-                json.loadFromString(data)
-                keys.forEach { key ->
-                    val value = json.get(key) ?: return@forEach
-                    if (scope == ModifyVariableAction.Scope.GLOBAL) {
-                        context.publicContext.parameters[key] = value
-                    } else {
-                        configuration.parameters[key] = value
-                    }
-                }
+                throw NotImplementedError("Database store type is not implemented yet")
+//                checkAsync("RestoreDataAction")
+//                val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
+//                val database = config.database ?: return ActionResult.noParameters("Database not found")
+//                val result = database.select(config.tableName, SDBCondition().equal("uuid", uuid.toString()))
+//                if (result.isEmpty()) {
+//                    return ActionResult.noParameters("Data not found")
+//                }
+//                val data = result[0].getNullableString("data") ?: return ActionResult.noParameters("Data not found")
+//                val json = JsonConfiguration().apply {
+//                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+//                }
+//                json.loadFromString(data)
+//                keys.forEach { key ->
+//                    val value = json.get(key) ?: return@forEach
+//                    if (scope == ModifyVariableAction.Scope.GLOBAL) {
+//                        context.publicContext.parameters[key] = value
+//                    } else {
+//                        configuration.parameters[key] = value
+//                    }
+//                }
             }
         }
 
