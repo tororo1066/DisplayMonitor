@@ -1,11 +1,13 @@
 package tororo1066.displaymonitor.configuration.expression
 
 import tororo1066.displaymonitor.storage.FunctionStorage
+import java.math.BigInteger
 import java.util.ArrayDeque
 
 sealed class Token {
     data class StringLiteral(val value: String) : Token()
-    data class Number(val value: Double) : Token()
+//    data class Number(val value: Double) : Token()
+    data class Number(val value: Num) : Token()
     data class Function(val meta: FuncMeta) : Token()
     object LParen : Token()
     object RParen : Token()
@@ -18,6 +20,71 @@ sealed class Token {
     data class Logical(override val symbol: String) : Symbolic(symbol)
 }
 
+sealed class Num() {
+    data class LongNum(val value: Long) : Num() {
+        override fun toDouble(): Double {
+            return value.toDouble()
+        }
+    }
+    data class DoubleNum(val value: Double) : Num() {
+        override fun toDouble(): Double {
+            return value
+        }
+    }
+
+    abstract fun toDouble(): Double
+
+    operator fun plus(other: Num): Num {
+        if (this is LongNum && other is LongNum) {
+            try {
+                return LongNum(Math.addExact(this.value, other.value))
+            } catch (_: ArithmeticException) {}
+        }
+
+        return DoubleNum(this.toDouble() + other.toDouble())
+    }
+
+    operator fun minus(other: Num): Num {
+        if (this is LongNum && other is LongNum) {
+            try {
+                return LongNum(Math.subtractExact(this.value, other.value))
+            } catch (_: ArithmeticException) {}
+        }
+
+        return DoubleNum(this.toDouble() - other.toDouble())
+    }
+
+    operator fun times(other: Num): Num {
+        if (this is LongNum && other is LongNum) {
+            try {
+                return LongNum(Math.multiplyExact(this.value, other.value))
+            } catch (_: ArithmeticException) {}
+        }
+
+        return DoubleNum(this.toDouble() * other.toDouble())
+    }
+
+    operator fun div(other: Num): Num {
+        if (this is LongNum && other is LongNum && this.value % other.value == 0L) {
+            return LongNum(this.value / other.value)
+        }
+
+        return DoubleNum(this.toDouble() / other.toDouble())
+    }
+
+    operator fun rem(other: Num): Num {
+        if (this is LongNum && other is LongNum) {
+            return LongNum(this.value % other.value)
+        }
+
+        return DoubleNum(this.toDouble() % other.toDouble())
+    }
+
+    operator fun compareTo(other: Num): Int {
+        return this.toDouble().compareTo(other.toDouble())
+    }
+}
+
 data class FuncMeta(val name: String, val argCount: Int)
 
 private val precedence = mapOf(
@@ -25,6 +92,18 @@ private val precedence = mapOf(
     "==" to 2, "!=" to 2, ">" to 2, "<" to 2, ">=" to 2, "<=" to 2,
     "&&" to 1, "||" to 1
 )
+
+private val invalidCharacters = setOf(
+    '@', '+', ' ', '&', '|', '(', ')', ',', '=', '>', '<'
+)
+
+private fun parseNumber(numberString: String): Num {
+    return if (numberString.contains('.')) {
+        Num.DoubleNum(numberString.toDouble())
+    } else {
+        Num.LongNum(numberString.toLong())
+    }
+}
 
 fun tokenize(input: String): List<Token> {
     var pos = 0
@@ -75,7 +154,8 @@ fun tokenize(input: String): List<Token> {
                     addStringLiteral(identifier)
                 } else {
                     val numberString = input.substring(start, pos)
-                    tokens += Token.Number(numberString.toDouble())
+//                    tokens += Token.Number(numberString.toDouble())
+                    tokens += Token.Number(parseNumber(numberString))
                 }
 
             }
@@ -154,7 +234,7 @@ fun tokenize(input: String): List<Token> {
             }
             else -> {
                 val start = pos
-                while (pos < input.length && (input[pos].isLetterOrDigit() || input[pos] == '_')) {
+                while (pos < input.length && input[pos] !in invalidCharacters) {
                     pos++
                 }
                 val identifier = input.substring(start, pos)
@@ -257,24 +337,6 @@ fun toRPN(tokens: List<Token>): List<Token> {
     return output
 }
 
-private fun asNumber(value: Any): Double {
-    return when (value) {
-        is Number -> value.toDouble()
-        is String -> value.toDoubleOrNull()
-            ?: throw IllegalArgumentException("Invalid numeric value: $value")
-        else -> throw IllegalArgumentException("Cannot convert to number: $value")
-    }
-}
-
-private fun asBoolean(value: Any): Boolean {
-    return when (value) {
-        is Boolean -> value
-        is String -> value.toBoolean()
-        else -> throw IllegalArgumentException("Cannot convert to boolean: $value")
-    }
-}
-
-
 fun evalExpressionRecursive(
     expr: String,
     parameters: Map<String, Any>
@@ -293,6 +355,27 @@ fun evalExpressionRecursive(
         }
     } catch (_: Exception) {
         return expr
+    }
+}
+
+//private fun asNumber(value: Any): Double {
+//    return when (value) {
+//        is Number -> value.toDouble()
+//        is String -> value.toDoubleOrNull()
+//            ?: throw IllegalArgumentException("Invalid numeric value: $value")
+//        else -> throw IllegalArgumentException("Cannot convert to number: $value")
+//    }
+//}
+
+private fun asNumber(value: Any): Num {
+    return value as Num
+}
+
+private fun asBoolean(value: Any): Boolean {
+    return when (value) {
+        is Boolean -> value
+        is String -> value.toBoolean()
+        else -> throw IllegalArgumentException("Cannot convert to boolean: $value")
     }
 }
 
@@ -317,7 +400,8 @@ fun evaluateRPN(
                 // 空白は無視
             }
             is Token.Number -> {
-                stack.push(formatNumber(token.value))
+//                stack.push(formatNumber(token.value))
+                stack.push(token.value)
             }
             is Token.StringLiteral -> stack.push(token.value)
             is Token.Function -> {
