@@ -1,10 +1,7 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import com.dumptruckman.bukkit.configuration.json.JsonConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.actions.AbstractAction
-import tororo1066.displaymonitor.config.Config
-import tororo1066.displaymonitor.config.sub.StoreDataConfig
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
@@ -12,7 +9,6 @@ import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.SJavaPlugin
-import tororo1066.tororopluginapi.database.SDBCondition
 import java.io.File
 import java.util.UUID
 
@@ -31,7 +27,8 @@ class StoreDataAction: AbstractAction() {
         description = "保存先の種類。\n" +
                 "RAW: メモリ上に保存される。サーバーを再起動すると消える。\n" +
                 "FILE: プラグインのStoreDataフォルダ内に保存される。\n" +
-                "DATABASE: データベースに保存される。config/StoreData.ymlでデータベースの設定が必要。",
+                "DATABASE: 未対応。",
+//                "DATABASE: データベースに保存される。config/StoreData.ymlでデータベースの設定が必要。",
         default = "RAW"
     )
     var storeType: StoreType = StoreType.RAW
