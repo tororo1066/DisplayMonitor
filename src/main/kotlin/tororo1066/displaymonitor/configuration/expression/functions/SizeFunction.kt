@@ -22,9 +22,7 @@ class SizeFunction: AbstractFunction("size") {
             throw IllegalArgumentException("At least one argument is required for size function.")
         }
         val list = parameters[args[0].toString()]
-        if (list == null) {
-            throw IllegalArgumentException("The argument '${args[0]}' is not defined.")
-        }
+            ?: throw IllegalArgumentException("The argument '${args[0]}' is not defined.")
         return when (list) {
             is List<*> -> list.size
             is Map<*, *> -> list.size

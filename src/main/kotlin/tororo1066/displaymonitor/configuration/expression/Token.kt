@@ -433,11 +433,11 @@ fun expandVariablesRecursive(
         var i = 0
 
         while (i < result.length) {
-            if (result.startsWith("\${", i)) {
+            if (result.startsWith($$"${", i)) {
                 var braceCount = 1
                 var j = i + 2
                 while (j < result.length && braceCount > 0) {
-                    if (result.startsWith("\${", j)) {
+                    if (result.startsWith($$"${", j)) {
                         braceCount++
                         j += 2
                     } else if (result[j] == '}') {
@@ -462,10 +462,10 @@ fun expandVariablesRecursive(
                             value.toString()
                         } else {
                             val evaluatedDefault = default?.let { evalExpressionRecursive(it, parameters) }
-                            evaluatedDefault?.toString() ?: "\${$expr}"
+                            evaluatedDefault?.toString() ?: $$"${$$expr}"
                         }
                     } catch (_: Exception) {
-                        "\${$expr}"
+                        $$"${$$expr}"
                     }
 
                     sb.append(evaluatedValue)

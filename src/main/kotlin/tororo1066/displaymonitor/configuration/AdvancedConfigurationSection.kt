@@ -168,8 +168,8 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         val newList = mutableListOf<Any?>()
         val root = root as? AdvancedConfiguration
         value.forEach {
-            if (it is String) {
-                newList.add(root?.evaluate(it))
+            if (root != null && it is String) {
+                newList.add(root.evaluate(it))
             } else {
                 newList.add(it)
             }
