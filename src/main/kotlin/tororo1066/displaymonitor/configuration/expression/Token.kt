@@ -21,10 +21,22 @@ sealed class Token {
 data class FuncMeta(val name: String, val argCount: Int)
 
 private val precedence = mapOf(
-    "+" to 2, "-" to 2, "*" to 3, "/" to 3, "%" to 3,
+    "+" to 3, "-" to 3, "*" to 4, "/" to 4, "%" to 4,
     "==" to 2, "!=" to 2, ">" to 2, "<" to 2, ">=" to 2, "<=" to 2,
     "&&" to 1, "||" to 1
 )
+
+private fun precedenceOf(symbol: String) = precedence[symbol] ?: 0
+
+private fun shouldPopSymbolic(top: Token.Symbolic, incoming: Token.Symbolic): Boolean {
+    val isSameCategory = when (incoming) {
+        is Token.Operator -> top is Token.Operator
+        is Token.Comparison -> top is Token.Comparison
+        is Token.Logical -> top is Token.Logical || top is Token.Comparison
+    }
+    if (!isSameCategory) return false
+    return precedenceOf(top.symbol) >= precedenceOf(incoming.symbol)
+}
 
 fun tokenize(input: String): List<Token> {
     var pos = 0
@@ -166,31 +178,69 @@ fun tokenize(input: String): List<Token> {
     return tokens
 }
 
+private data class FunctionContext(
+    val depth: Int,
+    var argCount: Int = 0,
+    var hasTokenInCurrentArg: Boolean = false
+)
+
 fun toRPN(tokens: List<Token>): List<Token> {
     val output = mutableListOf<Token>()
     val stack = ArrayDeque<Token>()
-    val functionArgCount = ArrayDeque<Int>()
+    val functionContexts = mutableListOf<FunctionContext>()
+    var currentParenDepth = 0
+    var prevNonWhitespaceToken: Token? = null
+
+    fun markArgumentToken() {
+        for (i in functionContexts.indices.reversed()) {
+            val context = functionContexts[i]
+            if (context.depth == currentParenDepth) {
+                context.hasTokenInCurrentArg = true
+                break
+            }
+        }
+    }
 
     var i = 0
     while (i < tokens.size) {
-        when (val token = tokens[i]) {
+        val token = tokens[i]
+        when (token) {
             is Token.Whitespace -> {
                 // 空白は無視
             }
-            is Token.Number, is Token.StringLiteral -> output += token
+            is Token.Number, is Token.StringLiteral -> {
+                output += token
+                markArgumentToken()
+            }
             is Token.Function -> {
                 stack.push(token)
-                functionArgCount.push(1) // 1引数目開始
+                markArgumentToken()
             }
 
             Token.Comma -> {
                 while (stack.isNotEmpty() && stack.peek() !is Token.LParen) {
                     output += stack.pop()
                 }
-                functionArgCount.push(functionArgCount.pop() + 1)
+                val context = functionContexts.lastOrNull()
+                    ?: throw IllegalArgumentException("Comma outside function call")
+                if (context.depth != currentParenDepth) {
+                    throw IllegalArgumentException("Comma not within function argument list")
+                }
+                if (!context.hasTokenInCurrentArg) {
+                    throw IllegalArgumentException("Missing argument before comma")
+                }
+                context.argCount++
+                context.hasTokenInCurrentArg = false
             }
 
-            Token.LParen -> stack.push(token)
+            Token.LParen -> {
+                stack.push(token)
+                currentParenDepth++
+                // 直前が関数なら関数の引数コンテキストを追加
+                if (prevNonWhitespaceToken is Token.Function) {
+                    functionContexts += FunctionContext(currentParenDepth)
+                }
+            }
 
             Token.RParen -> {
                 while (stack.isNotEmpty() && stack.peek() !is Token.LParen) {
@@ -202,15 +252,23 @@ fun toRPN(tokens: List<Token>): List<Token> {
                 // 関数なら出す
                 if (stack.isNotEmpty() && stack.peek() is Token.Function) {
                     val func = stack.pop() as Token.Function
-                    output += Token.Function(func.meta.copy(argCount = functionArgCount.pop()))
+                    val context = functionContexts.removeAt(functionContexts.lastIndex)
+                    if (context.depth != currentParenDepth) {
+                        throw IllegalArgumentException("Mismatched function context for ${func.meta.name}")
+                    }
+                    if (context.hasTokenInCurrentArg || context.argCount > 0) {
+                        context.argCount++
+                    }
+                    output += Token.Function(func.meta.copy(argCount = context.argCount))
                 }
+                currentParenDepth--
             }
 
-            is Token.Operator -> {
+            is Token.Symbolic -> {
                 while (stack.isNotEmpty()) {
                     val top = stack.peek()
-                    if (top is Token.Operator &&
-                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
+                    if (top is Token.Symbolic &&
+                        shouldPopSymbolic(top, token)
                     ) {
                         output += stack.pop()
                     } else break
@@ -218,30 +276,45 @@ fun toRPN(tokens: List<Token>): List<Token> {
                 stack.push(token)
             }
 
-            is Token.Comparison -> {
-                while (stack.isNotEmpty()) {
-                    val top = stack.peek()
-                    if (top is Token.Comparison &&
-                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
-                    ) {
-                        output += stack.pop()
-                    } else break
-                }
-                stack.push(token)
-            }
+//            is Token.Operator -> {
+//                while (stack.isNotEmpty()) {
+//                    val top = stack.peek()
+//                    if (top is Token.Operator &&
+//                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
+//                    ) {
+//                        output += stack.pop()
+//                    } else break
+//                }
+//                stack.push(token)
+//            }
+//
+//            is Token.Comparison -> {
+//                while (stack.isNotEmpty()) {
+//                    val top = stack.peek()
+//                    if (top is Token.Comparison &&
+//                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
+//                    ) {
+//                        output += stack.pop()
+//                    } else break
+//                }
+//                stack.push(token)
+//            }
+//
+//            is Token.Logical -> {
+//                while (stack.isNotEmpty()) {
+//                    val top = stack.peek()
+//                    if (top is Token.Symbolic && (top is Token.Logical || top is Token.Comparison) &&
+//                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
+//                    ) {
+//                        output += stack.pop()
+//                    } else break
+//                }
+//                stack.push(token)
+//            }
+        }
 
-            is Token.Logical -> {
-                while (stack.isNotEmpty()) {
-                    val top = stack.peek()
-                    if (top is Token.Symbolic && (top is Token.Logical || top is Token.Comparison) &&
-                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
-                    ) {
-                        output += stack.pop()
-                    } else break
-                }
-                stack.push(token)
-            }
-
+        if (token !is Token.Whitespace) {
+            prevNonWhitespaceToken = token
         }
         i++
     }
@@ -298,7 +371,7 @@ fun evalExpressionRecursive(
 
 private fun formatNumber(value: Any): Any {
     return if (value is Double && value % 1.0 == 0.0) {
-        value.toInt()
+        value.toLong()
     } else {
         value
     }
@@ -352,8 +425,22 @@ fun evaluateRPN(
                 val b = stack.pop()
                 val a = stack.pop()
                 val result = when (token.symbol) {
-                    "==" -> a == b
-                    "!=" -> a != b
+//                    "==" -> a == b
+//                    "!=" -> a != b
+                    "==" -> {
+                        if (a is Number && b is Number) {
+                            asNumber(a) == asNumber(b)
+                        } else {
+                            a == b
+                        }
+                    }
+                    "!=" -> {
+                        if (a is Number && b is Number) {
+                            asNumber(a) != asNumber(b)
+                        } else {
+                            a != b
+                        }
+                    }
                     ">" -> asNumber(a) > asNumber(b)
                     "<" -> asNumber(a) < asNumber(b)
                     ">=" -> asNumber(a) >= asNumber(b)
@@ -455,17 +542,22 @@ fun expandVariablesRecursive(
                     val key = parts[0]
                     val default = parts.getOrNull(1)
 
+                    fun defaultValue(): String {
+                        return default?.let {
+                            try {
+                                evalExpressionRecursive(it, parameters).toString()
+                            } catch (_: Exception) {
+                                $$"${$$expr}"
+                            }
+                        } ?: $$"${$$expr}"
+                    }
+
                     val evaluatedValue = try {
                         val evaluated = evalExpressionRecursive(key, parameters).toString()
                         val value = getParametersValue(evaluated, parameters)
-                        if (value != null) {
-                            value.toString()
-                        } else {
-                            val evaluatedDefault = default?.let { evalExpressionRecursive(it, parameters) }
-                            evaluatedDefault?.toString() ?: $$"${$$expr}"
-                        }
+                        value?.toString() ?: defaultValue()
                     } catch (_: Exception) {
-                        $$"${$$expr}"
+                        defaultValue()
                     }
 
                     sb.append(evaluatedValue)

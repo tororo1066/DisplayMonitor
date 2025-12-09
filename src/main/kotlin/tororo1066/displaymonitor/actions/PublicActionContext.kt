@@ -48,4 +48,11 @@ class PublicActionContext: IPublicActionContext {
     override fun setWorkspace(workspace: IAbstractWorkspace) {
         this.workspace = workspace
     }
+
+    override fun shallowCopy(): IPublicActionContext {
+        val newContext = PublicActionContext()
+        newContext.parameters = parameters.toMutableMap()
+        newContext.workspace = workspace
+        return newContext
+    }
 }

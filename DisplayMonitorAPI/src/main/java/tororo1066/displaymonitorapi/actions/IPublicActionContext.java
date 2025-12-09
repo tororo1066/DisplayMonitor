@@ -52,6 +52,8 @@ public interface IPublicActionContext {
 
     void setWorkspace(@NotNull IAbstractWorkspace workspace);
 
+    @NotNull IPublicActionContext shallowCopy();
+
     private @NotNull Map<@NotNull String, @NotNull IAbstractElement> getChildElements(@NotNull IAbstractElement element, @NotNull String parentKey) {
         Map<@NotNull String, @NotNull IAbstractElement> allElements = new HashMap<>();
         if (element.hasChildren()) {

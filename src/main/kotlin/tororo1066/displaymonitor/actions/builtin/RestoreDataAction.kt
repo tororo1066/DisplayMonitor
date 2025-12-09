@@ -1,5 +1,6 @@
 package tororo1066.displaymonitor.actions.builtin
 
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.documentation.ClassDoc
@@ -47,6 +48,22 @@ class RestoreDataAction: AbstractAction() {
     )
     var uuid: UUID? = null
 
+    fun formatValue(value: Any): Any {
+        return when (value) {
+            is ConfigurationSection -> {
+                value.getValues(true)
+                    .mapNotNull { (k, v) -> k to formatValue(v ?: return@mapNotNull null) }
+                    .toMap()
+            }
+            is List<*> -> {
+                value.mapNotNull { formatValue(it ?: return@mapNotNull null) }
+            }
+            else -> {
+                value
+            }
+        }
+    }
+
     override fun run(context: IActionContext): ActionResult {
         val uuid = this.uuid ?: context.target?.uniqueId ?: return ActionResult.targetRequired()
         val configuration = context.configuration ?: return ActionResult.noParameters("Configuration not found")
@@ -55,7 +72,7 @@ class RestoreDataAction: AbstractAction() {
             StoreDataAction.StoreType.RAW -> {
                 val data = StoreDataAction.rawData[uuid] ?: return ActionResult.noParameters("Data not found")
                 keys.forEach { key ->
-                    val value = data[key] ?: return@forEach
+                    val value = formatValue(data[key] ?: return@forEach)
                     if (scope == ModifyVariableAction.Scope.GLOBAL) {
                         context.publicContext.parameters[key] = value
                     } else {
@@ -74,7 +91,7 @@ class RestoreDataAction: AbstractAction() {
                     load(file)
                 }
                 keys.forEach { key ->
-                    val value = yml.get(key) ?: return@forEach
+                    val value = formatValue(yml.get(key) ?: return@forEach)
                     if (scope == ModifyVariableAction.Scope.GLOBAL) {
                         context.publicContext.parameters[key] = value
                     } else {

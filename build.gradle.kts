@@ -53,6 +53,9 @@ dependencies {
 
     shadow("com.dumptruckman.minecraft:JsonConfiguration:1.2-SNAPSHOT")
     shadow("net.minidev:json-smart:2.5.2")
+    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    shadow("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.22.0")
+    shadow("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.22.0")
 }
 
 tasks.withType<ShadowJar> {

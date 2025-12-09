@@ -24,6 +24,7 @@ import java.util.function.Function
 
 object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
+    // GroupUUID -> (ActionUUID -> IActionContext)
     val contextStorage = ConcurrentHashMap<UUID, MutableMap<UUID, IActionContext>>()
     val contextByName = ConcurrentHashMap<String, UUID>()
 
@@ -105,7 +106,15 @@ object ActionStorage: IActionStorage {
             workspace.actionConfigurations.values.forEach second@ { actionConfiguration ->
                 val triggerSection = actionConfiguration.triggers[name] ?: return@second
                 if (condition == null || condition.apply(triggerSection)) {
-                    actionConfiguration.run(context, true, null)
+                    val cloneContext = context.cloneWithNewPublicContext(
+                        context.publicContext.shallowCopy().apply {
+                            this.workspace = workspace
+                        }
+                    ).apply {
+                        this.groupUUID = UUID.randomUUID()
+                        this.uuid = UUID.randomUUID()
+                    }
+                    actionConfiguration.run(cloneContext, true, null)
                 }
             }
         }

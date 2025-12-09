@@ -7,6 +7,7 @@ import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import tororo1066.commandapi.CommandArguments
+import tororo1066.commandapi.argumentType.BooleanArg
 import tororo1066.commandapi.argumentType.EntityArg
 import tororo1066.commandapi.argumentType.StringArg
 import tororo1066.displaymonitor.config.Config
@@ -19,6 +20,7 @@ import tororo1066.tororopluginapi.SInput
 import tororo1066.tororopluginapi.annotation.SCommandV2Body
 import tororo1066.tororopluginapi.sCommand.v2.SCommandV2
 
+@Suppress("UNUSED")
 class DisplayCommands: SCommandV2("dmonitor") {
 
     val gson = Gson()
@@ -62,7 +64,9 @@ class DisplayCommands: SCommandV2("dmonitor") {
                     sender.sendMessage(Component.text("Configuration not found"))
                     return
                 }
-                val context = ActionContext(PublicActionContext())
+                val context = ActionContext(PublicActionContext().apply {
+                    this.workspace = workspace
+                })
                 val caster = args.getEntities("caster").firstOrNull()
                 val target = args.getEntities("target").firstOrNull()
                 val location = args.getNullableArgument("location", String::class.java)
@@ -106,9 +110,11 @@ class DisplayCommands: SCommandV2("dmonitor") {
                     context.prepareParameters.putAll(parameters)
                 }
 
+                val async = args.getNullableArgument("async", Boolean::class.java) ?: true
+
                 configuration.run(
                     context,
-                    true,
+                    async,
                     actionName
                 )
             } catch (e: Exception) {
@@ -129,9 +135,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
 
                     suggest { _, _, args ->
                         val workspace = WorkspaceStorage.getWorkspace(args.getArgument("workspace", String::class.java))
-                        if (workspace == null) {
-                            return@suggest emptyList()
-                        }
+                            ?: return@suggest emptyList()
                         workspace.actionConfigurations.keys.map { it toolTip null }
                     }
 
@@ -159,9 +163,15 @@ class DisplayCommands: SCommandV2("dmonitor") {
                                         runLoaded(sender, args)
                                     }
 
-                                    argument("actionName", StringArg(StringArg.StringType.SINGLE_WORD)) {
+                                    argument("async", BooleanArg()) {
                                         setFunctionExecutor { sender, _, args ->
                                             runLoaded(sender, args)
+                                        }
+
+                                        argument("actionName", StringArg(StringArg.StringType.SINGLE_WORD)) {
+                                            setFunctionExecutor { sender, _, args ->
+                                                runLoaded(sender, args)
+                                            }
                                         }
                                     }
                                 }

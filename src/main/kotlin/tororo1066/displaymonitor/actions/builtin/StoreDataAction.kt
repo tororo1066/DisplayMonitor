@@ -50,6 +50,22 @@ class StoreDataAction: AbstractAction() {
     )
     var uuid: UUID? = null
 
+    private fun formatValue(value: Any): Any {
+        return when (value) {
+            is IAdvancedConfigurationSection -> {
+                value.getEvaluatedValues(true)
+                    .mapNotNull { (k, v) -> k to formatValue(v ?: return@mapNotNull null) }
+                    .toMap()
+            }
+            is List<*> -> {
+                value.mapNotNull { formatValue(it ?: return@mapNotNull null) }
+            }
+            else -> {
+                value
+            }
+        }
+    }
+
     override fun run(context: IActionContext): ActionResult {
         val uuid = this.uuid ?: context.target?.uniqueId ?: return ActionResult.targetRequired()
         val data = data
@@ -60,7 +76,7 @@ class StoreDataAction: AbstractAction() {
                     if (value == null) {
                         rawDataMap.remove(key)
                     } else {
-                        rawDataMap[key] = value
+                        rawDataMap[key] = formatValue(value)
                     }
                     if (rawDataMap.isEmpty()) {
                         rawData.remove(uuid)
@@ -81,7 +97,7 @@ class StoreDataAction: AbstractAction() {
                     load(file)
                 }
                 data.forEach { (key, value) ->
-                    yml.set(key, value)
+                    yml.set(key, value?.let { formatValue(it) })
                 }
                 if (yml.getKeys(false).isEmpty()) {
                     file.delete()
