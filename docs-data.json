@@ -1145,8 +1145,8 @@
     "name": "Type",
     "classes": [
       {
-        "name": "Component",
-        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
+        "name": "StringList",
+        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
         "parameters": []
       },
       {
@@ -1155,58 +1155,8 @@
         "parameters": []
       },
       {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
-        "parameters": []
-      },
-      {
-        "name": "Location",
-        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "CommandType",
-        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
-        "parameters": []
-      },
-      {
-        "name": "IAdvancedConfigurationSection",
-        "description": "セクション\n\n例:\n  key: value",
-        "parameters": []
-      },
-      {
-        "name": "Execute",
-        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "AsyncExecute",
-        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "Long",
-        "description": "整数\n\n例:\n  1000",
-        "parameters": []
-      },
-      {
-        "name": "Boolean",
-        "description": "真偽値\n\n例:\n  true/false",
-        "parameters": []
-      },
-      {
-        "name": "StoreType",
-        "description": "選択可能な値のリスト\n\n例:\n  RAW\nFILE\nDATABASE",
-        "parameters": []
-      },
-      {
-        "name": "ItemStack",
-        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
-        "parameters": []
-      },
-      {
-        "name": "StringList",
-        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
         "parameters": []
       },
       {
@@ -1215,8 +1165,53 @@
         "parameters": []
       },
       {
-        "name": "Vector",
+        "name": "Vector3f",
         "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Long",
+        "description": "整数\n\n例:\n  1000",
+        "parameters": []
+      },
+      {
+        "name": "StoreType",
+        "description": "選択可能な値のリスト\n\n例:\n  RAW\nFILE\nDATABASE",
+        "parameters": []
+      },
+      {
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
+        "parameters": []
+      },
+      {
+        "name": "Boolean",
+        "description": "真偽値\n\n例:\n  true/false",
+        "parameters": []
+      },
+      {
+        "name": "Execute",
+        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "Location",
+        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "AsyncExecute",
+        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "Component",
+        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
+        "parameters": []
+      },
+      {
+        "name": "ItemStack",
+        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
         "parameters": []
       },
       {
@@ -1225,13 +1220,18 @@
         "parameters": []
       },
       {
-        "name": "Scope",
-        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
+        "name": "Color",
+        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
         "parameters": []
       },
       {
-        "name": "String",
-        "description": "文字列\n\n例:\n  \"example\"",
+        "name": "Vector",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "IAdvancedConfigurationSection",
+        "description": "セクション\n\n例:\n  key: value",
         "parameters": []
       },
       {
@@ -1240,13 +1240,18 @@
         "parameters": []
       },
       {
-        "name": "Double",
-        "description": "実数\n\n例:\n  1000.0",
+        "name": "String",
+        "description": "文字列\n\n例:\n  \"example\"",
         "parameters": []
       },
       {
-        "name": "Vector3f",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
+        "parameters": []
+      },
+      {
+        "name": "Double",
+        "description": "実数\n\n例:\n  1000.0",
         "parameters": []
       },
       {
@@ -1255,18 +1260,13 @@
         "parameters": []
       },
       {
-        "name": "Float",
-        "description": "実数\n\n例:\n  1000.0",
-        "parameters": []
-      },
-      {
         "name": "Billboard",
         "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
         "parameters": []
       },
       {
-        "name": "Color",
-        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
+        "name": "Float",
+        "description": "実数\n\n例:\n  1000.0",
         "parameters": []
       }
     ]
