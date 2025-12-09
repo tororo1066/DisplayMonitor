@@ -12,7 +12,9 @@ public interface IAbstractAction {
      * 処理の完了時自動的に停止(削除)するかどうか
      * @return true: 自動停止する, false: 自動停止しない
      */
-    boolean allowedAutoStop();
+    default boolean allowedAutoStop() {
+        return true;
+    }
 
     /**
      * Actionの実行時に呼び出される関数

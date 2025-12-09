@@ -1,9 +1,9 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import tororo1066.displaymonitor.actions.AbstractAction
+import kotlinx.coroutines.delay
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -12,7 +12,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
     name = "Delay",
     description = "指定した時間だけ待機する。"
 )
-class DelayAction: AbstractAction() {
+class DelayAction: SuspendAction() {
 
     @ParameterDoc(
         name = "delay",
@@ -20,11 +20,17 @@ class DelayAction: AbstractAction() {
     )
     var delay = 0L
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         checkAsync("DelayAction")
-        Thread.sleep(delay)
+        delay(delay)
         return ActionResult.success()
     }
+
+//    override fun run(context: IActionContext): ActionResult {
+//        checkAsync("DelayAction")
+//        Thread.sleep(delay)
+//        return ActionResult.success()
+//    }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         delay = section.getLong("delay", 0L)

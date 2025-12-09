@@ -1,5 +1,10 @@
 package tororo1066.displaymonitor.actions
 
+import com.github.shynixn.mccoroutine.bukkit.asyncDispatcher
+import com.github.shynixn.mccoroutine.bukkit.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.parameters.ActionParameters
 import tororo1066.displaymonitor.config.Config
@@ -8,6 +13,7 @@ import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.actions.IActionRunner
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.tororopluginapi.SJavaPlugin
 import java.util.concurrent.CompletableFuture
 
 object ActionRunner: IActionRunner {
@@ -51,9 +57,9 @@ object ActionRunner: IActionRunner {
             ActionStorage.contextByName[actionName] = context.groupUUID
         }
 
-        fun invokeActions() {
+        suspend fun invokeActions() {
 
-            fun checkStop(): Boolean {
+            fun shouldStop(): Boolean {
                 if (context.publicContext.stop) {
                     ActionStorage.contextByName.entries.removeIf {
                         it.value == context.groupUUID
@@ -77,7 +83,7 @@ object ActionRunner: IActionRunner {
             }
 
             for (action in newActionList) {
-                if (checkStop()) break
+                if (shouldStop()) break
                 val actionClass = action.getString("class")
                 val actionData = ActionStorage.actions[actionClass]
                 if (actionData == null) {
@@ -101,7 +107,15 @@ object ActionRunner: IActionRunner {
                     continue
                 }
                 try {
-                    val result = actionInstance.run(context)
+//                    val result = actionInstance.run(context)
+                    val result = when (actionInstance) {
+                        is SuspendAction -> {
+                            actionInstance.runSuspend(context)
+                        }
+                        else -> {
+                            actionInstance.run(context)
+                        }
+                    }
                     if (Config.debug) {
                         DisplayMonitor.log(
                             RUN_CONTEXT,
@@ -116,7 +130,7 @@ object ActionRunner: IActionRunner {
                     e.printStackTrace()
                 }
 
-                if (checkStop()) break
+                if (shouldStop()) break
             }
 
             if (context.publicContext.shouldAutoStop) {
@@ -127,22 +141,50 @@ object ActionRunner: IActionRunner {
             }
         }
 
+        val future = CompletableFuture<Void>()
+
         if (async) {
-            return CompletableFuture.runAsync {
-                invokeActions()
-            }.exceptionally {
-                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", it.message))
-                it.printStackTrace()
-                null
+            SJavaPlugin.plugin.launch(SJavaPlugin.plugin.asyncDispatcher) {
+                try {
+                    invokeActions()
+                    future.complete(null)
+                } catch (e: Exception) {
+                    future.completeExceptionally(e)
+                    DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
+                    e.printStackTrace()
+                }
             }
         } else {
-            try {
-                invokeActions()
-            } catch (e: Exception) {
-                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
-                e.printStackTrace()
+            runBlocking {
+                try {
+                    invokeActions()
+                    future.complete(null)
+                } catch (e: Exception) {
+                    future.completeExceptionally(e)
+                    DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
+                    e.printStackTrace()
+                }
             }
-            return CompletableFuture.completedFuture(null)
         }
+
+        return future
+
+//        if (async) {
+//            return CompletableFuture.runAsync {
+//                invokeActions()
+//            }.exceptionally {
+//                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", it.message))
+//                it.printStackTrace()
+//                null
+//            }
+//        } else {
+//            try {
+//                invokeActions()
+//            } catch (e: Exception) {
+//                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
+//                e.printStackTrace()
+//            }
+//            return CompletableFuture.completedFuture(null)
+//        }
     }
 }
