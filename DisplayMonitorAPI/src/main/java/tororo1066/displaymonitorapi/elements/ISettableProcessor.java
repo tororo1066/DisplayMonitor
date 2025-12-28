@@ -57,4 +57,6 @@ public interface ISettableProcessor {
     @Nullable <T extends @NotNull Object> T processValue(@NotNull IAdvancedConfigurationSection configuration, @NotNull String key, @NotNull Class<T> clazz);
 
     @NotNull List<Field> getSettableFields(@NotNull Class<?> clazz);
+
+    void prepareSettableFields(@NotNull IAdvancedConfigurationSection section, @NotNull Object instance);
 }

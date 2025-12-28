@@ -2,10 +2,9 @@ package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.Bukkit
 import org.bukkit.block.data.BlockData
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -15,7 +14,7 @@ import tororo1066.tororopluginapi.otherUtils.UsefulUtility
     name = "SetBlock",
     description = "指定した位置にブロックを設置する。"
 )
-class SetBlockAction: AbstractAction() {
+class SetBlockAction: SuspendAction() {
 
     @ParameterDoc(
         name = "block",
@@ -28,7 +27,7 @@ class SetBlockAction: AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         val block = block ?: return ActionResult.noParameters("Block not found")
         val location = context.location ?: return ActionResult.locationRequired()
         forceSync.orBlockingTask {

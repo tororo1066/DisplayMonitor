@@ -23,6 +23,9 @@ import java.lang.reflect.Field
 import java.util.IdentityHashMap
 import java.util.function.BiFunction
 import java.util.function.Function
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.jvm.kotlinProperty
 
 object SettableProcessor: ISettableProcessor {
 
@@ -208,5 +211,32 @@ object SettableProcessor: ISettableProcessor {
 
     override fun getSettableFields(clazz: Class<*>): List<Field> {
         return clazz.getSettableFields()
+    }
+
+    private fun prepareField(field: Field, section: IAdvancedConfigurationSection, instance: Any) {
+        val annotation = field.getAnnotation(Settable::class.java) ?: return
+        val key = annotation.name.ifEmpty { field.name }
+        val kotlinProperty = field.kotlinProperty as? KMutableProperty<*> ?: return
+        val fieldValue = kotlinProperty.getter.call(instance)
+        if (annotation.childOnly) {
+            val childSection = section.getAdvancedConfigurationSection(key) ?: return
+            kotlinProperty.returnType.jvmErasure.java.getSettableFields().forEach { childField ->
+                prepareField(childField, childSection, fieldValue ?: return)
+            }
+        } else {
+            val value = section.withParameters(processVariable(fieldValue)) {
+                processValue(it, key, field.type)
+            }
+            if (value != null) {
+                kotlinProperty.setter.call(instance, value)
+            }
+        }
+    }
+
+    override fun prepareSettableFields(section: IAdvancedConfigurationSection, instance: Any) {
+        val fields = instance::class.java.getSettableFields()
+        fields.forEach { field ->
+            prepareField(field, section, instance)
+        }
     }
 }

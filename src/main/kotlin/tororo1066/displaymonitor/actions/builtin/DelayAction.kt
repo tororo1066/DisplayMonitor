@@ -16,7 +16,8 @@ class DelayAction: SuspendAction() {
 
     @ParameterDoc(
         name = "delay",
-        description = "待機する時間。"
+        description = "待機する時間。(ミリ秒)",
+        default = "0"
     )
     var delay = 0L
 
@@ -25,12 +26,6 @@ class DelayAction: SuspendAction() {
         delay(delay)
         return ActionResult.success()
     }
-
-//    override fun run(context: IActionContext): ActionResult {
-//        checkAsync("DelayAction")
-//        Thread.sleep(delay)
-//        return ActionResult.success()
-//    }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         delay = section.getLong("delay", 0L)

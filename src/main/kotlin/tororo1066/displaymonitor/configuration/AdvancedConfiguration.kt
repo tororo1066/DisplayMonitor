@@ -4,9 +4,9 @@ import org.bukkit.configuration.Configuration
 import org.bukkit.configuration.ConfigurationOptions
 import org.bukkit.configuration.ConfigurationSection
 import tororo1066.displaymonitor.configuration.expression.evalExpressionRecursive
+import tororo1066.displaymonitor.storage.FunctionStorage
 import tororo1066.displaymonitorapi.actions.IPublicActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
-import tororo1066.tororopluginapi.SJavaPlugin
 
 class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfiguration {
 
@@ -47,7 +47,7 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
             val parameters = this.parameters.toMutableMap().apply {
                 publicContext?.getParameters()?.let { putAll(it) }
             }
-            val v = evalExpressionRecursive(value, parameters)
+            val v = evalExpressionRecursive(value, parameters, FunctionStorage.functions)
 //            SJavaPlugin.plugin.logger.info("evaluate: $value -> $v")
             v
         } catch (_: Exception) {

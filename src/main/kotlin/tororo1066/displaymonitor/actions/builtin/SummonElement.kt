@@ -2,23 +2,20 @@ package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.DisplayMonitor
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
-import tororo1066.tororopluginapi.SJavaPlugin
-import tororo1066.tororopluginapi.utils.addYaw
 import java.util.UUID
 
 @ClassDoc(
     name = "SummonElement",
     description = "Elementを召喚する。"
 )
-class SummonElement: AbstractAction() {
+class SummonElement: SuspendAction() {
 
     override val allowedAutoStop = false
 
@@ -65,7 +62,7 @@ class SummonElement: AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         val target = context.target
         val location = context.location?.clone() ?: return ActionResult.locationRequired()
 

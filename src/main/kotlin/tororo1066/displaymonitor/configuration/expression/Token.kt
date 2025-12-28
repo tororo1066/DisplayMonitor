@@ -1,6 +1,6 @@
 package tororo1066.displaymonitor.configuration.expression
 
-import tororo1066.displaymonitor.storage.FunctionStorage
+import tororo1066.displaymonitorapi.configuration.expression.IAbstractFunction
 import java.util.ArrayDeque
 
 sealed class Token {
@@ -21,20 +21,14 @@ sealed class Token {
 data class FuncMeta(val name: String, val argCount: Int)
 
 private val precedence = mapOf(
-    "+" to 3, "-" to 3, "*" to 4, "/" to 4, "%" to 4,
-    "==" to 2, "!=" to 2, ">" to 2, "<" to 2, ">=" to 2, "<=" to 2,
-    "&&" to 1, "||" to 1
+    "+" to 4, "-" to 4, "*" to 5, "/" to 5, "%" to 5,
+    "==" to 2, "!=" to 2, ">" to 3, "<" to 3, ">=" to 3, "<=" to 3,
+    "&&" to 1, "||" to 0
 )
 
 private fun precedenceOf(symbol: String) = precedence[symbol] ?: 0
 
 private fun shouldPopSymbolic(top: Token.Symbolic, incoming: Token.Symbolic): Boolean {
-    val isSameCategory = when (incoming) {
-        is Token.Operator -> top is Token.Operator
-        is Token.Comparison -> top is Token.Comparison
-        is Token.Logical -> top is Token.Logical || top is Token.Comparison
-    }
-    if (!isSameCategory) return false
     return precedenceOf(top.symbol) >= precedenceOf(incoming.symbol)
 }
 
@@ -275,42 +269,6 @@ fun toRPN(tokens: List<Token>): List<Token> {
                 }
                 stack.push(token)
             }
-
-//            is Token.Operator -> {
-//                while (stack.isNotEmpty()) {
-//                    val top = stack.peek()
-//                    if (top is Token.Operator &&
-//                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
-//                    ) {
-//                        output += stack.pop()
-//                    } else break
-//                }
-//                stack.push(token)
-//            }
-//
-//            is Token.Comparison -> {
-//                while (stack.isNotEmpty()) {
-//                    val top = stack.peek()
-//                    if (top is Token.Comparison &&
-//                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
-//                    ) {
-//                        output += stack.pop()
-//                    } else break
-//                }
-//                stack.push(token)
-//            }
-//
-//            is Token.Logical -> {
-//                while (stack.isNotEmpty()) {
-//                    val top = stack.peek()
-//                    if (top is Token.Symbolic && (top is Token.Logical || top is Token.Comparison) &&
-//                        (precedence[top.symbol] ?: 0) >= (precedence[token.symbol] ?: 0)
-//                    ) {
-//                        output += stack.pop()
-//                    } else break
-//                }
-//                stack.push(token)
-//            }
         }
 
         if (token !is Token.Whitespace) {
@@ -350,16 +308,17 @@ private fun asBoolean(value: Any): Boolean {
 
 fun evalExpressionRecursive(
     expr: String,
-    parameters: Map<String, Any>
+    parameters: Map<String, Any>,
+    functions: Map<String, IAbstractFunction>
 ): Any {
     try {
-        val expandExpr = expandVariablesRecursive(expr, parameters)
+        val expandExpr = expandVariablesRecursive(expr, parameters, functions)
         try {
             val tokens = tokenize(expandExpr)
             val rpn = toRPN(tokens)
-            return evaluateRPN(rpn, parameters) { innerExpr ->
+            return evaluateRPN(rpn, parameters, functions) { innerExpr ->
                 // ネスト式（関数引数など）を再帰的に評価
-                evalExpressionRecursive(innerExpr, parameters)
+                evalExpressionRecursive(innerExpr, parameters, functions)
             }
         } catch (_: Exception) {
             return expandExpr
@@ -380,6 +339,7 @@ private fun formatNumber(value: Any): Any {
 fun evaluateRPN(
     rpn: List<Token>,
     parameters: Map<String, Any>,
+    functions: Map<String, IAbstractFunction>,
     nestedEval: (String) -> Any
 ): Any {
     val stack = ArrayDeque<Any>()
@@ -395,7 +355,7 @@ fun evaluateRPN(
             is Token.StringLiteral -> stack.push(token.value)
             is Token.Function -> {
                 val args = (0 until token.meta.argCount).map { stack.pop() }.reversed()
-                val func = FunctionStorage.functions[token.meta.name]
+                val func = functions[token.meta.name]
                     ?: throw IllegalArgumentException("Unknown function: ${token.meta.name}")
                 val evaluatedArgs = args.map {
                     if (it is String) {
@@ -425,8 +385,6 @@ fun evaluateRPN(
                 val b = stack.pop()
                 val a = stack.pop()
                 val result = when (token.symbol) {
-//                    "==" -> a == b
-//                    "!=" -> a != b
                     "==" -> {
                         if (a is Number && b is Number) {
                             asNumber(a) == asNumber(b)
@@ -468,7 +426,8 @@ fun evaluateRPN(
 
 fun getParametersValue(
     key: String,
-    parameters: Map<String, Any>
+    parameters: Map<String, Any>,
+    functions: Map<String, IAbstractFunction>
 ): Any? {
     val regex = Regex("""\b([a-zA-Z_][a-zA-Z0-9_]*)((\[[^\[\]]+])+)""")
     val bracketContentRegex = Regex("""\[([^\[\]]+)]""")
@@ -485,7 +444,7 @@ fun getParametersValue(
 
     var currentValue: Any? = parameters[baseKey]
     for (nestedKey in nestedKeys) {
-        val evaluatedKey = evalExpressionRecursive(nestedKey, parameters).toString()
+        val evaluatedKey = evalExpressionRecursive(nestedKey, parameters, functions).toString()
 
         when (currentValue) {
             is Map<*, *> -> {
@@ -511,6 +470,7 @@ fun getParametersValue(
 fun expandVariablesRecursive(
     input: String,
     parameters: Map<String, Any>,
+    functions: Map<String, IAbstractFunction>,
     maxDepth: Int = 10
 ): String {
     var result = input
@@ -545,7 +505,7 @@ fun expandVariablesRecursive(
                     fun defaultValue(): String {
                         return default?.let {
                             try {
-                                evalExpressionRecursive(it, parameters).toString()
+                                evalExpressionRecursive(it, parameters, functions).toString()
                             } catch (_: Exception) {
                                 $$"${$$expr}"
                             }
@@ -553,8 +513,8 @@ fun expandVariablesRecursive(
                     }
 
                     val evaluatedValue = try {
-                        val evaluated = evalExpressionRecursive(key, parameters).toString()
-                        val value = getParametersValue(evaluated, parameters)
+                        val evaluated = evalExpressionRecursive(key, parameters, functions).toString()
+                        val value = getParametersValue(evaluated, parameters, functions)
                         value?.toString() ?: defaultValue()
                     } catch (_: Exception) {
                         defaultValue()

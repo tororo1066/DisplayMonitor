@@ -1,9 +1,8 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -12,7 +11,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
     name = "RemoveAllElement",
     description = "全てのElementを削除する。"
 )
-class RemoveAllElement: AbstractAction() {
+class RemoveAllElement: SuspendAction() {
 
     @ParameterDoc(
         name = "forceSync",
@@ -20,7 +19,7 @@ class RemoveAllElement: AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         forceSync.orBlockingTask {
             context.publicContext.elements.values.forEach { it.remove() }
             context.publicContext.elements.clear()

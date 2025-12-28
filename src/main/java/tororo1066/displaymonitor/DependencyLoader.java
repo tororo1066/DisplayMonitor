@@ -2,7 +2,6 @@ package tororo1066.displaymonitor;
 
 import tororo1066.tororopluginapi.AbstractDependencyLoader;
 import tororo1066.tororopluginapi.Library;
-import tororo1066.tororopluginapi.LibraryType;
 
 public class DependencyLoader extends AbstractDependencyLoader {
     public DependencyLoader() {}
@@ -10,8 +9,6 @@ public class DependencyLoader extends AbstractDependencyLoader {
     @Override
     public Library[] getDependencies() {
         return new Library[]{
-//                LibraryType.KOTLIN.createLibrary(),
-//                LibraryType.EVALEX.createLibrary()
         };
     }
 }

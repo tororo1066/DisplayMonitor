@@ -1,9 +1,8 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -12,7 +11,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
     name = "End",
     description = "全てのElementを削除し、Actionを終了する。"
 )
-class EndAction : AbstractAction() {
+class EndAction : SuspendAction() {
 
     @ParameterDoc(
         name = "forceSync",
@@ -20,7 +19,7 @@ class EndAction : AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         forceSync.orBlockingTask {
             context.publicContext.elements.forEach { (_, element) ->
                 element.remove()

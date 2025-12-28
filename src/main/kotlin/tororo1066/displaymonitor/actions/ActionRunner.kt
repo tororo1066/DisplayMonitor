@@ -107,7 +107,6 @@ object ActionRunner: IActionRunner {
                     continue
                 }
                 try {
-//                    val result = actionInstance.run(context)
                     val result = when (actionInstance) {
                         is SuspendAction -> {
                             actionInstance.runSuspend(context)
@@ -168,23 +167,5 @@ object ActionRunner: IActionRunner {
         }
 
         return future
-
-//        if (async) {
-//            return CompletableFuture.runAsync {
-//                invokeActions()
-//            }.exceptionally {
-//                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", it.message))
-//                it.printStackTrace()
-//                null
-//            }
-//        } else {
-//            try {
-//                invokeActions()
-//            } catch (e: Exception) {
-//                DisplayMonitor.error(RUN_CONTEXT, DisplayMonitor.translate("action.unknown.error", e.message))
-//                e.printStackTrace()
-//            }
-//            return CompletableFuture.completedFuture(null)
-//        }
     }
 }

@@ -1,16 +1,16 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 
-class AttachEntityAction: AbstractAction() {
+class AttachEntityAction: SuspendAction() {
 
     var element: String = ""
     var forceSync: Boolean = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         val target = context.target ?: return ActionResult.targetRequired()
         val element = context.publicContext.elements[element] ?: return ActionResult.noParameters("Element not found: $element")
         forceSync.orBlockingTask {

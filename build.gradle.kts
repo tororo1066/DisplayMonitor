@@ -45,6 +45,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
+    compileOnly(kotlin("reflect"))
     compileOnly("tororo1066:commandapi:$apiVersion")
     compileOnly("tororo1066:base:$apiVersion")
     shadow("tororo1066:tororopluginapi:$apiVersion")
@@ -65,6 +66,10 @@ dependencies {
     shadow("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.22.0") {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
     }
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation(project(":DisplayMonitorAPI"))
 }
 
 tasks.withType<ShadowJar> {

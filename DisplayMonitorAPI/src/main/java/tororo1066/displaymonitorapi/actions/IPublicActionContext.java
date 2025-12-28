@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import tororo1066.displaymonitorapi.elements.IAbstractElement;
 import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,11 +13,12 @@ import java.util.Map;
 public interface IPublicActionContext {
 
     /**
-     * {@link IAbstractElement}のHashMapを取得する
-     * @return {@link IAbstractElement}のHashMap
+     * {@link IAbstractElement}のMapを取得する
+     *
+     * @return {@link IAbstractElement}のMap
      */
     @NotNull
-    HashMap<@NotNull String, @NotNull IAbstractElement> getElements();
+    Map<@NotNull String, @NotNull IAbstractElement> getElements();
 
     /**
      * 次のAction実行前に停止するかどうかを取得する
@@ -52,29 +52,7 @@ public interface IPublicActionContext {
 
     void setWorkspace(@NotNull IAbstractWorkspace workspace);
 
+    @NotNull Map<@NotNull String, @NotNull IAbstractElement> getAllElements();
+
     @NotNull IPublicActionContext shallowCopy();
-
-    private @NotNull Map<@NotNull String, @NotNull IAbstractElement> getChildElements(@NotNull IAbstractElement element, @NotNull String parentKey) {
-        Map<@NotNull String, @NotNull IAbstractElement> allElements = new HashMap<>();
-        if (element.hasChildren()) {
-            Map<@NotNull String, @NotNull IAbstractElement> children = new HashMap<>(element.getChildren());
-            for (Map.Entry<@NotNull String, @NotNull IAbstractElement> child: children.entrySet()) {
-                String key = parentKey + "." + child.getKey();
-                allElements.put(key, child.getValue());
-                allElements.putAll(getChildElements(child.getValue(), key));
-            }
-        }
-        return allElements;
-    }
-
-    default @NotNull Map<@NotNull String, @NotNull IAbstractElement> getAllElements() {
-        Map<@NotNull String, @NotNull IAbstractElement> allElements = new HashMap<>();
-        //コピーしてから回さないとConcurrentModificationExceptionが出る
-        Map<@NotNull String, @NotNull IAbstractElement> elements = new HashMap<>(getElements());
-        for (Map.Entry<@NotNull String, @NotNull IAbstractElement> entry : elements.entrySet()) {
-            allElements.put(entry.getKey(), entry.getValue());
-            allElements.putAll(getChildElements(entry.getValue(), entry.getKey()));
-        }
-        return allElements;
-    }
 }

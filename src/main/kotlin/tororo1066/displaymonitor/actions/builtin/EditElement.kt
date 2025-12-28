@@ -1,11 +1,10 @@
 package tororo1066.displaymonitor.actions.builtin
 
 import tororo1066.displaymonitor.DisplayMonitor
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -14,7 +13,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
     name = "EditElement",
     description = "Elementを編集する。"
 )
-class EditElement: AbstractAction() {
+class EditElement: SuspendAction() {
 
     @ParameterDoc(
         name = "name",
@@ -32,7 +31,7 @@ class EditElement: AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         val element = context.publicContext.elements[name] ?: return ActionResult.noParameters(DisplayMonitor.translate("action.editElement.notFound", name))
         forceSync.orBlockingTask {
             element.edit(edit ?: AdvancedConfiguration())

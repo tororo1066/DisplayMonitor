@@ -1,10 +1,9 @@
 package tororo1066.displaymonitor.actions.builtin
 
 import org.bukkit.entity.Player
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -13,7 +12,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
     name = "RemoveEntity",
     description = "Entityを削除する。"
 )
-class RemoveEntityAction: AbstractAction() {
+class RemoveEntityAction: SuspendAction() {
 
     @ParameterDoc(
         name = "forceSync",
@@ -21,7 +20,7 @@ class RemoveEntityAction: AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         val target = context.target ?: return ActionResult.targetRequired()
         if (target is Player) return ActionResult.failed("Player cannot be removed")
         forceSync.orBlockingTask {

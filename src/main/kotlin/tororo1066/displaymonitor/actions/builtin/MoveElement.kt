@@ -1,6 +1,6 @@
 package tororo1066.displaymonitor.actions.builtin
 
-import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
@@ -11,7 +11,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
     name = "MoveElement",
     description = "Elementを移動する。"
 )
-class MoveElement: AbstractAction() {
+class MoveElement: SuspendAction() {
 
     @ParameterDoc(
         name = "name",
@@ -25,7 +25,7 @@ class MoveElement: AbstractAction() {
     )
     var forceSync = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         val location = context.location ?: return ActionResult.noParameters("Location is not set")
         val element = context.publicContext.elements[name] ?: return ActionResult.noParameters("Element not found")
         forceSync.orBlockingTask {
@@ -36,5 +36,6 @@ class MoveElement: AbstractAction() {
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         name = section.getString("name", "")!!
+        forceSync = section.getBoolean("forceSync", false)
     }
 }

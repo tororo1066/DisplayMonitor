@@ -3,12 +3,10 @@ package tororo1066.displaymonitor.actions.builtin
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
-import java.util.UUID
 
 @ClassDoc(
     name = "Repeat",
@@ -40,9 +38,6 @@ class RepeatAction: AbstractAction() {
             if (context.publicContext.stop) {
                 return ActionResult.success()
             }
-            if (count == Int.MAX_VALUE) {
-                return ActionResult.failed("Too many repeat")
-            }
             val cloneContext = context.cloneWithRandomUUID()
             variableName?.let {
                 cloneContext.configuration?.parameters?.put(it, count)
@@ -53,7 +48,9 @@ class RepeatAction: AbstractAction() {
             if (cloneContext.stop) {
                 return ActionResult.success()
             }
-            count++
+            if (count != Int.MAX_VALUE) {
+                count++
+            }
             return null
         }
 
@@ -78,8 +75,8 @@ class RepeatAction: AbstractAction() {
 
     override fun prepare(section: IAdvancedConfigurationSection) {
         val times = section.get("times")
-        if (times is Int) {
-            this.times = times
+        if (times is Number) {
+            this.times = times.toInt()
         } else if (times is String && times == "infinity") {
             isInfinity = true
         }
