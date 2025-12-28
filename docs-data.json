@@ -92,8 +92,8 @@
         "parameters": [
           {
             "name": "delay",
-            "description": "待機する時間。",
-            "default": "",
+            "description": "待機する時間。(ミリ秒)",
+            "default": "0",
             "type": "Long"
           }
         ]
@@ -1145,32 +1145,22 @@
     "name": "Type",
     "classes": [
       {
-        "name": "StringList",
-        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
-        "parameters": []
-      },
-      {
-        "name": "Int",
-        "description": "整数\n\n例:\n  1000",
-        "parameters": []
-      },
-      {
-        "name": "Scope",
-        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
-        "parameters": []
-      },
-      {
         "name": "BlockData",
         "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
         "parameters": []
       },
       {
-        "name": "Vector3f",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
         "parameters": []
       },
       {
-        "name": "Long",
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
+        "name": "Int",
         "description": "整数\n\n例:\n  1000",
         "parameters": []
       },
@@ -1180,58 +1170,8 @@
         "parameters": []
       },
       {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
-        "parameters": []
-      },
-      {
-        "name": "Boolean",
-        "description": "真偽値\n\n例:\n  true/false",
-        "parameters": []
-      },
-      {
         "name": "Execute",
         "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "Location",
-        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "AsyncExecute",
-        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "Component",
-        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
-        "parameters": []
-      },
-      {
-        "name": "ItemStack",
-        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
-        "parameters": []
-      },
-      {
-        "name": "Quaternionf",
-        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
-        "parameters": []
-      },
-      {
-        "name": "Color",
-        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
-        "parameters": []
-      },
-      {
-        "name": "Vector",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
-        "parameters": []
-      },
-      {
-        "name": "IAdvancedConfigurationSection",
-        "description": "セクション\n\n例:\n  key: value",
         "parameters": []
       },
       {
@@ -1240,13 +1180,73 @@
         "parameters": []
       },
       {
+        "name": "IAdvancedConfigurationSection",
+        "description": "セクション\n\n例:\n  key: value",
+        "parameters": []
+      },
+      {
+        "name": "Long",
+        "description": "整数\n\n例:\n  1000",
+        "parameters": []
+      },
+      {
+        "name": "Color",
+        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
+        "parameters": []
+      },
+      {
+        "name": "ItemStack",
+        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
+        "parameters": []
+      },
+      {
+        "name": "Boolean",
+        "description": "真偽値\n\n例:\n  true/false",
+        "parameters": []
+      },
+      {
+        "name": "Component",
+        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
+        "parameters": []
+      },
+      {
+        "name": "Location",
+        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "StringList",
+        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
+        "parameters": []
+      },
+      {
+        "name": "Vector",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
+        "parameters": []
+      },
+      {
+        "name": "Vector3f",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "AsyncExecute",
+        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
         "name": "String",
         "description": "文字列\n\n例:\n  \"example\"",
         "parameters": []
       },
       {
-        "name": "CommandType",
-        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
+        "name": "Quaternionf",
+        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
         "parameters": []
       },
       {
@@ -1260,13 +1260,13 @@
         "parameters": []
       },
       {
-        "name": "Billboard",
-        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "name": "Float",
+        "description": "実数\n\n例:\n  1000.0",
         "parameters": []
       },
       {
-        "name": "Float",
-        "description": "実数\n\n例:\n  1000.0",
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
         "parameters": []
       }
     ]
