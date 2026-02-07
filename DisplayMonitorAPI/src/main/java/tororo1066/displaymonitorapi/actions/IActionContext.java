@@ -134,7 +134,13 @@ public interface IActionContext extends Cloneable {
      * デフォルトのパラメータを取得する
      * @return パラメータ
      */
-    @NotNull Map<String, Object> getDefaultParameters();
+    @NotNull Map<@NotNull String, @NotNull Object> getDefaultParameters();
+
+    /**
+     * {@link IAdvancedConfiguration}と{@link IPublicActionContext}を含めた全てのパラメータを取得する
+     * @return パラメータ
+     */
+    @NotNull Map<@NotNull String, @NotNull Object> getAllParameters();
 
     /**
      * IActionContextを複製する

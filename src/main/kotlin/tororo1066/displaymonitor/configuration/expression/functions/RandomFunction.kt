@@ -12,11 +12,11 @@ class RandomFunction: AbstractFunction("random") {
         return listOf(
             ParameterDoc(
                 name = "min",
-                description = "ランダムな整数の最小値"
+                description = "ランダムな整数の最小値。"
             ),
             ParameterDoc(
                 name = "max",
-                description = "ランダムな整数の最大値"
+                description = "ランダムな整数の最大値。"
             )
         )
     }

@@ -60,19 +60,23 @@ class AllowedPlayers: CustomSettable {
         }
     }
 
-    fun allowedPlayersAction(unit: (Player) -> Unit) {
-        Bukkit.getOnlinePlayers().forEach { player ->
-            if (isAllowed(player)) {
-                unit(player)
-            }
+    fun allowedPlayers(): List<Player> {
+        return Bukkit.getOnlinePlayers().filter { player ->
+            isAllowed(player)
         }
     }
 
-    fun disallowedPlayersAction(unit: (Player) -> Unit) {
-        Bukkit.getOnlinePlayers().forEach { player ->
-            if (!isAllowed(player)) {
-                unit(player)
-            }
+    fun disallowedPlayers(): List<Player> {
+        return Bukkit.getOnlinePlayers().filter { player ->
+            !isAllowed(player)
         }
+    }
+
+    fun allowedPlayersAction(unit: (Player) -> Unit) {
+        allowedPlayers().forEach(unit)
+    }
+
+    fun disallowedPlayersAction(unit: (Player) -> Unit) {
+        disallowedPlayers().forEach(unit)
     }
 }

@@ -13,9 +13,13 @@ import org.bukkit.util.BoundingBox
 import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
+import kotlin.collections.get
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.text.toDouble
+import kotlin.times
 
 
 class OBB {
@@ -220,16 +224,28 @@ class OBB {
         return true
     }
 
+    companion object {
+        val villagerHappy = try {
+            Particle.valueOf("HAPPY_VILLAGER")
+        } catch (_: NoSuchFieldError) {
+            Particle.VILLAGER_HAPPY
+        }
+    }
+
     fun showParticle(world: World, player: Player?) {
-        val corners = arrayOfNulls<Vector3f>(8)
-        for (i in 0..7) {
-            corners[i] = center.cloneVector()
+        // nullable をやめて、必ず 8 つの角を生成する
+        val corners: Array<Vector3f> = Array(8) { i ->
+            val c = Vector3f(center) // center のコピー
             for (j in 0..2) {
-                val sign = if ((i and (1 shl j)) == 0) -1 else 1
-                corners[i]!!.add(axes[j].cloneVector().mul((halfWidths[j] * sign).toFloat()))
+                val sign = if ((i and (1 shl j)) == 0) -1f else 1f
+                // axes[j] を破壊しないようコピーしてから加算
+                val offset = Vector3f(axes[j]).mul(halfWidths[j] * sign)
+                c.add(offset)
             }
+            c
         }
 
+        // 辺（1bit だけ異なる頂点ペア）だけ線分描画
         for (i in 0..7) {
             for (j in i + 1..7) {
                 if (Integer.bitCount(i xor j) == 1) {
@@ -239,22 +255,30 @@ class OBB {
         }
     }
 
-    private fun drawLine(world: World, player: Player?, start: Vector3f?, end: Vector3f?) {
-        val distance = start!!.distance(end!!)
-        val step = end.cloneVector().sub(start).normalize().mul(0.2f) // 線の分解能
+    private fun drawLine(world: World, player: Player?, start: Vector3f, end: Vector3f) {
+        val distance = start.distance(end)
+        if (distance <= 1.0e-6f) return
+
+        val stepLength = 0.2f
+        val steps = max(1, floor((distance / stepLength).toDouble()).toInt())
+
+        val dir = end.cloneVector().sub(start).mul(1f / steps.toFloat()) // 1ステップあたりの増分
         val current = start.cloneVector()
 
-        var i = 0.0
-        while (i < distance) {
-            val loc = Location(world, current.x.toDouble(), current.y.toDouble(), current.z.toDouble())
+        val loc = Location(world, 0.0, 0.0, 0.0)
+
+        for (i in 0..steps) {
+            loc.x = current.x.toDouble()
+            loc.y = current.y.toDouble()
+            loc.z = current.z.toDouble()
+
             if (player != null) {
-                player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
+                player.spawnParticle(villagerHappy, loc, 1, 0.0, 0.0, 0.0)
             } else {
-                world.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
+                world.spawnParticle(villagerHappy, loc, 1, 0.0, 0.0, 0.0)
             }
-//            player.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, DustOptions(Color.LIME, 0.5f))
-            current.add(step)
-            i += 0.2
+
+            current.add(dir)
         }
     }
 }

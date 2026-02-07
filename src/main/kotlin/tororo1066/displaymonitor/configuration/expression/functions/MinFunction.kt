@@ -3,9 +3,9 @@ package tororo1066.displaymonitor.configuration.expression.functions
 import tororo1066.displaymonitor.configuration.expression.AbstractFunction
 import tororo1066.displaymonitor.documentation.ParameterDoc
 
-class MaxFunction: AbstractFunction("max") {
+class MinFunction: AbstractFunction("min") {
     override fun getDescription(): String {
-        return "与えられた数値の中で最大の値を返す。"
+        return "与えられた数値の中で最小の値を返す。"
     }
 
     override fun getParameters(): List<ParameterDoc> {
@@ -19,9 +19,9 @@ class MaxFunction: AbstractFunction("max") {
 
     override fun eval(args: List<Any>, parameters: Map<String, Any>): Any {
         if (args.isEmpty()) {
-            throw IllegalArgumentException("At least one argument is required for max function.")
+            throw IllegalArgumentException("At least one argument is required for min function.")
         }
-        return args.maxOf {
+        return args.minOf {
             when (it) {
                 is Number -> it.toDouble()
                 else -> throw IllegalArgumentException("All arguments must be numbers.")

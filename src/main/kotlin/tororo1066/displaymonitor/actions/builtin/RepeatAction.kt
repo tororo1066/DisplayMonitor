@@ -27,22 +27,34 @@ class RepeatAction: AbstractAction() {
     var actions: Execute = Execute.empty()
     @ParameterDoc(
         name = "variableName",
-        description = "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。"
+        description = "繰り返し回数を格納する変数名。指定しない場合は`repeat.count`に格納される。"
     )
-    var variableName: String? = null
+    var variableName: String = "repeat.count"
+
+    @ParameterDoc(
+        name = "iterable",
+        description = "繰り返し処理を行うリスト、またはその変数名。指定した場合、`times`は無視される。"
+    )
+    var iterable: Iterable<*>? = null
+    var iterableVariable: String? = null
+
+    @ParameterDoc(
+        name = "iterableVariableName",
+        description = "`iterable`で指定したリストの各要素を格納する変数名。指定しない場合は`repeat.item`に格納される。"
+    )
+    var iterableVariableName: String = "repeat.item"
 
     override fun run(context: IActionContext): ActionResult {
         var count = 0
 
-        fun step(): ActionResult? {
+        fun step(item: Any? = null): ActionResult? {
             if (context.publicContext.stop) {
                 return ActionResult.success()
             }
             val cloneContext = context.cloneWithRandomUUID()
-            variableName?.let {
-                cloneContext.configuration?.parameters?.put(it, count)
-            } ?: run {
-                cloneContext.configuration?.parameters?.put("repeat.count", count)
+            cloneContext.configuration?.parameters?.put(variableName, count)
+            if (item != null) {
+                cloneContext.configuration?.parameters?.put(iterableVariableName, item)
             }
             actions(cloneContext)
             if (cloneContext.stop) {
@@ -54,18 +66,34 @@ class RepeatAction: AbstractAction() {
             return null
         }
 
-        if (isInfinity) {
-            while (true) {
-                val result = step()
+        iterableVariable?.let {
+            val obj = context.allParameters[it]
+            if (obj is Iterable<*>) {
+                iterable = obj
+            }
+        }
+
+        iterable?.let {
+            for (item in it) {
+                val result = step(item)
                 if (result != null) {
                     return result
                 }
             }
-        } else {
-            repeat(times) {
-                val result = step()
-                if (result != null) {
-                    return result
+        } ?: run {
+            if (isInfinity) {
+                while (true) {
+                    val result = step()
+                    if (result != null) {
+                        return result
+                    }
+                }
+            } else {
+                repeat(times) {
+                    val result = step()
+                    if (result != null) {
+                        return result
+                    }
                 }
             }
         }
@@ -81,6 +109,17 @@ class RepeatAction: AbstractAction() {
             isInfinity = true
         }
         actions = section.getConfigExecute("actions", actions)
-        variableName = section.getString("variableName")
+        variableName = section.getString("variableName", variableName)!!
+
+        val iterable = section.get("iterable")
+        if (iterable is Iterable<*>) {
+            this.iterable = iterable
+        } else {
+            if (iterable is String) {
+                this.iterableVariable = iterable
+            }
+        }
+
+        iterableVariableName = section.getString("iterableVariableName", iterableVariableName)!!
     }
 }

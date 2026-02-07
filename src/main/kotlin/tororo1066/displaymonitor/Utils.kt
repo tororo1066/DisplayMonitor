@@ -36,7 +36,7 @@ object Utils: IDisplayUtils {
             } else {
                 Color.fromRGB(colorInt)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }
@@ -102,6 +102,18 @@ object Utils: IDisplayUtils {
             advancedConfig.set(key, value)
         }
 
+        return advancedConfig
+    }
+
+    override fun loadAdvancedConfiguration(contents: String): IAdvancedConfiguration {
+        val advancedConfig = AdvancedConfiguration()
+        advancedConfig.loadFromString(contents)
+        return advancedConfig
+    }
+
+    override fun loadAdvancedConfiguration(file: File): IAdvancedConfiguration {
+        val advancedConfig = AdvancedConfiguration()
+        advancedConfig.load(file)
         return advancedConfig
     }
 }

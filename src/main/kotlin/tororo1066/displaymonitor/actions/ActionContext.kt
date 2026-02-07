@@ -147,4 +147,13 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
         }
         return map
     }
+
+    override fun getAllParameters(): Map<String, Any> {
+        val map = HashMap<String, Any>()
+        configuration?.let {
+            map.putAll(it.parameters)
+        }
+        map.putAll(publicContext.parameters)
+        return map
+    }
 }

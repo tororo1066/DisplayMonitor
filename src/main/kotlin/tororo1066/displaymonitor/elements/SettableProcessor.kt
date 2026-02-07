@@ -18,6 +18,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.displaymonitorapi.elements.CustomSettable
+import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import java.lang.reflect.Field
 import java.util.IdentityHashMap
@@ -116,7 +117,7 @@ object SettableProcessor: ISettableProcessor {
             return it.apply(this, key) as? Type
         }
 
-        if (clazz.isAssignableFrom(CustomSettable::class.java)) {
+        if (CustomSettable::class.java.isAssignableFrom(clazz)) {
             val section = this.getAdvancedConfigurationSection(key) ?: return null
             val instance = UsefulUtility.sTry({
                 clazz.getDeclaredConstructor().newInstance() as CustomSettable
@@ -187,13 +188,6 @@ object SettableProcessor: ISettableProcessor {
                 return this.getStringLocation(key) as? Type
             }
 
-            AllowedPlayers::class.java -> {
-                val section = this.getAdvancedConfigurationSection(key) ?: return null
-                val viewablePlayers = AllowedPlayers()
-                viewablePlayers.load(section)
-                return viewablePlayers as? Type
-            }
-
             else -> {
                 return this.get(key) as? Type
             }
@@ -224,11 +218,18 @@ object SettableProcessor: ISettableProcessor {
                 prepareField(childField, childSection, fieldValue ?: return)
             }
         } else {
-            val value = section.withParameters(processVariable(fieldValue)) {
-                processValue(it, key, field.type)
-            }
-            if (value != null) {
-                kotlinProperty.setter.call(instance, value)
+            val isNull = section.isSet(key) && section.get(key) == null
+            if (isNull) {
+                if (kotlinProperty.returnType.isMarkedNullable) {
+                    kotlinProperty.setter.call(instance, null)
+                }
+            } else {
+                val value = section.withParameters(processVariable(fieldValue)) {
+                    processValue(it, key, field.type)
+                }
+                if (value != null) {
+                    kotlinProperty.setter.call(instance, value)
+                }
             }
         }
     }

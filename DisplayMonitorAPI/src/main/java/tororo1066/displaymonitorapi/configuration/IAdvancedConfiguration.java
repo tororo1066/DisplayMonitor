@@ -5,11 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tororo1066.displaymonitorapi.actions.IPublicActionContext;
 
+import java.io.File;
 import java.util.Map;
 
 public interface IAdvancedConfiguration extends IAdvancedConfigurationSection, Configuration, Cloneable {
 
     @NotNull Character SEPARATOR = '\u0BEC';
+
+    void loadFromString(@NotNull String contents);
+
+    void load(@NotNull File file);
 
     @NotNull Map<String, Object> getParameters();
 

@@ -12,7 +12,7 @@ class SizeFunction: AbstractFunction("size") {
         return listOf(
             ParameterDoc(
                 name = "listOrMap",
-                description = "要素数を取得するリストまたはマップ",
+                description = "要素数を取得するリストまたはマップの変数名。",
             )
         )
     }

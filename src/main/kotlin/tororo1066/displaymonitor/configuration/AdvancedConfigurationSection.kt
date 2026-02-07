@@ -13,7 +13,6 @@ import tororo1066.displaymonitor.actions.ActionRunner
 import tororo1066.displaymonitorapi.configuration.AsyncExecute
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
-import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import tororo1066.tororopluginapi.sItem.SItem
 import java.util.function.Function
@@ -89,10 +88,6 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     }
 
     override fun getAdvancedConfigurationSectionList(path: String): List<AdvancedConfigurationSection> {
-//        return getMapList(path).map {
-//            toAdvancedConfigurationSection(it)
-//        }
-
         val sections = getList(path) ?: return emptyList()
         return sections.mapNotNull {
             it as? AdvancedConfigurationSection
@@ -112,7 +107,55 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return section
     }
 
+    private val sectionPathDataReflection by lazy {
+        runCatching {
+            val cls = Class.forName("org.bukkit.configuration.SectionPathData")
+            val ctor = cls.getDeclaredConstructor(Any::class.java).apply { isAccessible = true }
+            val setData = cls.getDeclaredMethod("setData", Any::class.java).apply { isAccessible = true }
+            val put = map.javaClass.getMethod("put", Any::class.java, Any::class.java).apply { isAccessible = true }
+            Triple(ctor, setData, put)
+        }
+    }
+
     override fun set(path: String, value: Any?) {
+        if (value == null) {
+            // 反射が使えない環境/将来バージョンでは従来挙動にフォールバック
+            val refl = sectionPathDataReflection.getOrNull()
+            if (refl == null) {
+                super.set(path, null)
+                return
+            }
+
+            require(path.isNotEmpty()) { "Cannot set to an empty path" }
+
+            val root = root ?: throw IllegalStateException("Cannot use section without a root")
+            val separator = root.options().pathSeparator()
+
+            var i1 = -1
+            var i2: Int
+            var section: ConfigurationSection = this
+            while ((path.indexOf(separator, (i1 + 1).also { i2 = it }).also { i1 = it }) != -1) {
+                val node = path.substring(i2, i1)
+                val subSection = section.getConfigurationSection(node)
+                section = subSection ?: section.createSection(node)
+            }
+
+            val key = path.substring(i2)
+            if (section === this) {
+                val (ctor, setData, put) = refl
+                val entry = map[key]
+                if (entry == null) {
+                    val sectionPathData = ctor.newInstance(value)
+                    put.invoke(map, key, sectionPathData)
+                } else {
+                    setData.invoke(entry, value)
+                }
+            } else {
+                section.set(key, value)
+            }
+            return
+        }
+
         if (value is Map<*, *>) {
             super.set(path, mapToSection(path, value))
             return

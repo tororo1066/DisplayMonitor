@@ -59,6 +59,7 @@ object ActionStorage: IActionStorage {
         actions["PlaySound"] = PlaySoundAction::class.java
         actions["AttachEntity"] = AttachEntityAction::class.java
         actions["HasElement"] = HasElement::class.java
+        actions["Particle"] = ParticleAction::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 
