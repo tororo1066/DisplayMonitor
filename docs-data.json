@@ -255,6 +255,60 @@
         ]
       },
       {
+        "name": "Particle",
+        "description": "指定したパーティクルを表示する。",
+        "parameters": [
+          {
+            "name": "particle",
+            "description": "表示するパーティクルの種類。",
+            "default": "null",
+            "type": "Particle"
+          },
+          {
+            "name": "count",
+            "description": "表示するパーティクルの数。",
+            "default": "1",
+            "type": "Int"
+          },
+          {
+            "name": "offset",
+            "description": "パーティクルのぶれ。",
+            "default": "0.0,0.0,0.0",
+            "type": "Vector"
+          },
+          {
+            "name": "extra",
+            "description": "パーティクルの追加データ。パーティクルによって意味が異なる。",
+            "default": "0.0",
+            "type": "Double"
+          },
+          {
+            "name": "dust.color",
+            "description": "パーティクルの色。hex形式で指定。",
+            "default": "null",
+            "type": "Color"
+          },
+          {
+            "name": "dust.size",
+            "description": "パーティクルの大きさ。",
+            "default": "1.0",
+            "type": "Float"
+          },
+          {
+            "name": "radius",
+            "description": "パーティクルを表示する範囲の半径。0の場合はreceiversの設定が使われる。",
+            "default": "0",
+            "type": "Int"
+          },
+          {
+            "name": "receivers",
+            "description": "パーティクルを受け取るプレイヤーの設定。radiusが0の場合に使用される。",
+            "default": "",
+            "type": "Unknown"
+          }
+        ]
+      },
+      {
         "name": "PlaySound",
         "description": "指定したサウンドを対象に再生する。",
         "parameters": [
@@ -362,7 +416,19 @@
           },
           {
             "name": "variableName",
-            "description": "繰り返し回数を格納する変数名。指定しない場合は repeat.count に格納される。",
+            "description": "繰り返し回数を格納する変数名。指定しない場合は`repeat.count`に格納される。",
+            "default": "",
+            "type": "String"
+          },
+          {
+            "name": "iterable",
+            "description": "繰り返し処理を行うリスト、またはその変数名。指定した場合、`times`は無視される。",
+            "default": "",
+            "type": "Unknown"
+          },
+          {
+            "name": "iterableVariableName",
+            "description": "`iterable`で指定したリストの各要素を格納する変数名。指定しない場合は`repeat.item`に格納される。",
             "default": "",
             "type": "String"
           }
@@ -776,6 +842,18 @@
             "description": "操作可能なプレイヤーの制限。",
             "default": "",
             "type": "Unknown"
+          },
+          {
+            "name": "glow",
+            "description": "エンティティを光らせるか。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "glowColor",
+            "description": "エンティティの光る色。",
+            "default": "#FFFFFF",
+            "type": "Color"
           }
         ]
       },
@@ -950,6 +1028,18 @@
             "description": "操作可能なプレイヤーの制限。",
             "default": "",
             "type": "Unknown"
+          },
+          {
+            "name": "glow",
+            "description": "エンティティを光らせるか。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "glowColor",
+            "description": "エンティティの光る色。",
+            "default": "#FFFFFF",
+            "type": "Color"
           }
         ]
       },
@@ -1136,6 +1226,18 @@
             "description": "操作可能なプレイヤーの制限。",
             "default": "",
             "type": "Unknown"
+          },
+          {
+            "name": "glow",
+            "description": "エンティティを光らせるか。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "glowColor",
+            "description": "エンティティの光る色。",
+            "default": "#FFFFFF",
+            "type": "Color"
           }
         ]
       }
@@ -1145,23 +1247,8 @@
     "name": "Type",
     "classes": [
       {
-        "name": "BlockData",
-        "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
-        "parameters": []
-      },
-      {
-        "name": "CommandType",
-        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
-        "parameters": []
-      },
-      {
-        "name": "Billboard",
-        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
-        "parameters": []
-      },
-      {
-        "name": "Int",
-        "description": "整数\n\n例:\n  1000",
+        "name": "Component",
+        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
         "parameters": []
       },
       {
@@ -1170,53 +1257,8 @@
         "parameters": []
       },
       {
-        "name": "Execute",
-        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "ItemDisplayTransform",
-        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
-        "parameters": []
-      },
-      {
-        "name": "IAdvancedConfigurationSection",
-        "description": "セクション\n\n例:\n  key: value",
-        "parameters": []
-      },
-      {
-        "name": "Long",
+        "name": "Int",
         "description": "整数\n\n例:\n  1000",
-        "parameters": []
-      },
-      {
-        "name": "Color",
-        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
-        "parameters": []
-      },
-      {
-        "name": "ItemStack",
-        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
-        "parameters": []
-      },
-      {
-        "name": "Boolean",
-        "description": "真偽値\n\n例:\n  true/false",
-        "parameters": []
-      },
-      {
-        "name": "Component",
-        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
-        "parameters": []
-      },
-      {
-        "name": "Location",
-        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "StringList",
-        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
         "parameters": []
       },
       {
@@ -1225,13 +1267,43 @@
         "parameters": []
       },
       {
+        "name": "Quaternionf",
+        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
+        "parameters": []
+      },
+      {
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
+        "parameters": []
+      },
+      {
+        "name": "Long",
+        "description": "整数\n\n例:\n  1000",
+        "parameters": []
+      },
+      {
         "name": "Scope",
         "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
         "parameters": []
       },
       {
-        "name": "Vector3f",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
+        "name": "Color",
+        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
+        "parameters": []
+      },
+      {
+        "name": "Boolean",
+        "description": "真偽値\n\n例:\n  true/false",
+        "parameters": []
+      },
+      {
+        "name": "Execute",
+        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
         "parameters": []
       },
       {
@@ -1240,13 +1312,53 @@
         "parameters": []
       },
       {
+        "name": "ItemDisplayTransform",
+        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "parameters": []
+      },
+      {
+        "name": "StringList",
+        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
+        "parameters": []
+      },
+      {
+        "name": "Location",
+        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
+        "parameters": []
+      },
+      {
+        "name": "BlockData",
+        "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
+        "parameters": []
+      },
+      {
+        "name": "Particle",
+        "description": "選択可能な値のリスト\n\n例:\n  EXPLOSION_NORMAL\nEXPLOSION_LARGE\nEXPLOSION_HUGE\nFIREWORKS_SPARK\nWATER_BUBBLE\nWATER_SPLASH\nWATER_WAKE\nSUSPENDED\nSUSPENDED_DEPTH\nCRIT\nCRIT_MAGIC\nSMOKE_NORMAL\nSMOKE_LARGE\nSPELL\nSPELL_INSTANT\nSPELL_MOB\nSPELL_MOB_AMBIENT\nSPELL_WITCH\nDRIP_WATER\nDRIP_LAVA\nVILLAGER_ANGRY\nVILLAGER_HAPPY\nTOWN_AURA\nNOTE\nPORTAL\nENCHANTMENT_TABLE\nFLAME\nLAVA\nCLOUD\nREDSTONE\nSNOWBALL\nSNOW_SHOVEL\nSLIME\nHEART\nITEM_CRACK\nBLOCK_CRACK\nBLOCK_DUST\nWATER_DROP\nMOB_APPEARANCE\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nGUST_EMITTER\nGUST_DUST\nTRIAL_SPAWNER_DETECTION\nBLOCK_MARKER\nLEGACY_BLOCK_CRACK\nLEGACY_BLOCK_DUST\nLEGACY_FALLING_DUST",
+        "parameters": []
+      },
+      {
+        "name": "Vector3f",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
         "name": "String",
         "description": "文字列\n\n例:\n  \"example\"",
         "parameters": []
       },
       {
-        "name": "Quaternionf",
-        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
+        "name": "ItemStack",
+        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
+        "parameters": []
+      },
+      {
+        "name": "IAdvancedConfigurationSection",
+        "description": "セクション\n\n例:\n  key: value",
         "parameters": []
       },
       {
@@ -1262,11 +1374,6 @@
       {
         "name": "Float",
         "description": "実数\n\n例:\n  1000.0",
-        "parameters": []
-      },
-      {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
         "parameters": []
       }
     ]
@@ -1302,12 +1409,34 @@
         ]
       },
       {
+        "name": "key",
+        "description": "マップのエントリのキーを取得する。",
+        "parameters": [
+          {
+            "name": "0.map",
+            "description": "キーを取得したいエントリの変数名。",
+            "type": "Unknown"
+          }
+        ]
+      },
+      {
         "name": "max",
         "description": "与えられた数値の中で最大の値を返す。",
         "parameters": [
           {
             "name": "0.numbers",
-            "description": "数値のリスト。少なくとも1つの数値が必要。",
+            "description": "数値。少なくとも1つの数値が必要。",
+            "type": "Unknown"
+          }
+        ]
+      },
+      {
+        "name": "min",
+        "description": "与えられた数値の中で最小の値を返す。",
+        "parameters": [
+          {
+            "name": "0.numbers",
+            "description": "数値。少なくとも1つの数値が必要。",
             "type": "Unknown"
           }
         ]
@@ -1318,12 +1447,12 @@
         "parameters": [
           {
             "name": "0.min",
-            "description": "ランダムな整数の最小値",
+            "description": "ランダムな整数の最小値。",
             "type": "Unknown"
           },
           {
             "name": "1.max",
-            "description": "ランダムな整数の最大値",
+            "description": "ランダムな整数の最大値。",
             "type": "Unknown"
           }
         ]
@@ -1334,7 +1463,18 @@
         "parameters": [
           {
             "name": "0.listOrMap",
-            "description": "要素数を取得するリストまたはマップ",
+            "description": "要素数を取得するリストまたはマップの変数名。",
+            "type": "Unknown"
+          }
+        ]
+      },
+      {
+        "name": "value",
+        "description": "マップのエントリの値を取得する。",
+        "parameters": [
+          {
+            "name": "0.map",
+            "description": "値を取得したいエントリの変数名。",
             "type": "Unknown"
           }
         ]
