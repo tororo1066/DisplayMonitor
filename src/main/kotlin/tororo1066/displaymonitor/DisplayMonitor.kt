@@ -59,6 +59,7 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
     override fun onStart() {
         DisplayMonitorInstance.setInstance(this)
 
+        @Suppress("UNUSED_EXPRESSION")
         Bukkit.getScheduler().runTaskLater(this, Runnable {
             FunctionStorage
             ActionStorage
@@ -87,15 +88,6 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
     }
 
     override fun onEnd() {
-        ActionStorage.contextStorage.values.forEach {
-            it.values.forEach { context ->
-                context.publicContext.elements.values.forEach { element ->
-                    element.remove()
-                }
-                context.publicContext.stop = true
-            }
-        }
-
         Config.getConfig<StoreDataConfig>()?.database?.close()
     }
 

@@ -93,7 +93,7 @@ class StoreDataAction: AbstractAction() {
                     file.createNewFile()
                 }
                 val yml = YamlConfiguration().apply {
-                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+//                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
                     load(file)
                 }
                 data.forEach { (key, value) ->

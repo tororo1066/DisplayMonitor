@@ -1,7 +1,6 @@
 package tororo1066.displaymonitor.storage
 
-import org.bukkit.configuration.file.YamlConfiguration
-import tororo1066.displaymonitor.Utils.mergeConfiguration
+import com.google.common.collect.MapMaker
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitor.actions.builtin.*
@@ -18,15 +17,11 @@ import tororo1066.displaymonitorapi.events.ActionRegisteringEvent
 import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace
 import java.io.File
-import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Function
 
 object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
-    // GroupUUID -> (ActionUUID -> IActionContext)
-    val contextStorage = ConcurrentHashMap<UUID, MutableMap<UUID, IActionContext>>()
-    val contextByName = ConcurrentHashMap<String, UUID>()
+    val contextByName = MapMaker().concurrencyLevel(4).weakValues().makeMap<String, IActionContext>()
 
     init {
         actions["SummonElement"] = SummonElement::class.java
@@ -85,7 +80,7 @@ object ActionStorage: IActionStorage {
     }
 
     override fun getActionConfigurations(file: File): List<IActionConfiguration> {
-        val yaml = AdvancedConfiguration().mergeConfiguration(YamlConfiguration.loadConfiguration(file))
+        val yaml = AdvancedConfiguration.load(file)
         return getActionConfigurations(yaml)
     }
 
@@ -111,10 +106,7 @@ object ActionStorage: IActionStorage {
                         context.publicContext.shallowCopy().apply {
                             this.workspace = workspace
                         }
-                    ).apply {
-                        this.groupUUID = UUID.randomUUID()
-                        this.uuid = UUID.randomUUID()
-                    }
+                    )
                     actionConfiguration.run(cloneContext, true, null)
                 }
             }

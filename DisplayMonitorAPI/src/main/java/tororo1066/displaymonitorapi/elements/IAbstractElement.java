@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tororo1066.displaymonitorapi.IDisplayMonitor;
+import tororo1066.displaymonitorapi.actions.IActionContext;
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
 
 import java.lang.reflect.Field;
@@ -17,13 +18,9 @@ public interface IAbstractElement extends Cloneable {
 
     boolean syncGroup();
 
-    @Nullable UUID getGroupUUID();
+    @Nullable IActionContext getActionContext();
 
-    void setGroupUUID(@Nullable UUID groupUUID);
-
-    @Nullable UUID getContextUUID();
-
-    void setContextUUID(@Nullable UUID contextUUID);
+    void setActionContext(@Nullable IActionContext actionContext);
 
     void spawn(@Nullable Entity entity, @NotNull Location location);
 

@@ -1,26 +1,19 @@
-package tororo1066.displaymonitor
+package tororo1066.displaymonitor.hitbox
 
-import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
-import org.bukkit.Particle.DustOptions
 import org.bukkit.World
 import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import org.bukkit.util.BoundingBox
-import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import kotlin.collections.get
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.text.toDouble
-import kotlin.times
-
 
 class OBB {
     var center: Vector3f // OBBの中心
@@ -79,16 +72,30 @@ class OBB {
         }
     }
 
-    fun modifyBy(p: Player, display: Display) {
+    fun modifyBy(p: Player, display: Display, ignoreModifies: List<IgnoreModify>) {
         //ここでOBBを編集する
 
-        rotate(display.transformation.rightRotation)
-        scale(display.transformation.scale)
-        rotate(display.transformation.leftRotation)
+//        rotate(display.transformation.rightRotation)
+//        scale(display.transformation.scale)
+//        rotate(display.transformation.leftRotation)
+        if (!ignoreModifies.contains(IgnoreModify.RIGHT_ROTATION)) {
+            rotate(display.transformation.rightRotation)
+        }
+        if (!ignoreModifies.contains(IgnoreModify.SCALE)) {
+            scale(display.transformation.scale)
+        }
+        if (!ignoreModifies.contains(IgnoreModify.LEFT_ROTATION)) {
+            rotate(display.transformation.leftRotation)
+        }
 
         //相対的に移動する
 
-        val translation = display.transformation.translation.cloneVector()
+//        val translation = display.transformation.translation.cloneVector()
+        val translation = if (!ignoreModifies.contains(IgnoreModify.TRANSLATION)) {
+            display.transformation.translation.cloneVector()
+        } else {
+            Vector3f(0f, 0f, 0f)
+        }
 
 
         when (display.billboard) {

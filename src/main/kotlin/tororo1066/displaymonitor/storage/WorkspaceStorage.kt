@@ -1,7 +1,5 @@
 package tororo1066.displaymonitor.storage
 
-import org.bukkit.configuration.file.YamlConfiguration
-import tororo1066.displaymonitor.Utils.mergeConfiguration
 import tororo1066.displaymonitor.configuration.ActionConfiguration
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IActionConfiguration
@@ -63,8 +61,8 @@ object WorkspaceStorage: IWorkspaceStorage {
                 return
             }
 
-            val yaml = AdvancedConfiguration().mergeConfiguration(YamlConfiguration.loadConfiguration(file))
-            loadDisplayMonitorActions(yaml)
+            val configuration = AdvancedConfiguration.load(file)
+            loadDisplayMonitorActions(configuration)
         }
 
         fun loadDisplayMonitorActions() {

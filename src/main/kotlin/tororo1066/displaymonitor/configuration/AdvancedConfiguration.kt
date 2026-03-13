@@ -10,13 +10,10 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.comments.CommentLine
-import org.yaml.snakeyaml.comments.CommentType
 import org.yaml.snakeyaml.error.YAMLException
 import org.yaml.snakeyaml.nodes.AnchorNode
 import org.yaml.snakeyaml.nodes.MappingNode
 import org.yaml.snakeyaml.nodes.ScalarNode
-import org.yaml.snakeyaml.nodes.SequenceNode
 import org.yaml.snakeyaml.reader.UnicodeReader
 import tororo1066.displaymonitor.configuration.expression.evalExpressionRecursive
 import tororo1066.displaymonitor.storage.FunctionStorage
@@ -30,9 +27,9 @@ import java.nio.charset.StandardCharsets
 class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfiguration {
 
     private inner class Options: ConfigurationOptions(this) {
-        override fun pathSeparator(): Char {
-            return IAdvancedConfiguration.SEPARATOR
-        }
+//        override fun pathSeparator(): Char {
+//            return IAdvancedConfiguration.SEPARATOR
+//        }
     }
 
     private val options = Options()
@@ -126,9 +123,6 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
     }
 
     override fun loadFromString(contents: String) {
-//        yamlLoaderOptions.setProcessComments(options().parseComments())
-//        yamlLoaderOptions.setCodePointLimit(options().codePointLimit()) // Paper
-
         val node: MappingNode?
         try {
             UnicodeReader(ByteArrayInputStream(contents.toByteArray(StandardCharsets.UTF_8))).use { reader ->
@@ -150,29 +144,7 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
         this.map.clear()
 
         if (node != null) {
-            adjustNodeComments(node)
-//            options().setHeader(loadHeader(getCommentLines(node.getBlockComments())))
-//            options().setFooter(getCommentLines(node.getEndComments()))
             fromNodeTree(node, this)
-        }
-    }
-
-    private fun adjustNodeComments(node: MappingNode) {
-        if (node.blockComments == null && !node.value.isEmpty()) {
-            val firstNode = node.value[0].keyNode
-            val lines = firstNode.blockComments
-            if (lines != null) {
-                var index = -1
-                for (i in lines.indices) {
-                    if (lines[i].commentType == CommentType.BLANK_LINE) {
-                        index = i
-                    }
-                }
-                if (index != -1) {
-                    node.blockComments = lines.subList(0, index + 1)
-                    firstNode.blockComments = lines.subList(index + 1, lines.size)
-                }
-            }
         }
     }
 
@@ -192,13 +164,6 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
             } else {
                 section.set(keyString, constructor.construct(value))
             }
-
-            section.setComments(keyString, getCommentLines(key.blockComments))
-            if (value is MappingNode || value is SequenceNode) {
-                section.setInlineComments(keyString, getCommentLines(key.inLineComments))
-            } else {
-                section.setInlineComments(keyString, getCommentLines(value.inLineComments))
-            }
         }
     }
 
@@ -214,23 +179,13 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
         return false
     }
 
-    private fun getCommentLines(comments: MutableList<CommentLine>?): MutableList<String?> {
-        val lines = arrayListOf<String?>()
-        if (comments != null) {
-            for (comment in comments) {
-                if (comment.commentType == CommentType.BLANK_LINE) {
-                    lines.add(null)
-                } else {
-                    var line = comment.value
-                    line = if (line.startsWith(" ")) line.substring(1) else line
-                    lines.add(line)
-                }
-            }
-        }
-        return lines
-    }
-
     companion object {
+        fun load(file: File): AdvancedConfiguration {
+            val config = AdvancedConfiguration()
+            config.load(file)
+            return config
+        }
+
         fun loadFromString(contents: String): AdvancedConfiguration {
             val config = AdvancedConfiguration()
             config.loadFromString(contents)

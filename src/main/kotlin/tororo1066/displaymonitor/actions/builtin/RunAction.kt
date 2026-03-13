@@ -45,7 +45,7 @@ class RunAction: AbstractAction() {
     override fun run(context: IActionContext): ActionResult {
         if (!override && ActionStorage.contextByName.containsKey(actionName)) return ActionResult.failed("Action $actionName already exists.")
         val action = context.publicContext.workspace.actionConfigurations[action] ?: return ActionResult.noParameters("Action $action not found.")
-        val newContext = if (cloneContext) context.cloneWithRandomUUID() else context
+        val newContext = if (cloneContext) context.clone() else context
         variables.forEach { (key, value) ->
             newContext.configuration?.parameters?.put(key, value)
         }

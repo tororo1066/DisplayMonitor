@@ -16,6 +16,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import tororo1066.tororopluginapi.sItem.SItem
 import java.util.function.Function
+import kotlin.random.Random
 
 open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSection {
 
@@ -24,6 +25,21 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     constructor(parent: IAdvancedConfigurationSection, path: String): super(parent, path)
 
     constructor(copy: ConfigurationSection): super(copy.parent!!, copy.name)
+
+    companion object {
+        private val sectionPathDataReflection by lazy {
+            runCatching {
+                val cls = Class.forName("org.bukkit.configuration.SectionPathData")
+                val ctor = cls.getDeclaredConstructor(Any::class.java).apply { isAccessible = true }
+                val setData = cls.getDeclaredMethod("setData", Any::class.java).apply { isAccessible = true }
+                Pair(ctor, setData)
+            }
+        }
+
+        private val checkingIsSetRandom by lazy {
+            Random.nextDouble()
+        }
+    }
 
     protected fun createAdvancedSection(key: String): AdvancedConfigurationSection {
         return AdvancedConfigurationSection(this, key)
@@ -107,16 +123,6 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return section
     }
 
-    private val sectionPathDataReflection by lazy {
-        runCatching {
-            val cls = Class.forName("org.bukkit.configuration.SectionPathData")
-            val ctor = cls.getDeclaredConstructor(Any::class.java).apply { isAccessible = true }
-            val setData = cls.getDeclaredMethod("setData", Any::class.java).apply { isAccessible = true }
-            val put = map.javaClass.getMethod("put", Any::class.java, Any::class.java).apply { isAccessible = true }
-            Triple(ctor, setData, put)
-        }
-    }
-
     override fun set(path: String, value: Any?) {
         if (value == null) {
             // 反射が使えない環境/将来バージョンでは従来挙動にフォールバック
@@ -142,11 +148,13 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
 
             val key = path.substring(i2)
             if (section === this) {
-                val (ctor, setData, put) = refl
+                val (ctor, setData) = refl
+                @Suppress("UNCHECKED_CAST")
+                val map: MutableMap<Any, Any> = this.map as MutableMap<Any, Any>
                 val entry = map[key]
                 if (entry == null) {
                     val sectionPathData = ctor.newInstance(value)
-                    put.invoke(map, key, sectionPathData)
+                    map[key] = sectionPathData
                 } else {
                     setData.invoke(entry, value)
                 }
@@ -194,6 +202,12 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         super.set(path, value)
     }
 
+    override fun isSet(path: String): Boolean {
+        // nullを設定した場合に正しく動作しないため特殊処理
+        val value = super.get(path, checkingIsSetRandom)
+        return value != checkingIsSetRandom
+    }
+
     override fun get(path: String, def: Any?): Any? {
         val value = super.get(path, def)
         if (value !is String) return value
@@ -221,8 +235,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return newList
     }
 
-    override fun getBukkitVector(path: String): Vector? {
-        val value = getString(path) ?: return null
+    fun toBukkitVector(value: String): Vector? {
         val root = root as? AdvancedConfiguration
         val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         if (split.size != 3) return null
@@ -233,12 +246,16 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         }
     }
 
+    override fun getBukkitVector(path: String): Vector? {
+        val value = getString(path) ?: return null
+        return toBukkitVector(value)
+    }
+
     override fun getBukkitVector(path: String, def: Vector): Vector {
         return getBukkitVector(path) ?: def
     }
 
-    override fun getStringLocation(path: String): Location? {
-        val value = getString(path) ?: return null
+    fun toLocation(value: String): Location? {
         val root = root as? AdvancedConfiguration
         val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         when (split.size) {
@@ -268,19 +285,29 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         }
     }
 
+    override fun getStringLocation(path: String): Location? {
+        val value = getString(path) ?: return null
+        return toLocation(value)
+    }
+
     override fun getStringLocation(path: String, def: Location): Location {
         return getStringLocation(path) ?: def
     }
 
-    override fun getVector3f(path: String): Vector3f? {
-        val value = getString(path) ?: return null
+    fun toVector3f(value: String): Vector3f? {
         val root = root as? AdvancedConfiguration
         val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
+        if (split.size != 3) return null
         return try {
             Vector3f(split[0].toFloat(), split[1].toFloat(), split[2].toFloat())
         } catch (_: NumberFormatException) {
             null
         }
+    }
+
+    override fun getVector3f(path: String): Vector3f? {
+        val value = getString(path) ?: return null
+        return toVector3f(value)
     }
 
     override fun getVector3f(path: String, def: Vector3f): Vector3f {
@@ -295,40 +322,51 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
         return getEnum(path, clazz) ?: def
     }
 
-    override fun getStringItemStack(path: String): ItemStack? {
-        val string = getString(path, "") ?: return null
-
-        if (string.startsWith("base64:")) {
-            return SItem.byBase64(string.substring(7))?.build()
+    fun toItemStack(value: String): ItemStack? {
+        if (value.startsWith("base64:")) {
+            return SItem.byBase64(value.substring(7))?.build()
         }
 
         return UsefulUtility.sTry({
-            Bukkit.getItemFactory().createItemStack(string)
+            Bukkit.getItemFactory().createItemStack(value)
         }, { null })
+    }
+
+    override fun getStringItemStack(path: String): ItemStack? {
+        val value = getString(path) ?: return null
+        return toItemStack(value)
     }
 
     override fun getStringItemStack(path: String, def: ItemStack): ItemStack {
         return getStringItemStack(path) ?: def
     }
 
+    fun toConfigExecute(value: List<AdvancedConfigurationSection>): Execute {
+        return Execute {
+            ActionRunner.run(it.configuration ?: root as AdvancedConfiguration, value, it, null, async = false)
+        }
+    }
+
     override fun getConfigExecute(path: String): Execute? {
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
-        return Execute {
-            ActionRunner.run(it.configuration ?: root as AdvancedConfiguration, list, it, null, async = false, disableAutoStop = false)
-        }
+        return toConfigExecute(list)
     }
 
     override fun getConfigExecute(path: String, def: Execute): Execute {
         return getConfigExecute(path) ?: def
     }
 
+    fun toAsyncConfigExecute(value: List<AdvancedConfigurationSection>): AsyncExecute {
+        return AsyncExecute {
+            ActionRunner.run(it.configuration ?: root as AdvancedConfiguration, value, it, null, async = true)
+        }
+    }
+
     override fun getAsyncConfigExecute(path: String): AsyncExecute? {
         val list = getAdvancedConfigurationSectionList(path)
         if (list.isEmpty()) return null
-        return AsyncExecute {
-            ActionRunner.run(it.configuration ?: root as AdvancedConfiguration, list, it, null, async = true, disableAutoStop = false)
-        }
+        return toAsyncConfigExecute(list)
     }
 
     override fun getAsyncConfigExecute(path: String, def: AsyncExecute): AsyncExecute {
@@ -356,8 +394,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
 //        return def
 //    }
 
-    override fun getRotation(path: String): Quaternionf? {
-        val value = getString(path) ?: return null
+    fun toRotation(value: String): Quaternionf? {
         val root = root as? AdvancedConfiguration
         val split = value.split(",").map { root?.evaluate(it)?.toString() ?: it }
         if (split.isEmpty()) return null
@@ -368,15 +405,14 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
             return if (isRadians) value else Math.toRadians(value.toDouble()).toFloat()
         }
 
-        try {
+        return try {
             when(type) {
                 "euler" -> {
                     if (split.size != 4) return null
                     val x = radians(split[1].toFloat())
                     val y = radians(split[2].toFloat())
                     val z = radians(split[3].toFloat())
-                    return Quaternionf()
-                        .rotationXYZ(x, y, z)
+                    Quaternionf().rotationXYZ(x, y, z)
                 }
                 "axis" -> {
                     if (split.size != 5) return null
@@ -384,7 +420,7 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
                     val x = split[2].toFloat()
                     val y = split[3].toFloat()
                     val z = split[4].toFloat()
-                    return Quaternionf().rotationAxis(angle, x, y, z)
+                    Quaternionf().rotationAxis(angle, x, y, z)
                 }
                 else -> {
                     if (split.size != 4 && split.size != 5) return null
@@ -393,12 +429,17 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
                     val y = split[2-minus].toFloat()
                     val z = split[3-minus].toFloat()
                     val w = split[4-minus].toFloat()
-                    return Quaternionf(x, y, z, w)
+                    Quaternionf(x, y, z, w)
                 }
             }
         } catch (_: NumberFormatException) {
-            return null
+            null
         }
+    }
+
+    override fun getRotation(path: String): Quaternionf? {
+        val value = getString(path) ?: return null
+        return toRotation(value)
     }
 
     override fun getRotation(path: String, def: Quaternionf): Quaternionf {

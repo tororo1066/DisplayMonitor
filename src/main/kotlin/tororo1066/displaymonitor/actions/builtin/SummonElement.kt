@@ -17,8 +17,6 @@ import java.util.UUID
 )
 class SummonElement: SuspendAction() {
 
-    override val allowedAutoStop = false
-
     @ParameterDoc(
         name = "name",
         description = "Elementの名前。"
@@ -69,16 +67,17 @@ class SummonElement: SuspendAction() {
         val element = ElementStorage.createElement(presetName, clazz, overrideParameters, "SummonElement")
             ?: return ActionResult.noParameters(DisplayMonitor.translate("action.summonElement.noElement"))
 
-        element.groupUUID = context.groupUUID
-        element.contextUUID = context.uuid
+        element.actionContext = context
 
         context.publicContext.elements[name] = element
 
         val clone = location.clone()
-        location
-            .add(clone.direction.normalize().multiply(relativeOffset.z))
-            .add(clone.direction.normalize().rotateAroundY(Math.toRadians(90.0)).multiply(relativeOffset.x))
-            .add(clone.direction.normalize().rotateAroundZ(Math.toRadians(-90.0)).multiply(relativeOffset.y))
+        val forward = clone.direction.normalize()
+        val right = forward.clone().crossProduct(Vector(0, 1, 0)).normalize()
+        val up = right.clone().crossProduct(forward).normalize()
+        location.add(forward.multiply(relativeOffset.z))
+            .add(right.multiply(relativeOffset.x))
+            .add(up.multiply(relativeOffset.y))
             .add(offset)
 
         if (lockPitch) {

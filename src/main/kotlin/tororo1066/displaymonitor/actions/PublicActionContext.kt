@@ -10,7 +10,6 @@ class PublicActionContext: IPublicActionContext {
 
     private val elements = ConcurrentHashMap<String, IAbstractElement>()
     private var stop = false
-    private var shouldAutoStop = true
     private var parameters: MutableMap<String, Any> = mutableMapOf()
     private var workspace: IAbstractWorkspace = WorkspaceStorage.DisplayMonitorWorkspace.instance
 
@@ -20,14 +19,6 @@ class PublicActionContext: IPublicActionContext {
 
     override fun getStop(): Boolean {
         return stop
-    }
-
-    override fun getShouldAutoStop(): Boolean {
-        return shouldAutoStop
-    }
-
-    override fun setShouldAutoStop(shouldStop: Boolean) {
-        shouldAutoStop = shouldStop
     }
 
     override fun setStop(stop: Boolean) {

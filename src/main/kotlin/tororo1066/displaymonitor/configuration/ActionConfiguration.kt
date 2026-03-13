@@ -55,7 +55,7 @@ class ActionConfiguration(private val key: String, configuration: IAdvancedConfi
                 }
             })
         }
-        return ActionRunner.run(root, newActions, context, actionName, async = async, false)
+        return ActionRunner.run(root, newActions, context, actionName, async = async)
     }
 
     override fun toString(): String {

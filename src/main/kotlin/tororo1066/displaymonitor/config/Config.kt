@@ -2,14 +2,9 @@ package tororo1066.displaymonitor.config
 
 import net.kyori.adventure.text.Component
 import org.bukkit.configuration.file.YamlConfiguration
-import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.Utils.getClasses
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
-import java.net.JarURLConnection
-import java.net.URISyntaxException
-import java.net.URL
-import java.util.jar.JarFile
 
 object Config {
 

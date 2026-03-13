@@ -21,7 +21,6 @@ public interface IActionRunner {
      * @param context         Actionの実行に関する情報 {@link IActionContext}
      * @param actionName      Actionの名前
      * @param async           非同期で実行するかどうか
-     * @param disableAutoStop 自動停止を無効にするかどうか
      *
      * @return 完了時に返されるFuture
      */
@@ -30,7 +29,6 @@ public interface IActionRunner {
             @NotNull List<IAdvancedConfigurationSection> actions,
             @NotNull IActionContext context,
             @Nullable String actionName,
-            @NotNull Boolean async,
-            @NotNull Boolean disableAutoStop
+            @NotNull Boolean async
     );
 }

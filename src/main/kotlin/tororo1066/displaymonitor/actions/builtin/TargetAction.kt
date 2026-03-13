@@ -73,10 +73,13 @@ class TargetAction: AbstractAction() {
             }
 
             relativeOffset?.let { relativeOffset ->
-                val direction = it.direction
-                it.add(direction.clone().rotateAroundY(Math.toRadians(90.0)).multiply(relativeOffset.x))
-                it.add(direction.clone().multiply(relativeOffset.z))
-                it.add(Vector(0.0, relativeOffset.y, 0.0))
+                val forward = it.direction.normalize()
+                val right = forward.clone().crossProduct(Vector(0.0, 1.0, 0.0)).normalize()
+                val up = right.clone().crossProduct(forward).normalize()
+
+                it.add(forward.multiply(relativeOffset.z))
+                it.add(right.multiply(relativeOffset.x))
+                it.add(up.multiply(relativeOffset.y))
             }
         }
 

@@ -18,10 +18,13 @@ import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitor.elements.DisplayParameters
+import tororo1066.displaymonitor.hitbox.IgnoreModify
 import tororo1066.displaymonitorapi.configuration.Execute
+import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.sEvent.SEvent
+import java.lang.ref.WeakReference
 import java.util.UUID
 
 abstract class DisplayBaseElement : AbstractElement() {
@@ -112,15 +115,31 @@ abstract class DisplayBaseElement : AbstractElement() {
     )
     @Settable var glowColor: Color = Color.WHITE
 
+    @ParameterDoc(
+        name = "ignoreModifies",
+        description = "使用しない判定の範囲を変更する要素のリスト。\n" +
+                "使える要素\n" +
+                "- translation\n" +
+                "- right_rotation\n" +
+                "- scale\n" +
+                "- left_rotation"
+    )
+    var ignoreModifies = listOf<IgnoreModify>()
+
     abstract val clazz: Class<out Display>
 
-    lateinit var entity: Display
+    private var entityRef: WeakReference<Display>? = null
     val sEvent = SEvent()
-    var hover = false
+    val hoverPlayers = mutableSetOf<UUID>()
 
     override val syncGroup = true
 
     abstract fun applyEntity(entity: Display)
+
+    private fun getEntityOrNull(): Display? {
+        val display = entityRef?.get() ?: return null
+        return if (display.isValid) display else null
+    }
 
     private fun applyChangesToEntity(entity: Display) {
         entity.billboard = displayParameters.billboard
@@ -150,10 +169,15 @@ abstract class DisplayBaseElement : AbstractElement() {
     }
 
     override fun spawn(entity: Entity?, location: Location) {
-        this.entity = location.world.spawn(location, clazz) {
+        val spawned = location.world.spawn(location, clazz) {
             applyChangesToEntity(it)
-            it.persistentDataContainer.set(NamespacedKey(SJavaPlugin.plugin, "displayentity"), PersistentDataType.STRING, "")
+            it.persistentDataContainer.set(
+                NamespacedKey(SJavaPlugin.plugin, "displayentity"),
+                PersistentDataType.STRING,
+                ""
+            )
         }
+        this.entityRef = WeakReference(spawned)
 
         runExecute(onSpawn)
 
@@ -162,13 +186,14 @@ abstract class DisplayBaseElement : AbstractElement() {
         fun checkInteract(player: Player) {
             if (!interactablePlayers.isAllowed(player)) return
             if (dropInteract.contains(player.uniqueId)) return
+            val display = getEntityOrNull() ?: return
             if (Utils.isPointInsideRotatedRect(
                     player,
-                    this.entity,
+                    display,
                     interactionScale,
                     interactionDistance,
-                )
-            ) {
+                    ignoreModifies = ignoreModifies
+            )) {
                 runExecute(onInteract) {
                     it.target = player
                     it.location = player.location
@@ -205,18 +230,20 @@ abstract class DisplayBaseElement : AbstractElement() {
     }
 
     override fun attachEntity(entity: Entity) {
-        entity.addPassenger(this.entity)
+        val display = getEntityOrNull() ?: return
+        entity.addPassenger(display)
     }
 
     override fun remove() {
-        entity.remove()
+        getEntityOrNull()?.remove()
+        entityRef?.clear()
         stopTick()
         sEvent.unregisterAll()
     }
 
     override fun tick(entity: Entity?) {
-
-        if (!this.entity.isValid) {
+        val display = getEntityOrNull()
+        if (display == null) {
             remove()
             return
         }
@@ -230,10 +257,11 @@ abstract class DisplayBaseElement : AbstractElement() {
         players.forEach { player ->
             val onCursor = Utils.isPointInsideRotatedRect(
                 player,
-                this.entity,
+                display,
                 interactionScale,
                 interactionDistance,
-                visualizeHitbox
+                visualizeHitbox,
+                ignoreModifies = ignoreModifies
             )
 
             if (!switchHover) {
@@ -249,28 +277,42 @@ abstract class DisplayBaseElement : AbstractElement() {
                     }
                 }
             } else {
-                if (onCursor && !hover) {
+                if (onCursor && !hoverPlayers.contains(player.uniqueId)) {
+                    hoverPlayers.add(player.uniqueId)
                     runExecute(onHover) {
                         it.target = player
                         it.location = player.location
                     }
-                    hover = true
-                } else if (!onCursor && hover) {
+                } else if (!onCursor && hoverPlayers.contains(player.uniqueId)) {
+                    hoverPlayers.remove(player.uniqueId)
                     runExecute(onUnhover) {
                         it.target = player
                         it.location = player.location
                     }
-                    hover = false
                 }
             }
         }
     }
 
     override fun move(location: Location) {
-        entity.teleport(location)
+        getEntityOrNull()?.teleport(location)
     }
 
     override fun applyChanges() {
-        applyChangesToEntity(entity)
+        val display = getEntityOrNull() ?: return
+        applyChangesToEntity(display)
+    }
+
+    override fun prepare(configuration: IAdvancedConfigurationSection) {
+        super.prepare(configuration)
+        if (configuration.isSet("ignoreModifies")) {
+            ignoreModifies = configuration.getStringList("ignoreModifies").mapNotNull {
+                try {
+                    IgnoreModify.valueOf(it.uppercase())
+                } catch (_: IllegalArgumentException) {
+                    null
+                }
+            }
+        }
     }
 }

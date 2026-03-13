@@ -7,15 +7,6 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
  * Actionを実行するためのクラス
  */
 public interface IAbstractAction {
-
-    /**
-     * 処理の完了時自動的に停止(削除)するかどうか
-     * @return true: 自動停止する, false: 自動停止しない
-     */
-    default boolean allowedAutoStop() {
-        return true;
-    }
-
     /**
      * Actionの実行時に呼び出される関数
      * @param context Actionの実行に関する情報 {@link IActionContext}

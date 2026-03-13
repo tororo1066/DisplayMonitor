@@ -23,32 +23,6 @@ public interface IActionContext extends Cloneable {
     @NotNull IPublicActionContext getPublicContext();
 
     /**
-     * contextに紐づいているグループのUUIDを取得する
-     * @return グループのUUID
-     */
-    @NotNull UUID getGroupUUID();
-
-    /**
-     * contextに紐づいているグループのUUIDを設定する<br>
-     * 基本的には変更しないべき
-     * @param groupUUID グループのUUID
-     */
-    void setGroupUUID(@NotNull UUID groupUUID);
-
-    /**
-     * contextのUUIDを取得する
-     * @return contextのUUID
-     */
-    @NotNull UUID getUUID();
-
-    /**
-     * contextのUUIDを設定する<br>
-     * 基本的には変更しないべき
-     * @param uuid contextのUUID
-     */
-    void setUUID(@NotNull UUID uuid);
-
-    /**
      * 実行情報が格納されている{@link IAdvancedConfiguration}を取得する
      */
     @Nullable IAdvancedConfiguration getConfiguration();
@@ -116,12 +90,6 @@ public interface IActionContext extends Cloneable {
      * @param stop 停止するかどうか
      */
     void setStop(@NotNull Boolean stop);
-
-    /**
-     * 新しいUUIDを持つIActionContextを複製する
-     * @return 複製されたIActionContext
-     */
-    @NotNull IActionContext cloneWithRandomUUID();
 
     /**
      * 新しいPublicActionContextを持つIActionContextを複製する

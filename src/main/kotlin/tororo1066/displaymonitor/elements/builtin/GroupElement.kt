@@ -10,6 +10,7 @@ import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.IAbstractElement
+import java.lang.ref.WeakReference
 
 @ClassDoc(
     name = "GroupElement",
@@ -40,47 +41,63 @@ open class GroupElement: AbstractElement() {
     )
     val remove = null
 
-    lateinit var centerEntity: Entity
-    var entityBySpawn: Entity? = null
-    lateinit var locationBySpawn: Location
+    private var centerEntityRef: WeakReference<Entity>? = null
+    private var entityBySpawnRef: WeakReference<Entity>? = null
+    private var locationBySpawn: Location? = null
     var calledPrepare = false
 
     override val syncGroup = true
+
+    private fun getCenterEntityOrNull(): Entity? {
+        val entity = centerEntityRef?.get() ?: return null
+        return if (entity.isValid) entity else null
+    }
+
+    private fun getSpawnEntityOrNull(): Entity? {
+        val entity = entityBySpawnRef?.get() ?: return null
+        return if (entity.isValid) entity else null
+    }
 
     override fun applyChanges() {
         elements.values.forEach { it.applyChanges() }
     }
 
     override fun spawn(entity: Entity?, location: Location) {
-        entityBySpawn = entity
+        entityBySpawnRef = entity?.let { WeakReference(it) }
         locationBySpawn = location
-        centerEntity = location.world.spawn(location, Marker::class.java)
+
+        val center = location.world.spawn(location, Marker::class.java)
+        centerEntityRef = WeakReference(center)
         elements.values.forEach {
-            it.groupUUID = groupUUID
-            it.contextUUID = contextUUID
+            it.actionContext = actionContext
             it.spawn(entity, location)
-            it.attachEntity(centerEntity)
+            it.attachEntity(center)
         }
         startTick(entity)
     }
 
     override fun tick(entity: Entity?) {
-        if (!centerEntity.isValid) {
+        val center = getCenterEntityOrNull()
+        if (center == null) {
             remove()
             return
         }
-        entityBySpawn = entity
+
+        entityBySpawnRef = entity?.let { WeakReference(it) }
         elements.values.forEach { it.tick(entity) }
     }
 
     override fun remove() {
-        tickTask?.cancel()
+        stopTick()
         elements.values.forEach { it.remove() }
-        centerEntity.remove()
+        getCenterEntityOrNull()?.remove()
+        centerEntityRef?.clear()
+        entityBySpawnRef?.clear()
     }
 
     override fun attachEntity(entity: Entity) {
-        entity.addPassenger(centerEntity)
+        val center = getCenterEntityOrNull() ?: return
+        entity.addPassenger(center)
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
@@ -101,10 +118,13 @@ open class GroupElement: AbstractElement() {
                 }
                 this.elements[evalKey] = it
                 if (calledPrepare) {
-                    it.groupUUID = groupUUID
-                    it.contextUUID = contextUUID
-                    it.spawn(entityBySpawn, locationBySpawn)
-                    it.attachEntity(centerEntity)
+                    it.actionContext = actionContext
+                    val spawnLocation = locationBySpawn
+                    val center = getCenterEntityOrNull()
+                    if (spawnLocation != null && center != null) {
+                        it.spawn(getSpawnEntityOrNull(), spawnLocation)
+                        it.attachEntity(center)
+                    }
                 }
             }
         }
@@ -131,7 +151,7 @@ open class GroupElement: AbstractElement() {
 
     override fun move(location: Location) {
         locationBySpawn = location
-        centerEntity.teleport(location)
+        getCenterEntityOrNull()?.teleport(location)
         elements.values.forEach {
             if (!it.syncGroup()) {
                 it.move(location)

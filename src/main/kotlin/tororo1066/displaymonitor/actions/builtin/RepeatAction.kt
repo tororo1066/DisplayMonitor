@@ -51,7 +51,7 @@ class RepeatAction: AbstractAction() {
             if (context.publicContext.stop) {
                 return ActionResult.success()
             }
-            val cloneContext = context.cloneWithRandomUUID()
+            val cloneContext = context.clone()
             cloneContext.configuration?.parameters?.put(variableName, count)
             if (item != null) {
                 cloneContext.configuration?.parameters?.put(iterableVariableName, item)

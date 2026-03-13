@@ -25,14 +25,9 @@ object ActionRunner: IActionRunner {
         actionList: List<IAdvancedConfigurationSection>,
         context: IActionContext,
         actionName: String?,
-        async: Boolean,
-        disableAutoStop: Boolean
+        async: Boolean
     ): CompletableFuture<Void> {
         if (actionList.isEmpty()) return CompletableFuture.completedFuture(null)
-
-        if (disableAutoStop) {
-            context.publicContext.shouldAutoStop = false
-        }
 
         context.configuration = root
         root.set("temp", actionList)
@@ -49,37 +44,45 @@ object ActionRunner: IActionRunner {
             root.parameters.putAll(ActionParameters.getEntityParameters("target", target))
         }
 
-        ActionStorage.contextStorage
-            .computeIfAbsent(context.groupUUID)
-            { mutableMapOf() }[context.uuid] = context
+//        ActionStorage.contextStorage
+//            .computeIfAbsent(context.groupUUID)
+//            { mutableMapOf() }[context.uuid] = context
+//
+//        if (actionName != null) {
+//            ActionStorage.contextByName[actionName] = context.groupUUID
+//        }
 
         if (actionName != null) {
-            ActionStorage.contextByName[actionName] = context.groupUUID
+            ActionStorage.contextByName[actionName] = context
         }
 
         suspend fun invokeActions() {
 
+//            fun shouldStop(): Boolean {
+//                if (context.publicContext.stop) {
+//                    ActionStorage.contextByName.entries.removeIf {
+//                        it.value == context.groupUUID
+//                    }
+//                    ActionStorage.contextStorage.remove(context.groupUUID)
+//                    return true
+//                }
+//                if (context.stop) {
+//                    ActionStorage.contextStorage[context.groupUUID]?.let {
+//                        it.remove(context.uuid)
+//                        if (it.isEmpty()) {
+//                            ActionStorage.contextByName.entries.removeIf { condition ->
+//                                condition.value == context.groupUUID
+//                            }
+//                            ActionStorage.contextStorage.remove(context.groupUUID)
+//                        }
+//                    }
+//                    return true
+//                }
+//                return false
+//            }
+
             fun shouldStop(): Boolean {
-                if (context.publicContext.stop) {
-                    ActionStorage.contextByName.entries.removeIf {
-                        it.value == context.groupUUID
-                    }
-                    ActionStorage.contextStorage.remove(context.groupUUID)
-                    return true
-                }
-                if (context.stop) {
-                    ActionStorage.contextStorage[context.groupUUID]?.let {
-                        it.remove(context.uuid)
-                        if (it.isEmpty()) {
-                            ActionStorage.contextByName.entries.removeIf { condition ->
-                                condition.value == context.groupUUID
-                            }
-                            ActionStorage.contextStorage.remove(context.groupUUID)
-                        }
-                    }
-                    return true
-                }
-                return false
+                return context.publicContext.stop || context.stop
             }
 
             for (action in newActionList) {
@@ -91,10 +94,6 @@ object ActionRunner: IActionRunner {
                     continue
                 }
                 val actionInstance = actionData.getConstructor().newInstance()
-
-                if (!actionInstance.allowedAutoStop()) {
-                    context.publicContext.shouldAutoStop = false
-                }
 
                 try {
                     actionInstance.prepare(action)
@@ -132,12 +131,12 @@ object ActionRunner: IActionRunner {
                 if (shouldStop()) break
             }
 
-            if (context.publicContext.shouldAutoStop) {
-                ActionStorage.contextByName.entries.removeIf {
-                    it.value == context.groupUUID
-                }
-                ActionStorage.contextStorage.remove(context.groupUUID)
-            }
+//            if (context.publicContext.shouldAutoStop) {
+//                ActionStorage.contextByName.entries.removeIf {
+//                    it.value == context.groupUUID
+//                }
+//                ActionStorage.contextStorage.remove(context.groupUUID)
+//            }
         }
 
         val future = CompletableFuture<Void>()

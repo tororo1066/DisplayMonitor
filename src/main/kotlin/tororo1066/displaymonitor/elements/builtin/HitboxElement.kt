@@ -5,7 +5,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Entity
 import org.bukkit.persistence.PersistentDataType
 import org.joml.Vector3f
-import tororo1066.displaymonitor.OBB
+import tororo1066.displaymonitor.hitbox.OBB
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.IAbstractElement
@@ -36,7 +36,7 @@ open class HitboxElement: AbstractElement() {
 
     override fun remove() {
         removed = true
-        tickTask?.cancel()
+        stopTick()
     }
 
     override fun tick(entity: Entity?) {

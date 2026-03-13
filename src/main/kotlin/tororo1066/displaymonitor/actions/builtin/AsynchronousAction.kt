@@ -15,8 +15,6 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 )
 class AsynchronousAction: AbstractAction() {
 
-    override val allowedAutoStop = false
-
     @ParameterDoc(
         name = "actions",
         description = "非同期で実行するアクションのリスト。"
@@ -24,7 +22,7 @@ class AsynchronousAction: AbstractAction() {
     var actions: AsyncExecute = AsyncExecute.empty()
 
     override fun run(context: IActionContext): ActionResult {
-        actions(context.cloneWithRandomUUID())
+        actions(context.clone())
 
         return ActionResult.success()
     }

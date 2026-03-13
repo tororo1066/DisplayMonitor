@@ -1,13 +1,13 @@
 package tororo1066.displaymonitor
 
 import org.bukkit.Color
-import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
-import tororo1066.displaymonitor.configuration.AdvancedConfigurationSection
+import tororo1066.displaymonitor.hitbox.IgnoreModify
+import tororo1066.displaymonitor.hitbox.OBB
 import tororo1066.displaymonitorapi.IDisplayUtils
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import java.io.File
@@ -17,14 +17,6 @@ import java.net.URL
 import java.util.jar.JarFile
 
 object Utils: IDisplayUtils {
-
-    fun AdvancedConfiguration.mergeConfiguration(second: ConfigurationSection): AdvancedConfiguration {
-        val yaml = this.clone()
-        second.getValues(true).forEach { (key, value) ->
-            yaml.set(key, value)
-        }
-        return yaml
-    }
 
     fun hexToBukkitColor(hex: String): Color? {
         try {
@@ -46,7 +38,8 @@ object Utils: IDisplayUtils {
         entity: Display,
         scale: Vector,
         maxDistance: Double,
-        visible: Boolean = false
+        visible: Boolean = false,
+        ignoreModifies: List<IgnoreModify> = emptyList()
     ): Boolean {
         val playerLocation = p.eyeLocation
         val entityLocation = entity.location
@@ -56,7 +49,7 @@ object Utils: IDisplayUtils {
             entityLocation.toVector().add(Vector(scale.x / 2, scale.y / 2, scale.z / 2)).toVector3f()
         )
 
-        obb.modifyBy(p, entity)
+        obb.modifyBy(p, entity, ignoreModifies)
 
         if (visible) {
             obb.showParticle(p.world, p)

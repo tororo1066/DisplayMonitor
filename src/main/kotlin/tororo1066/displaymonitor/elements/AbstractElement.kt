@@ -4,50 +4,35 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
 import tororo1066.displaymonitor.elements.SettableProcessor.getSettableFields
-import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.tororopluginapi.SJavaPlugin
-import java.util.UUID
 
 abstract class AbstractElement: IAbstractElement {
 
     abstract val syncGroup: Boolean
 
-    private var groupUUID: UUID? = null
-    private var contextUUID: UUID? = null
+    private var actionContext: IActionContext? = null
     protected var tickTask: BukkitTask? = null
 
-    private fun getContext(): IActionContext? {
-        return ActionStorage.contextStorage[groupUUID]?.get(contextUUID)
-    }
-
     protected fun runExecute(execute: Execute) {
-        val context = (getContext() ?: return).clone()
+        val context = actionContext?.clone() ?: return
         execute(context)
     }
 
     protected fun runExecute(execute: Execute, modification: (IActionContext) -> Unit) {
-        val context = (getContext() ?: return).clone()
+        val context = actionContext?.clone() ?: return
         modification(context)
         execute(context)
     }
 
-    override fun getGroupUUID(): UUID? {
-        return groupUUID
+    override fun getActionContext(): IActionContext? {
+        return actionContext
     }
 
-    override fun setGroupUUID(uuid: UUID?) {
-        groupUUID = uuid
-    }
-
-    override fun getContextUUID(): UUID? {
-        return contextUUID
-    }
-
-    override fun setContextUUID(uuid: UUID?) {
-        contextUUID = uuid
+    override fun setActionContext(context: IActionContext?) {
+        actionContext = context
     }
 
     override fun syncGroup(): Boolean {
@@ -67,9 +52,7 @@ abstract class AbstractElement: IAbstractElement {
     override fun clone(): IAbstractElement {
         val instance = this::class.java.getDeclaredConstructor().newInstance()
 
-        instance.groupUUID = groupUUID
-        instance.contextUUID = contextUUID
-        instance.tickTask = tickTask
+        instance.actionContext = actionContext
 
         val settableFields = this::class.java.getSettableFields()
         settableFields.forEach { field ->

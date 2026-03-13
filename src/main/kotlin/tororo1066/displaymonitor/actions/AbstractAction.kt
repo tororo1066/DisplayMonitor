@@ -10,12 +10,6 @@ import tororo1066.tororopluginapi.SJavaPlugin
 
 abstract class AbstractAction: IAbstractAction {
 
-    open val allowedAutoStop = true
-
-    override fun allowedAutoStop(): Boolean {
-        return allowedAutoStop
-    }
-
     protected fun runTask(run: () -> Unit) {
         Bukkit.getScheduler().runTask(SJavaPlugin.plugin, run)
     }
@@ -28,8 +22,7 @@ abstract class AbstractAction: IAbstractAction {
                 actions,
                 context,
                 actionName = null,
-                async = isAsync,
-                disableAutoStop = false
+                async = isAsync
             )
         }
     }

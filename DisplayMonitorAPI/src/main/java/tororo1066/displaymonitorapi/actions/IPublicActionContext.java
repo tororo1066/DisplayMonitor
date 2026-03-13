@@ -32,18 +32,6 @@ public interface IPublicActionContext {
      */
     void setStop(boolean stop);
 
-    /**
-     * 全てのAction実行後、自動的に停止(削除)するかどうかを取得する
-     * @return 自動的に停止(削除)するかどうか
-     */
-    boolean getShouldAutoStop();
-
-    /**
-     * 全てのAction実行後、自動的に停止(削除)するかどうかを設定する
-     * @param shouldStop 自動的に停止(削除)するかどうか
-     */
-    void setShouldAutoStop(@NotNull Boolean shouldStop);
-
     @NotNull Map<@NotNull String, @NotNull Object> getParameters();
 
     void setParameters(@NotNull Map<@NotNull String, @NotNull Object> parameters);

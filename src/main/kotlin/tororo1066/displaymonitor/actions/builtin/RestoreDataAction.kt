@@ -87,7 +87,7 @@ class RestoreDataAction: AbstractAction() {
                     return ActionResult.noParameters("File not found")
                 }
                 val yml = YamlConfiguration().apply {
-                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
+//                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
                     load(file)
                 }
                 keys.forEach { key ->
