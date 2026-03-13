@@ -854,6 +854,12 @@
             "description": "エンティティの光る色。",
             "default": "#FFFFFF",
             "type": "Color"
+          },
+          {
+            "name": "ignoreModifies",
+            "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation",
+            "default": "",
+            "type": "Unknown"
           }
         ]
       },
@@ -1040,6 +1046,12 @@
             "description": "エンティティの光る色。",
             "default": "#FFFFFF",
             "type": "Color"
+          },
+          {
+            "name": "ignoreModifies",
+            "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation",
+            "default": "",
+            "type": "Unknown"
           }
         ]
       },
@@ -1238,6 +1250,12 @@
             "description": "エンティティの光る色。",
             "default": "#FFFFFF",
             "type": "Color"
+          },
+          {
+            "name": "ignoreModifies",
+            "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation",
+            "default": "",
+            "type": "Unknown"
           }
         ]
       }
@@ -1287,11 +1305,6 @@
         "parameters": []
       },
       {
-        "name": "Billboard",
-        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
-        "parameters": []
-      },
-      {
         "name": "Color",
         "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
         "parameters": []
@@ -1327,11 +1340,6 @@
         "parameters": []
       },
       {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
-        "parameters": []
-      },
-      {
         "name": "BlockData",
         "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
         "parameters": []
@@ -1362,6 +1370,11 @@
         "parameters": []
       },
       {
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
         "name": "Double",
         "description": "実数\n\n例:\n  1000.0",
         "parameters": []
@@ -1374,6 +1387,11 @@
       {
         "name": "Float",
         "description": "実数\n\n例:\n  1000.0",
+        "parameters": []
+      },
+      {
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
         "parameters": []
       }
     ]
