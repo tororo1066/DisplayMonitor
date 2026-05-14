@@ -36,6 +36,16 @@ fun tokenize(input: String): List<Token> {
     var pos = 0
     val tokens = mutableListOf<Token>()
 
+    fun lastNonWhitespaceToken(): Token? = tokens.asReversed().firstOrNull { it !is Token.Whitespace }
+
+    fun isUnaryMinusPosition(): Boolean {
+        val prev = lastNonWhitespaceToken()
+        return prev == null ||
+            prev is Token.Symbolic ||
+            prev is Token.LParen ||
+            prev is Token.Comma
+    }
+
     fun addStringLiteral(string: String) {
         if (string.isNotEmpty()) {
             val last = tokens.lastOrNull()
@@ -60,15 +70,16 @@ fun tokenize(input: String): List<Token> {
                 }
                 tokens += Token.Whitespace(count)
             }
-            c.isDigit() || c == '.' || (c == '-' && (tokens.isEmpty() || tokens.last() is Token.Operator || tokens.last() is Token.LParen || tokens.last() is Token.Comma)) -> {
+            c.isDigit() || c == '.' || (c == '-' && isUnaryMinusPosition() && (input.getOrNull(pos + 1)?.let { it.isDigit() || it == '.' } == true)) -> {
                 val start = pos
-                if (c == '-' && pos + 1 < input.length && input[pos + 1].isDigit()) {
-                    pos++ // Skip '-' for negative numbers
-                }
+                if (c == '-') pos++ // Skip '-' for negative numbers
                 while (pos < input.length && (input[pos].isDigit() || input[pos] == '.')) {
                     pos++
                 }
                 if (c == '.' && start == pos - 1) {
+                    throw IllegalArgumentException("Invalid number format at position $start")
+                }
+                if (c == '-' && start == pos - 1) {
                     throw IllegalArgumentException("Invalid number format at position $start")
                 }
                 val next = input.getOrNull(pos)
@@ -344,6 +355,14 @@ fun evaluateRPN(
 ): Any {
     val stack = ArrayDeque<Any>()
 
+    fun requireStackSize(required: Int, token: Token) {
+        if (stack.size < required) {
+            throw IllegalArgumentException(
+                "Invalid expression: stack underflow (required=$required, actual=${stack.size}) at token=$token, rpn=$rpn"
+            )
+        }
+    }
+
     for (token in rpn) {
         when (token) {
             is Token.Whitespace -> {
@@ -354,6 +373,7 @@ fun evaluateRPN(
             }
             is Token.StringLiteral -> stack.push(token.value)
             is Token.Function -> {
+                requireStackSize(token.meta.argCount, token)
                 val args = (0 until token.meta.argCount).map { stack.pop() }.reversed()
                 val func = functions[token.meta.name]
                     ?: throw IllegalArgumentException("Unknown function: ${token.meta.name}")
@@ -368,6 +388,7 @@ fun evaluateRPN(
                 stack.push(formatNumber(func.eval(evaluatedArgs, parameters)))
             }
             is Token.Operator -> {
+                requireStackSize(2, token)
                 val b = stack.pop()
                 val a = stack.pop()
                 val result = when (token.symbol) {
@@ -382,6 +403,7 @@ fun evaluateRPN(
                 stack.push(formatNumber(result))
             }
             is Token.Comparison -> {
+                requireStackSize(2, token)
                 val b = stack.pop()
                 val a = stack.pop()
                 val result = when (token.symbol) {
@@ -408,6 +430,7 @@ fun evaluateRPN(
                 stack.push(result)
             }
             is Token.Logical -> {
+                requireStackSize(2, token)
                 val b = stack.pop()
                 val a = stack.pop()
                 val result = when (token.symbol) {

@@ -44,42 +44,11 @@ object ActionRunner: IActionRunner {
             root.parameters.putAll(ActionParameters.getEntityParameters("target", target))
         }
 
-//        ActionStorage.contextStorage
-//            .computeIfAbsent(context.groupUUID)
-//            { mutableMapOf() }[context.uuid] = context
-//
-//        if (actionName != null) {
-//            ActionStorage.contextByName[actionName] = context.groupUUID
-//        }
-
         if (actionName != null) {
             ActionStorage.contextByName[actionName] = context
         }
 
         suspend fun invokeActions() {
-
-//            fun shouldStop(): Boolean {
-//                if (context.publicContext.stop) {
-//                    ActionStorage.contextByName.entries.removeIf {
-//                        it.value == context.groupUUID
-//                    }
-//                    ActionStorage.contextStorage.remove(context.groupUUID)
-//                    return true
-//                }
-//                if (context.stop) {
-//                    ActionStorage.contextStorage[context.groupUUID]?.let {
-//                        it.remove(context.uuid)
-//                        if (it.isEmpty()) {
-//                            ActionStorage.contextByName.entries.removeIf { condition ->
-//                                condition.value == context.groupUUID
-//                            }
-//                            ActionStorage.contextStorage.remove(context.groupUUID)
-//                        }
-//                    }
-//                    return true
-//                }
-//                return false
-//            }
 
             fun shouldStop(): Boolean {
                 return context.publicContext.stop || context.stop
@@ -130,13 +99,6 @@ object ActionRunner: IActionRunner {
 
                 if (shouldStop()) break
             }
-
-//            if (context.publicContext.shouldAutoStop) {
-//                ActionStorage.contextByName.entries.removeIf {
-//                    it.value == context.groupUUID
-//                }
-//                ActionStorage.contextStorage.remove(context.groupUUID)
-//            }
         }
 
         val future = CompletableFuture<Void>()

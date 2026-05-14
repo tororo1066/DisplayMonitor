@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
@@ -42,31 +43,31 @@ abstract class DisplayBaseElement : AbstractElement() {
         name = "onSpawn",
         description = "スポーン時のアクション。"
     )
-    @Settable var onSpawn: Execute = Execute.empty()
+    @Settable var onSpawn: Execute? = null
 
     @ParameterDoc(
         name = "onTick",
         description = "1Tick毎に実行されるアクション。"
     )
-    @Settable var onTick: Execute = Execute.empty()
+    @Settable var onTick: Execute? = null
 
     @ParameterDoc(
         name = "onInteract",
         description = "クリック時のアクション。"
     )
-    @Settable var onInteract: Execute = Execute.empty()
+    @Settable var onInteract: Execute? = null
 
     @ParameterDoc(
         name = "onHover",
         description = "ホバー時のアクション。"
     )
-    @Settable var onHover: Execute = Execute.empty()
+    @Settable var onHover: Execute? = null
 
     @ParameterDoc(
         name = "onUnhover",
         description = "ホバー解除時のアクション。"
     )
-    @Settable var onUnhover: Execute = Execute.empty()
+    @Settable var onUnhover: Execute? = null
 
     @ParameterDoc(
         name = "interactionDistance",
@@ -183,10 +184,10 @@ abstract class DisplayBaseElement : AbstractElement() {
 
         val dropInteract = arrayListOf<UUID>()
 
-        fun checkInteract(player: Player) {
-            if (!interactablePlayers.isAllowed(player)) return
-            if (dropInteract.contains(player.uniqueId)) return
-            val display = getEntityOrNull() ?: return
+        fun checkInteract(player: Player): Boolean {
+            if (!interactablePlayers.isAllowed(player)) return false
+            if (dropInteract.contains(player.uniqueId)) return false
+            val display = getEntityOrNull() ?: return false
             if (Utils.isPointInsideRotatedRect(
                     player,
                     display,
@@ -198,23 +199,33 @@ abstract class DisplayBaseElement : AbstractElement() {
                     it.target = player
                     it.location = player.location
                 }
+
+                return true
             }
+
+            return false
         }
 
         sEvent.register<PlayerInteractEvent> { e ->
-            checkInteract(e.player)
+            if (checkInteract(e.player)) {
+                e.isCancelled = true
+            }
         }
 
         // エンティティをクリックした時はPlayerInteractEventが発火しないため、PlayerInteractEntityEventを使用
         sEvent.register<PlayerInteractEntityEvent> { e ->
-            checkInteract(e.player)
+            if (checkInteract(e.player)) {
+                e.isCancelled = true
+            }
         }
 
         // プレイヤーがダメージを与えた時もクリックとみなす
         sEvent.register<EntityDamageByEntityEvent> { e ->
             val damager = e.damager
             if (damager !is Player) return@register
-            checkInteract(damager)
+            if (checkInteract(damager)) {
+                e.isCancelled = true
+            }
         }
 
         sEvent.register<PlayerDropItemEvent> { e ->
@@ -224,6 +235,16 @@ abstract class DisplayBaseElement : AbstractElement() {
             Bukkit.getScheduler().runTaskLater(SJavaPlugin.plugin, Runnable {
                 dropInteract.remove(e.player.uniqueId)
             }, 1)
+        }
+
+        sEvent.register<PlayerJoinEvent> { e ->
+            val player = e.player
+            val display = getEntityOrNull() ?: return@register
+            if (visiblePlayers.isAllowed(player)) {
+                player.showEntity(SJavaPlugin.plugin, display)
+            } else {
+                player.hideEntity(SJavaPlugin.plugin, display)
+            }
         }
 
         startTick(entity)
@@ -250,11 +271,7 @@ abstract class DisplayBaseElement : AbstractElement() {
 
         runExecute(onTick)
 
-        val players = arrayListOf<Player>()
         interactablePlayers.allowedPlayersAction { player ->
-            players.add(player)
-        }
-        players.forEach { player ->
             val onCursor = Utils.isPointInsideRotatedRect(
                 player,
                 display,

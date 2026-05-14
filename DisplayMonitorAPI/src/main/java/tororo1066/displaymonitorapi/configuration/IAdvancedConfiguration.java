@@ -10,8 +10,6 @@ import java.util.Map;
 
 public interface IAdvancedConfiguration extends IAdvancedConfigurationSection, Configuration, Cloneable {
 
-    @NotNull Character SEPARATOR = '\u0BEC';
-
     void loadFromString(@NotNull String contents);
 
     void load(@NotNull File file);

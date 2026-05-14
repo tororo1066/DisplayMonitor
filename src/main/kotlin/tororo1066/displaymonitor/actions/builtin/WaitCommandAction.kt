@@ -1,11 +1,13 @@
 package tororo1066.displaymonitor.actions.builtin
 
+import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.server.ServerCommandEvent
 import tororo1066.displaymonitor.actions.AbstractAction
+import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.ParameterType
@@ -15,12 +17,13 @@ import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.sEvent.BiSEventUnit
 import tororo1066.tororopluginapi.sEvent.SEvent
+import kotlin.time.Duration.Companion.milliseconds
 
 @ClassDoc(
     name = "WaitCommand",
     description = "指定したコマンドが実行されるまで待機する。"
 )
-class WaitCommandAction: AbstractAction() {
+class WaitCommandAction: SuspendAction() {
 
     companion object {
         private val sEvent = SEvent()
@@ -66,7 +69,7 @@ class WaitCommandAction: AbstractAction() {
     )
     var cancelCommand = false
 
-    override fun run(context: IActionContext): ActionResult {
+    override suspend fun runSuspend(context: IActionContext): ActionResult {
         if (command.isBlank()) return ActionResult.noParameters("Command is empty")
         var complete = false
 
@@ -110,7 +113,7 @@ class WaitCommandAction: AbstractAction() {
                 failActions(context)
                 return ActionResult.success()
             }
-            Thread.sleep(50)
+            delay(50.milliseconds)
             if (!infinity) time += 50
         }
 
@@ -123,7 +126,7 @@ class WaitCommandAction: AbstractAction() {
         failActions = section.getConfigExecute("else") ?: failActions
         if (section.contains("timeout")) {
             val timeout = section.get("timeout")
-            if (timeout is Int) {
+            if (timeout is Number) {
                 this.timeout = timeout.toLong()
             } else if (timeout is String && timeout == "infinity") {
                 infinity = true

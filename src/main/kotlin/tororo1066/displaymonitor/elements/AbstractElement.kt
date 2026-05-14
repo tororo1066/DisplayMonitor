@@ -8,6 +8,8 @@ import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.tororopluginapi.SJavaPlugin
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.jvm.kotlinProperty
 
 abstract class AbstractElement: IAbstractElement {
 
@@ -16,12 +18,14 @@ abstract class AbstractElement: IAbstractElement {
     private var actionContext: IActionContext? = null
     protected var tickTask: BukkitTask? = null
 
-    protected fun runExecute(execute: Execute) {
+    protected fun runExecute(execute: Execute?) {
+        execute ?: return
         val context = actionContext?.clone() ?: return
         execute(context)
     }
 
-    protected fun runExecute(execute: Execute, modification: (IActionContext) -> Unit) {
+    protected fun runExecute(execute: Execute?, modification: (IActionContext) -> Unit) {
+        execute ?: return
         val context = actionContext?.clone() ?: return
         modification(context)
         execute(context)
@@ -56,10 +60,8 @@ abstract class AbstractElement: IAbstractElement {
 
         val settableFields = this::class.java.getSettableFields()
         settableFields.forEach { field ->
-            val defaultAccessible = field.canAccess(this)
-            field.isAccessible = true
-            field.set(instance, field.get(this))
-            field.isAccessible = defaultAccessible
+            val kotlinProperty = field.kotlinProperty as? KMutableProperty<*> ?: return@forEach
+            kotlinProperty.setter.call(instance, kotlinProperty.getter.call(this))
         }
         return instance
     }
