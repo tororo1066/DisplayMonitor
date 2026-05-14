@@ -1265,13 +1265,13 @@
     "name": "Type",
     "classes": [
       {
-        "name": "Component",
-        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
+        "name": "AsyncExecute",
+        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
         "parameters": []
       },
       {
-        "name": "StoreType",
-        "description": "選択可能な値のリスト\n\n例:\n  RAW\nFILE\nDATABASE",
+        "name": "ItemDisplayTransform",
+        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
         "parameters": []
       },
       {
@@ -1280,13 +1280,18 @@
         "parameters": []
       },
       {
-        "name": "Vector",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "BlockData",
+        "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
         "parameters": []
       },
       {
-        "name": "Quaternionf",
-        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
+        "parameters": []
+      },
+      {
+        "name": "Vector",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
         "parameters": []
       },
       {
@@ -1300,13 +1305,8 @@
         "parameters": []
       },
       {
-        "name": "Scope",
-        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
-        "parameters": []
-      },
-      {
-        "name": "Color",
-        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
+        "name": "StringList",
+        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
         "parameters": []
       },
       {
@@ -1315,53 +1315,18 @@
         "parameters": []
       },
       {
-        "name": "Execute",
-        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "AsyncExecute",
-        "description": "非同期Actionのリスト\n\n例:\n  - class: AsyncMessage\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "ItemDisplayTransform",
-        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
-        "parameters": []
-      },
-      {
-        "name": "StringList",
-        "description": "文字列のリスト\n\n例:\n  - example1\n- example2",
-        "parameters": []
-      },
-      {
-        "name": "Location",
-        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "BlockData",
-        "description": "ブロック\n\n例:\n  minecraft:oak_stairs[shape\u003dstraight]",
-        "parameters": []
-      },
-      {
-        "name": "Particle",
-        "description": "選択可能な値のリスト\n\n例:\n  EXPLOSION_NORMAL\nEXPLOSION_LARGE\nEXPLOSION_HUGE\nFIREWORKS_SPARK\nWATER_BUBBLE\nWATER_SPLASH\nWATER_WAKE\nSUSPENDED\nSUSPENDED_DEPTH\nCRIT\nCRIT_MAGIC\nSMOKE_NORMAL\nSMOKE_LARGE\nSPELL\nSPELL_INSTANT\nSPELL_MOB\nSPELL_MOB_AMBIENT\nSPELL_WITCH\nDRIP_WATER\nDRIP_LAVA\nVILLAGER_ANGRY\nVILLAGER_HAPPY\nTOWN_AURA\nNOTE\nPORTAL\nENCHANTMENT_TABLE\nFLAME\nLAVA\nCLOUD\nREDSTONE\nSNOWBALL\nSNOW_SHOVEL\nSLIME\nHEART\nITEM_CRACK\nBLOCK_CRACK\nBLOCK_DUST\nWATER_DROP\nMOB_APPEARANCE\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nGUST_EMITTER\nGUST_DUST\nTRIAL_SPAWNER_DETECTION\nBLOCK_MARKER\nLEGACY_BLOCK_CRACK\nLEGACY_BLOCK_DUST\nLEGACY_FALLING_DUST",
-        "parameters": []
-      },
-      {
         "name": "Vector3f",
         "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
         "parameters": []
       },
       {
-        "name": "String",
-        "description": "文字列\n\n例:\n  \"example\"",
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
         "parameters": []
       },
       {
-        "name": "ItemStack",
-        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
+        "name": "Quaternionf",
+        "description": "回転\n\n例:\n  euler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
         "parameters": []
       },
       {
@@ -1370,13 +1335,48 @@
         "parameters": []
       },
       {
+        "name": "Component",
+        "description": "装飾可能な文字列(MiniMessage)\n\n例:\n  \"\u003cred\u003eHello!\u003c/red\u003e\"",
+        "parameters": []
+      },
+      {
+        "name": "Color",
+        "description": "色(ARGBまたはRGB)\n\n例:\n  #ff0000\n#00000000",
+        "parameters": []
+      },
+      {
         "name": "Billboard",
         "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
         "parameters": []
       },
       {
+        "name": "ItemStack",
+        "description": "アイテム\n\n例:\n  minecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
+        "parameters": []
+      },
+      {
+        "name": "String",
+        "description": "文字列\n\n例:\n  \"example\"",
+        "parameters": []
+      },
+      {
+        "name": "Location",
+        "description": "位置\n\n例:\n  \u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Execute",
+        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
         "name": "Double",
         "description": "実数\n\n例:\n  1000.0",
+        "parameters": []
+      },
+      {
+        "name": "StoreType",
+        "description": "選択可能な値のリスト\n\n例:\n  RAW\nFILE\nDATABASE",
         "parameters": []
       },
       {
@@ -1390,8 +1390,8 @@
         "parameters": []
       },
       {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
+        "name": "Particle",
+        "description": "選択可能な値のリスト\n\n例:\n  EXPLOSION_NORMAL\nEXPLOSION_LARGE\nEXPLOSION_HUGE\nFIREWORKS_SPARK\nWATER_BUBBLE\nWATER_SPLASH\nWATER_WAKE\nSUSPENDED\nSUSPENDED_DEPTH\nCRIT\nCRIT_MAGIC\nSMOKE_NORMAL\nSMOKE_LARGE\nSPELL\nSPELL_INSTANT\nSPELL_MOB\nSPELL_MOB_AMBIENT\nSPELL_WITCH\nDRIP_WATER\nDRIP_LAVA\nVILLAGER_ANGRY\nVILLAGER_HAPPY\nTOWN_AURA\nNOTE\nPORTAL\nENCHANTMENT_TABLE\nFLAME\nLAVA\nCLOUD\nREDSTONE\nSNOWBALL\nSNOW_SHOVEL\nSLIME\nHEART\nITEM_CRACK\nBLOCK_CRACK\nBLOCK_DUST\nWATER_DROP\nMOB_APPEARANCE\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nGUST_EMITTER\nGUST_DUST\nTRIAL_SPAWNER_DETECTION\nBLOCK_MARKER\nLEGACY_BLOCK_CRACK\nLEGACY_BLOCK_DUST\nLEGACY_FALLING_DUST",
         "parameters": []
       }
     ]
