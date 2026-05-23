@@ -131,12 +131,13 @@ open class GroupElement: AbstractElement() {
 
         val edit = section.getAdvancedConfigurationSection("edit")
         edit?.getKeys(false)?.forEach { key ->
-            val evalKey = edit.getString("key", key)!!
+            val editSection = edit.getAdvancedConfigurationSection(key) ?: return@forEach
+            val evalKey = editSection.getString("key", key)!!
             val split = evalKey.split(",")
-            val editConfig = edit.getAdvancedConfigurationSection(key) ?: return@forEach
+
             split.forEach second@ { name ->
                 val element = this.elements[name] ?: return@second
-                element.edit(editConfig)
+                element.edit(editSection)
             }
         }
 
