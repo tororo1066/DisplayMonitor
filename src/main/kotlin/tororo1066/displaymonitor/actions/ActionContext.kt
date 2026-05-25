@@ -17,6 +17,8 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
     private val prepareParameters = HashMap<String, Any>()
     private var stop = false
 
+    private var actionName: String? = null
+
     constructor(publicContext: IPublicActionContext, caster: Entity, location: Location): this(publicContext) {
         this.caster = caster
         this.target = caster
@@ -85,6 +87,14 @@ class ActionContext(private val publicContext: IPublicActionContext): IActionCon
 
     override fun setStop(stop: Boolean) {
         this.stop = stop
+    }
+
+    override fun getActionName(): String? {
+        return actionName
+    }
+
+    override fun setActionName(name: String?) {
+        this.actionName = name
     }
 
     override fun getDefaultParameters(): MutableMap<String, Any> {

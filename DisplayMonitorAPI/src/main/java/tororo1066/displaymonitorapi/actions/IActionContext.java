@@ -91,6 +91,10 @@ public interface IActionContext extends Cloneable {
      */
     void setStop(@NotNull Boolean stop);
 
+    @Nullable String getActionName();
+
+    void setActionName(@Nullable String actionName);
+
     /**
      * 新しいPublicActionContextを持つIActionContextを複製する
      * @param publicActionContext 新しい{@link IPublicActionContext}

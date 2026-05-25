@@ -66,7 +66,6 @@ dependencies {
     shadow("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.22.0") {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
     }
-    shadow("com.google.guava:guava:33.5.0-jre")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")

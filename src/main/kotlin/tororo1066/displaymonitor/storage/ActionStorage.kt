@@ -1,6 +1,5 @@
 package tororo1066.displaymonitor.storage
 
-import com.google.common.collect.MapMaker
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitor.actions.builtin.*
@@ -17,11 +16,13 @@ import tororo1066.displaymonitorapi.events.ActionRegisteringEvent
 import tororo1066.displaymonitorapi.storage.IActionStorage
 import tororo1066.displaymonitorapi.workspace.IAbstractWorkspace
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Function
 
 object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
-    val contextByName = MapMaker().concurrencyLevel(4).weakValues().makeMap<String, IActionContext>()
+//    val contextByName = MapMaker().concurrencyLevel(4).weakValues().makeMap<String, IActionContext>()
+    val contextByName = ConcurrentHashMap<String, IActionContext>()
 
     init {
         actions["SummonElement"] = SummonElement::class.java

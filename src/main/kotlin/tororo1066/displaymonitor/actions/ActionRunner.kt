@@ -45,6 +45,7 @@ object ActionRunner: IActionRunner {
         }
 
         if (actionName != null) {
+            context.actionName = actionName
             ActionStorage.contextByName[actionName] = context
         }
 

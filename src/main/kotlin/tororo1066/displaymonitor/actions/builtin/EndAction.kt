@@ -3,6 +3,7 @@ package tororo1066.displaymonitor.actions.builtin
 import tororo1066.displaymonitor.actions.SuspendAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -27,6 +28,10 @@ class EndAction : SuspendAction() {
             context.publicContext.elements.clear()
         }
         context.publicContext.stop = true
+        val actionName = context.actionName
+        if (actionName != null) {
+            ActionStorage.contextByName.remove(actionName)
+        }
 
         return ActionResult.success()
     }
