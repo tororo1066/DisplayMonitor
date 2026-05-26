@@ -129,7 +129,7 @@ abstract class DisplayBaseElement : AbstractElement() {
 
     abstract val clazz: Class<out Display>
 
-    private var entityRef: WeakReference<Display>? = null
+    var entityRef: WeakReference<Display>? = null
     val sEvent = SEvent()
     val hoverPlayers = mutableSetOf<UUID>()
 
