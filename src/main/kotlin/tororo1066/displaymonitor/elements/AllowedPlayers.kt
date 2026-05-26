@@ -40,6 +40,14 @@ class AllowedPlayers: CustomSettable {
         section.getStringList("disallowedPlayers").forEach {
             disallowedPlayers.add(uuidOrName(it))
         }
+
+        section.getString("allowedPlayers")?.let {
+            allowedPlayers.add(uuidOrName(it))
+        }
+
+        section.getString("disallowedPlayers")?.let {
+            disallowedPlayers.add(uuidOrName(it))
+        }
     }
 
     fun isAllowed(player: Player): Boolean {
