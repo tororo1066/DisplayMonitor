@@ -6,7 +6,6 @@ import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.CustomSettable
-import tororo1066.tororopluginapi.otherClass.AnyObject
 import java.util.UUID
 
 class AllowedPlayers: CustomSettable {
@@ -16,20 +15,20 @@ class AllowedPlayers: CustomSettable {
         description = "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
         type = StringList::class
     )
-    val allowedPlayers: ArrayList<AnyObject> = ArrayList()
+    val allowedPlayers: ArrayList<Any> = ArrayList()
     @ParameterDoc(
         name = "disallowedPlayers",
         description = "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
         type = StringList::class
     )
-    val disallowedPlayers: ArrayList<AnyObject> = ArrayList()
+    val disallowedPlayers: ArrayList<Any> = ArrayList()
 
     override fun load(section: IAdvancedConfigurationSection) {
-        fun uuidOrName(value: String): AnyObject {
+        fun uuidOrName(value: String): Any {
             return try {
-                AnyObject(UUID.fromString(value))
+                UUID.fromString(value)
             } catch (_: IllegalArgumentException) {
-                AnyObject(value)
+                value
             }
         }
 
@@ -40,32 +39,25 @@ class AllowedPlayers: CustomSettable {
         section.getStringList("disallowedPlayers").forEach {
             disallowedPlayers.add(uuidOrName(it))
         }
-
-        section.getString("allowedPlayers")?.let {
-            allowedPlayers.add(uuidOrName(it))
-        }
-
-        section.getString("disallowedPlayers")?.let {
-            disallowedPlayers.add(uuidOrName(it))
-        }
     }
 
     fun isAllowed(player: Player): Boolean {
-        if (allowedPlayers.isEmpty()) {
-            if (disallowedPlayers.isEmpty()) return true
-            return !disallowedPlayers.any {
-                (it.instanceOf<UUID>() && it.asUUID() == player.uniqueId) ||
-                        (it.instanceOf<String>() && it.asString() == player.name)
+        fun matches(any: Any): Boolean {
+            return when (any) {
+                is UUID -> any == player.uniqueId
+                is String -> any == player.name
+                else -> false
             }
         }
 
-        return allowedPlayers.any {
-            (it.instanceOf<UUID>() && it.asUUID() == player.uniqueId) ||
-                    (it.instanceOf<String>() && it.asString() == player.name)
-        } && !disallowedPlayers.any {
-            (it.instanceOf<UUID>() && it.asUUID() == player.uniqueId) ||
-                    (it.instanceOf<String>() && it.asString() == player.name)
+        if (allowedPlayers.isEmpty()) {
+            if (disallowedPlayers.isEmpty()) return true
+            return !disallowedPlayers.any {
+                matches(it)
+            }
         }
+
+        return allowedPlayers.any { matches(it) } && !disallowedPlayers.any { matches(it) }
     }
 
     fun allowedPlayers(): List<Player> {
