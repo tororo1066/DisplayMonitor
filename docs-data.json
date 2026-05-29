@@ -341,6 +341,12 @@
             "description": "サウンドを再生する位置を対象の位置にするかどうか。",
             "default": "true",
             "type": "Boolean"
+          },
+          {
+            "name": "receivers",
+            "description": "サウンドを聞こえるプレイヤーのリスト。プレイヤーのUUIDまたは名前を指定する。publicがtrueの場合は無視される。",
+            "default": "",
+            "type": "Unknown"
           }
         ]
       },
