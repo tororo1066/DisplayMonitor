@@ -4,6 +4,7 @@ import org.bukkit.entity.Player
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -43,6 +44,11 @@ class PlaySoundAction: AbstractAction() {
         default = "true",
     )
     var targetLocation: Boolean = true
+    @ParameterDoc(
+        name = "receivers",
+        description = "サウンドを聞こえるプレイヤーのリスト。プレイヤーのUUIDまたは名前を指定する。publicがtrueの場合は無視される。"
+    )
+    var receivers: AllowedPlayers = AllowedPlayers()
 
     override fun run(context: IActionContext): ActionResult {
         if (sound.isBlank()) return ActionResult.noParameters("Sound is empty")
@@ -57,12 +63,27 @@ class PlaySoundAction: AbstractAction() {
                 world.playSound(location, sound, volume, pitch)
             }
         } else {
-            val target = context.target ?: return ActionResult.targetRequired()
-            if (target !is Player) {
-                return ActionResult.failed("Target is not a player")
-            }
-            runTask {
-                target.playSound(location, sound, volume, pitch)
+//            val target = context.target ?: return ActionResult.targetRequired()
+//            if (target !is Player) {
+//                return ActionResult.failed("Target is not a player")
+//            }
+//            runTask {
+//                target.playSound(location, sound, volume, pitch)
+//            }
+            if (receivers.allowedPlayers.isEmpty() && receivers.disallowedPlayers.isEmpty()) {
+                val target = context.target ?: return ActionResult.targetRequired()
+                if (target !is Player) {
+                    return ActionResult.failed("Target is not a player")
+                }
+                runTask {
+                    target.playSound(location, sound, volume, pitch)
+                }
+            } else {
+                receivers.allowedPlayersAction { player ->
+                    runTask {
+                        player.playSound(location, sound, volume, pitch)
+                    }
+                }
             }
         }
         return ActionResult.success()
@@ -74,5 +95,9 @@ class PlaySoundAction: AbstractAction() {
         pitch = configuration.getDouble("pitch", 1.0).toFloat()
         public = configuration.getBoolean("public", false)
         targetLocation = configuration.getBoolean("targetLocation", true)
+        val receiversSection = configuration.getAdvancedConfigurationSection("receivers")
+        if (receiversSection != null) {
+            receivers = AllowedPlayers().apply { load(receiversSection) }
+        }
     }
 }
