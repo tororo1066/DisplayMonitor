@@ -221,10 +221,22 @@ open class AdvancedConfigurationSection: MemorySection, IAdvancedConfigurationSe
     }
 
     override fun getList(path: String, def: List<*>?): List<*>? {
-        val value = super.getList(path, def) ?: return null
+        val list = when (val value: Any? = get(path, def)) {
+            is List<*> -> value
+            is String -> {
+                // YAMLのリスト表記をサポート(例: "[a, b, c]")
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    value.substring(1, value.length - 1).split(",").map { it.trim() }
+                } else {
+                    return null
+                }
+            }
+            else -> return null
+        }
+
         val newList = mutableListOf<Any?>()
         val root = root as? AdvancedConfiguration
-        value.forEach {
+        list.forEach {
             if (root != null && it is String) {
                 newList.add(root.evaluate(it))
             } else {
