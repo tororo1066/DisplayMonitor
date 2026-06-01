@@ -339,7 +339,7 @@
           {
             "name": "targetLocation",
             "description": "サウンドを再生する位置を対象の位置にするかどうか。",
-            "default": "true",
+            "default": "false",
             "type": "Boolean"
           },
           {
