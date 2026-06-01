@@ -41,9 +41,9 @@ class PlaySoundAction: AbstractAction() {
     @ParameterDoc(
         name = "targetLocation",
         description = "サウンドを再生する位置を対象の位置にするかどうか。",
-        default = "true",
+        default = "false",
     )
-    var targetLocation: Boolean = true
+    var targetLocation: Boolean = false
     @ParameterDoc(
         name = "receivers",
         description = "サウンドを聞こえるプレイヤーのリスト。プレイヤーのUUIDまたは名前を指定する。publicがtrueの場合は無視される。"
@@ -63,13 +63,6 @@ class PlaySoundAction: AbstractAction() {
                 world.playSound(location, sound, volume, pitch)
             }
         } else {
-//            val target = context.target ?: return ActionResult.targetRequired()
-//            if (target !is Player) {
-//                return ActionResult.failed("Target is not a player")
-//            }
-//            runTask {
-//                target.playSound(location, sound, volume, pitch)
-//            }
             if (receivers.allowedPlayers.isEmpty() && receivers.disallowedPlayers.isEmpty()) {
                 val target = context.target ?: return ActionResult.targetRequired()
                 if (target !is Player) {
@@ -97,7 +90,7 @@ class PlaySoundAction: AbstractAction() {
         targetLocation = configuration.getBoolean("targetLocation", true)
         val receiversSection = configuration.getAdvancedConfigurationSection("receivers")
         if (receiversSection != null) {
-            receivers = AllowedPlayers().apply { load(receiversSection) }
+            receivers = AllowedPlayers().also { it.load(receiversSection) }
         }
     }
 }
