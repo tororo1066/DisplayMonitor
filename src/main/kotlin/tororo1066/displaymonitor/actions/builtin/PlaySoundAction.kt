@@ -87,7 +87,7 @@ class PlaySoundAction: AbstractAction() {
         volume = configuration.getDouble("volume", 1.0).toFloat()
         pitch = configuration.getDouble("pitch", 1.0).toFloat()
         public = configuration.getBoolean("public", false)
-        targetLocation = configuration.getBoolean("targetLocation", true)
+        targetLocation = configuration.getBoolean("targetLocation", false)
         val receiversSection = configuration.getAdvancedConfigurationSection("receivers")
         if (receiversSection != null) {
             receivers = AllowedPlayers().also { it.load(receiversSection) }

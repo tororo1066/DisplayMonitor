@@ -73,7 +73,6 @@ class AllowedPlayers: CustomSettable {
     }
 
     fun allowedPlayersAction(unit: (Player) -> Unit) {
-        // tick 等で高頻度に呼ばれるため、中間 List を生成しない
         Bukkit.getOnlinePlayers().forEach { player ->
             if (isAllowed(player)) {
                 unit(player)
@@ -82,7 +81,6 @@ class AllowedPlayers: CustomSettable {
     }
 
     fun disallowedPlayersAction(unit: (Player) -> Unit) {
-        // tick 等で高頻度に呼ばれるため、中間 List を生成しない
         Bukkit.getOnlinePlayers().forEach { player ->
             if (!isAllowed(player)) {
                 unit(player)
