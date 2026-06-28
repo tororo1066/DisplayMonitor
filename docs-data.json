@@ -33,6 +33,24 @@
         ]
       },
       {
+        "name": "AttachEntity",
+        "description": "targetに対して指定したElementをアタッチする。",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "アタッチするElementの名前。",
+            "default": "",
+            "type": "String"
+          },
+          {
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
+            "default": "false",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
         "name": "CheckEntity",
         "description": "対象が指定したエンティティであるかを確認する。",
         "parameters": [
@@ -1281,6 +1299,11 @@
         "parameters": []
       },
       {
+        "name": "ItemDisplayTransform",
+        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "parameters": []
+      },
+      {
         "name": "Int",
         "description": "整数\n\n例:\n  1000",
         "parameters": []
@@ -1291,13 +1314,8 @@
         "parameters": []
       },
       {
-        "name": "StoreType",
-        "description": "選択可能な値のリスト\n\n例:\n  RAW\nFILE\nDATABASE",
-        "parameters": []
-      },
-      {
-        "name": "Billboard",
-        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
         "parameters": []
       },
       {
@@ -1306,18 +1324,13 @@
         "parameters": []
       },
       {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
         "parameters": []
       },
       {
         "name": "Long",
         "description": "整数\n\n例:\n  1000",
-        "parameters": []
-      },
-      {
-        "name": "Particle",
-        "description": "選択可能な値のリスト\n\n例:\n  EXPLOSION_NORMAL\nEXPLOSION_LARGE\nEXPLOSION_HUGE\nFIREWORKS_SPARK\nWATER_BUBBLE\nWATER_SPLASH\nWATER_WAKE\nSUSPENDED\nSUSPENDED_DEPTH\nCRIT\nCRIT_MAGIC\nSMOKE_NORMAL\nSMOKE_LARGE\nSPELL\nSPELL_INSTANT\nSPELL_MOB\nSPELL_MOB_AMBIENT\nSPELL_WITCH\nDRIP_WATER\nDRIP_LAVA\nVILLAGER_ANGRY\nVILLAGER_HAPPY\nTOWN_AURA\nNOTE\nPORTAL\nENCHANTMENT_TABLE\nFLAME\nLAVA\nCLOUD\nREDSTONE\nSNOWBALL\nSNOW_SHOVEL\nSLIME\nHEART\nITEM_CRACK\nBLOCK_CRACK\nBLOCK_DUST\nWATER_DROP\nMOB_APPEARANCE\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nGUST_EMITTER\nGUST_DUST\nTRIAL_SPAWNER_DETECTION\nBLOCK_MARKER\nLEGACY_BLOCK_CRACK\nLEGACY_BLOCK_DUST\nLEGACY_FALLING_DUST",
         "parameters": []
       },
       {
@@ -1336,13 +1349,13 @@
         "parameters": []
       },
       {
-        "name": "Execute",
-        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\n  CENTER\nLEFT\nRIGHT",
         "parameters": []
       },
       {
-        "name": "Scope",
-        "description": "選択可能な値のリスト\n\n例:\n  GLOBAL\nLOCAL",
+        "name": "Execute",
+        "description": "Actionのリスト\n\n例:\n  - class: Message\n  message: \"Hello!\"",
         "parameters": []
       },
       {
@@ -1356,13 +1369,13 @@
         "parameters": []
       },
       {
-        "name": "Vector",
-        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\n  FIXED\nVERTICAL\nHORIZONTAL\nCENTER",
         "parameters": []
       },
       {
-        "name": "CommandType",
-        "description": "選択可能な値のリスト\n\n例:\n  TARGET\nSERVER\nANY_PLAYER",
+        "name": "Vector",
+        "description": "ベクトル\n\n例:\n  \u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
         "parameters": []
       },
       {
@@ -1381,13 +1394,13 @@
         "parameters": []
       },
       {
-        "name": "ItemDisplayTransform",
-        "description": "選択可能な値のリスト\n\n例:\n  NONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "name": "Double",
+        "description": "実数\n\n例:\n  1000.0",
         "parameters": []
       },
       {
-        "name": "Double",
-        "description": "実数\n\n例:\n  1000.0",
+        "name": "StoreType",
+        "description": "選択可能な値のリスト\n\n例:\n  RAW\nFILE\nDATABASE",
         "parameters": []
       },
       {
@@ -1398,6 +1411,11 @@
       {
         "name": "Float",
         "description": "実数\n\n例:\n  1000.0",
+        "parameters": []
+      },
+      {
+        "name": "Particle",
+        "description": "選択可能な値のリスト\n\n例:\n  EXPLOSION_NORMAL\nEXPLOSION_LARGE\nEXPLOSION_HUGE\nFIREWORKS_SPARK\nWATER_BUBBLE\nWATER_SPLASH\nWATER_WAKE\nSUSPENDED\nSUSPENDED_DEPTH\nCRIT\nCRIT_MAGIC\nSMOKE_NORMAL\nSMOKE_LARGE\nSPELL\nSPELL_INSTANT\nSPELL_MOB\nSPELL_MOB_AMBIENT\nSPELL_WITCH\nDRIP_WATER\nDRIP_LAVA\nVILLAGER_ANGRY\nVILLAGER_HAPPY\nTOWN_AURA\nNOTE\nPORTAL\nENCHANTMENT_TABLE\nFLAME\nLAVA\nCLOUD\nREDSTONE\nSNOWBALL\nSNOW_SHOVEL\nSLIME\nHEART\nITEM_CRACK\nBLOCK_CRACK\nBLOCK_DUST\nWATER_DROP\nMOB_APPEARANCE\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nGUST_EMITTER\nGUST_DUST\nTRIAL_SPAWNER_DETECTION\nBLOCK_MARKER\nLEGACY_BLOCK_CRACK\nLEGACY_BLOCK_DUST\nLEGACY_FALLING_DUST",
         "parameters": []
       }
     ]
