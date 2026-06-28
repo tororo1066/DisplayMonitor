@@ -31,6 +31,7 @@ class AccessAction: AbstractAction() {
     override fun run(context: IActionContext): ActionResult {
         val foundContext = ActionStorage.contextByName[action] ?: return ActionResult.failed("Failed to find action $action")
         val newContext = context.cloneWithNewPublicContext(foundContext.publicContext)
+        newContext.actionName = action
         actions(newContext)
         return ActionResult.success()
     }
