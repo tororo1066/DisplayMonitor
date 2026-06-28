@@ -28,7 +28,7 @@ import tororo1066.tororopluginapi.sEvent.SEvent
 import java.lang.ref.WeakReference
 import java.util.UUID
 
-abstract class DisplayBaseElement : AbstractElement() {
+abstract class DisplayBaseElement<T: Display> : AbstractElement() {
 
     @Settable(childOnly = true) var displayParameters = DisplayParameters()
 
@@ -127,22 +127,22 @@ abstract class DisplayBaseElement : AbstractElement() {
     )
     var ignoreModifies = listOf<IgnoreModify>()
 
-    abstract val clazz: Class<out Display>
+    abstract val clazz: Class<out T>
 
-    var entityRef: WeakReference<Display>? = null
+    var entityRef: WeakReference<T>? = null
     val sEvent = SEvent()
     val hoverPlayers = mutableSetOf<UUID>()
 
     override val syncGroup = true
 
-    abstract fun applyEntity(entity: Display)
+    abstract fun applyEntity(entity: T)
 
-    private fun getEntityOrNull(): Display? {
+    private fun getEntityOrNull(): T? {
         val display = entityRef?.get() ?: return null
         return if (display.isValid) display else null
     }
 
-    private fun applyChangesToEntity(entity: Display) {
+    private fun applyChangesToEntity(entity: T) {
         entity.billboard = displayParameters.billboard
         entity.transformation = displayParameters.getTransformation()
         entity.interpolationDelay = displayParameters.interpolationDelay

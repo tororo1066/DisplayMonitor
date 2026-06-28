@@ -14,7 +14,7 @@ import tororo1066.displaymonitorapi.elements.Settable
     name = "TextElement",
     description = "テキストを表示するElement。"
 )
-open class TextElement: DisplayBaseElement() {
+open class TextElement: DisplayBaseElement<TextDisplay>() {
 
     @ParameterDoc(
         name = "text",
@@ -67,8 +67,7 @@ open class TextElement: DisplayBaseElement() {
 
     override val clazz = TextDisplay::class.java
 
-    override fun applyEntity(entity: Display) {
-        if (entity !is TextDisplay) return
+    override fun applyEntity(entity: TextDisplay) {
         entity.text(text)
         entity.backgroundColor = backgroundColor
         entity.lineWidth = lineWidth

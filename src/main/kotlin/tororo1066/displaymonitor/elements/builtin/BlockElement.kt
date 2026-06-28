@@ -3,7 +3,6 @@ package tororo1066.displaymonitor.elements.builtin
 import org.bukkit.Bukkit
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.BlockDisplay
-import org.bukkit.entity.Display
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitorapi.elements.Settable
@@ -12,7 +11,7 @@ import tororo1066.displaymonitorapi.elements.Settable
     name = "BlockElement",
     description = "ブロックを表示するElement。"
 )
-open class BlockElement: DisplayBaseElement() {
+open class BlockElement: DisplayBaseElement<BlockDisplay>() {
 
     @ParameterDoc(
         name = "block",
@@ -24,8 +23,7 @@ open class BlockElement: DisplayBaseElement() {
 
     override val clazz = BlockDisplay::class.java
 
-    override fun applyEntity(entity: Display) {
-        if (entity !is BlockDisplay) return
+    override fun applyEntity(entity: BlockDisplay) {
         entity.block = block
     }
 }

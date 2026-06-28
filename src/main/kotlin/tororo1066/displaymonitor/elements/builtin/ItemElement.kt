@@ -14,7 +14,7 @@ import tororo1066.displaymonitorapi.elements.Settable
     name = "ItemElement",
     description = "アイテムを表示するElement。"
 )
-open class ItemElement: DisplayBaseElement() {
+open class ItemElement: DisplayBaseElement<ItemDisplay>() {
 
     @ParameterDoc(
         name = "itemStack",
@@ -31,8 +31,7 @@ open class ItemElement: DisplayBaseElement() {
 
     override val clazz = ItemDisplay::class.java
 
-    override fun applyEntity(entity: Display) {
-        if (entity !is ItemDisplay) return
+    override fun applyEntity(entity: ItemDisplay) {
         entity.itemStack = itemStack
         entity.itemDisplayTransform = itemDisplayTransform
     }
