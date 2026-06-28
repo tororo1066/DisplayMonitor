@@ -1,8 +1,8 @@
 package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Location
+import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Entity
-import org.bukkit.entity.Marker
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.StringList
@@ -66,7 +66,7 @@ open class GroupElement: AbstractElement() {
         entityBySpawnRef = entity?.let { WeakReference(it) }
         locationBySpawn = location
 
-        val center = location.world.spawn(location, Marker::class.java)
+        val center = location.world.spawn(location, BlockDisplay::class.java)
         centerEntityRef = WeakReference(center)
         elements.values.forEach {
             it.actionContext = actionContext
