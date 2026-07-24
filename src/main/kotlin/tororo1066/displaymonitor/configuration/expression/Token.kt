@@ -35,6 +35,7 @@ private fun shouldPopSymbolic(top: Token.Symbolic, incoming: Token.Symbolic): Bo
 fun tokenize(input: String): List<Token> {
     var pos = 0
     val tokens = mutableListOf<Token>()
+    val allowedInIdentifier = setOf('-', '.', ':', '/', '\\', '#', '_')
 
     fun lastNonWhitespaceToken(): Token? = tokens.asReversed().firstOrNull { it !is Token.Whitespace }
 
@@ -46,6 +47,8 @@ fun tokenize(input: String): List<Token> {
             prev is Token.Comma
     }
 
+    fun isValidIdentifierChar(c: Char): Boolean = c.isLetterOrDigit() || c in allowedInIdentifier
+
     fun addStringLiteral(string: String) {
         if (string.isNotEmpty()) {
             val last = tokens.lastOrNull()
@@ -55,7 +58,7 @@ fun tokenize(input: String): List<Token> {
                 tokens += Token.StringLiteral(string)
             }
         } else {
-            throw IllegalArgumentException("Empty string literal at position $pos")
+            throw IllegalArgumentException("Invalid string literal at position $pos")
         }
     }
 
@@ -85,7 +88,7 @@ fun tokenize(input: String): List<Token> {
                 val next = input.getOrNull(pos)
                 if (next?.isLetter() == true) {
                     // 文字列として扱う
-                    while (pos < input.length && (input[pos].isLetterOrDigit() || input[pos] == '_')) {
+                    while (pos < input.length && isValidIdentifierChar(input[pos])) {
                         pos++
                     }
                     val identifier = input.substring(start, pos)
@@ -99,7 +102,7 @@ fun tokenize(input: String): List<Token> {
             c == '@' -> {
                 pos++ // Skip '@'
                 val start = pos
-                while (pos < input.length && (input[pos].isLetterOrDigit() || input[pos] == '_')) {
+                while (pos < input.length && isValidIdentifierChar(input[pos])) {
                     pos++
                 }
                 if (start == pos) {
@@ -119,7 +122,7 @@ fun tokenize(input: String): List<Token> {
                     }
                 }
                 if (pos >= input.length || input[pos] != '"') {
-                    throw IllegalArgumentException("Unmatched quotes in string literal")
+                    throw IllegalArgumentException("Unterminated string literal starting at position $start")
                 }
                 val stringValue = input.substring(start, pos)
                 addStringLiteral(stringValue.replace("\\\"", "\"").replace("\\n", "\n"))
@@ -171,7 +174,7 @@ fun tokenize(input: String): List<Token> {
             }
             else -> {
                 val start = pos
-                while (pos < input.length && (input[pos].isLetterOrDigit() || input[pos] == '_')) {
+                while (pos < input.length && isValidIdentifierChar(input[pos])) {
                     pos++
                 }
                 val identifier = input.substring(start, pos)
