@@ -15,6 +15,7 @@ import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.PublicActionContext
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
+import tororo1066.displaymonitor.storage.VariableStorage
 import tororo1066.displaymonitor.storage.WorkspaceStorage
 import tororo1066.tororopluginapi.SInput
 import tororo1066.tororopluginapi.annotation.SCommandV2Body
@@ -188,6 +189,7 @@ class DisplayCommands: SCommandV2("dmonitor") {
                     Config.load()
                     WorkspaceStorage.DisplayMonitorWorkspace.instance.loadDisplayMonitorActions()
                     ElementStorage.load()
+                    VariableStorage.load()
                     sender.sendMessage(Component.text("Reloaded"))
                 } catch (e: Exception) {
                     sender.sendMessage(Component.text("An error occurred"))
