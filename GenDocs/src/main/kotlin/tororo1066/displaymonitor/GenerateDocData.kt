@@ -47,7 +47,7 @@ object GenerateDocData {
                             }
                         }
 
-                        if (field.type.isAssignableFrom(CustomSettable::class.java)) {
+                        if (CustomSettable::class.java.isAssignableFrom(field.type)) {
                             checkField(field.type, if (name.isEmpty()) field.name else "$name.${field.name}")
                         }
 
