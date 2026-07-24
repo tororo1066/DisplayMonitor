@@ -6,10 +6,10 @@ import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
-import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
+import java.nio.channels.FileChannel
 import java.util.UUID
 
 @ClassDoc(
@@ -92,17 +92,20 @@ class StoreDataAction: AbstractAction() {
                 if (!file.exists()) {
                     file.createNewFile()
                 }
-                val yml = YamlConfiguration().apply {
-//                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-                    load(file)
-                }
-                data.forEach { (key, value) ->
-                    yml.set(key, value?.let { formatValue(it) })
-                }
-                if (yml.getKeys(false).isEmpty()) {
-                    file.delete()
-                } else {
-                    yml.save(file)
+                FileChannel.open(file.toPath()).use { channel ->
+                    channel.lock().use {
+                        val yml = YamlConfiguration().apply {
+                            load(file)
+                        }
+                        data.forEach { (key, value) ->
+                            yml.set(key, value?.let { formatValue(it) })
+                        }
+                        if (yml.getKeys(false).isEmpty()) {
+                            file.delete()
+                        } else {
+                            yml.save(file)
+                        }
+                    }
                 }
             }
             //Json
