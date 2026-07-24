@@ -82,7 +82,7 @@ object GenerateDocData {
         parameterTypeDocs.forEach second@ { (_, parameterType) ->
             jsonWriter.beginObject()
             jsonWriter.name("name").value(parameterType.name)
-            jsonWriter.name("description").value(parameterType.description + "\n\n例:\n  " + parameterType.example)
+            jsonWriter.name("description").value(parameterType.description + "\n\n例:\n" + parameterType.example)
             jsonWriter.name("parameters").beginArray().endArray()
             jsonWriter.endObject()
         }
