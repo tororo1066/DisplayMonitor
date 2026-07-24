@@ -16,7 +16,6 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitor.hitbox.IgnoreModify
@@ -24,11 +23,10 @@ import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin
-import tororo1066.tororopluginapi.sEvent.SEvent
 import java.lang.ref.WeakReference
 import java.util.UUID
 
-abstract class DisplayBaseElement<T: Display> : AbstractElement() {
+abstract class DisplayBaseElement<T: Display>: DetachableElement() {
 
     @Settable(childOnly = true) var displayParameters = DisplayParameters()
 
@@ -130,7 +128,6 @@ abstract class DisplayBaseElement<T: Display> : AbstractElement() {
     abstract val clazz: Class<out T>
 
     var entityRef: WeakReference<T>? = null
-    val sEvent = SEvent()
     val hoverPlayers = mutableSetOf<UUID>()
 
     override val syncGroup = true
@@ -253,6 +250,7 @@ abstract class DisplayBaseElement<T: Display> : AbstractElement() {
     override fun attachEntity(entity: Entity) {
         val display = getEntityOrNull() ?: return
         entity.addPassenger(display)
+        super.attachEntity(entity)
     }
 
     override fun remove() {
@@ -263,6 +261,8 @@ abstract class DisplayBaseElement<T: Display> : AbstractElement() {
     }
 
     override fun tick(entity: Entity?) {
+        if (onTick == null && onHover == null && onUnhover == null) return
+
         val display = getEntityOrNull()
         if (display == null) {
             remove()

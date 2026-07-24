@@ -41,15 +41,17 @@ object Utils: IDisplayUtils {
         visible: Boolean = false,
         ignoreModifies: List<IgnoreModify> = emptyList()
     ): Boolean {
+        val obb = createOBBFromDisplay(entity, scale, p, ignoreModifies)
+        return isPointInsideRotatedRect(p, obb, maxDistance, visible)
+    }
+
+    fun isPointInsideRotatedRect(
+        p: Player,
+        obb: OBB,
+        maxDistance: Double,
+        visible: Boolean = false
+    ): Boolean {
         val playerLocation = p.eyeLocation
-        val entityLocation = entity.location
-
-        val obb = OBB(
-            entityLocation.toVector().subtract(Vector(scale.x / 2, scale.y / 2, scale.z / 2)).toVector3f(),
-            entityLocation.toVector().add(Vector(scale.x / 2, scale.y / 2, scale.z / 2)).toVector3f()
-        )
-
-        obb.modifyBy(p, entity, ignoreModifies)
 
         if (visible) {
             obb.showParticle(p.world, p)
@@ -60,6 +62,19 @@ object Utils: IDisplayUtils {
             playerLocation.direction.toVector3f(),
             maxDistance
         )
+    }
+
+    fun createOBBFromDisplay(entity: Display, scale: Vector, receiver: Player, ignoreModifies: List<IgnoreModify> = emptyList()): OBB {
+        val entityLocation = entity.location
+
+        val obb = OBB(
+            entityLocation.toVector().subtract(Vector(scale.x / 2, scale.y / 2, scale.z / 2)).toVector3f(),
+            entityLocation.toVector().add(Vector(scale.x / 2, scale.y / 2, scale.z / 2)).toVector3f()
+        )
+
+        obb.modifyBy(receiver, entity, ignoreModifies)
+
+        return obb
     }
 
     fun URL.getClasses(packageName: String): List<Class<*>> {

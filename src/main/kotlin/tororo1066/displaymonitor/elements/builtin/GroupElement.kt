@@ -1,22 +1,24 @@
 package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Location
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Entity
+import org.bukkit.persistence.PersistentDataType
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.StringList
-import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.IAbstractElement
+import tororo1066.tororopluginapi.SJavaPlugin
 import java.lang.ref.WeakReference
 
 @ClassDoc(
     name = "GroupElement",
     description = "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。"
 )
-open class GroupElement: AbstractElement() {
+open class GroupElement: DetachableElement() {
 
     @ParameterDoc(
         name = "elements",
@@ -66,7 +68,13 @@ open class GroupElement: AbstractElement() {
         entityBySpawnRef = entity?.let { WeakReference(it) }
         locationBySpawn = location
 
-        val center = location.world.spawn(location, BlockDisplay::class.java)
+        val center = location.world.spawn(location, BlockDisplay::class.java) {
+            it.persistentDataContainer.set(
+                NamespacedKey(SJavaPlugin.plugin, "displayentity"),
+                PersistentDataType.STRING,
+                ""
+            )
+        }
         centerEntityRef = WeakReference(center)
         elements.values.forEach {
             it.actionContext = actionContext
@@ -89,6 +97,7 @@ open class GroupElement: AbstractElement() {
 
     override fun remove() {
         stopTick()
+        sEvent.unregisterAll()
         elements.values.forEach { it.remove() }
         getCenterEntityOrNull()?.remove()
         centerEntityRef?.clear()
@@ -98,9 +107,11 @@ open class GroupElement: AbstractElement() {
     override fun attachEntity(entity: Entity) {
         val center = getCenterEntityOrNull() ?: return
         entity.addPassenger(center)
+        super.attachEntity(entity)
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
+        super.prepare(section)
         if (section.getBoolean("clear", false)) {
             elements.values.forEach { it.remove() }
             elements.clear()
