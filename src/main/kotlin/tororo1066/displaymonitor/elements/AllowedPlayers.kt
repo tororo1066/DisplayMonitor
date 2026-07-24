@@ -51,8 +51,7 @@ class AllowedPlayers: CustomSettable {
         }
 
         if (allowedPlayers.isEmpty()) {
-            if (disallowedPlayers.isEmpty()) return true
-            return !disallowedPlayers.any {
+            return disallowedPlayers.isEmpty() || !disallowedPlayers.any {
                 matches(it)
             }
         }
