@@ -79,9 +79,9 @@ object GenerateDocData {
         jsonWriter.beginObject()
         jsonWriter.name("name").value("Type")
         jsonWriter.name("classes").beginArray()
-        parameterTypeDocs.forEach second@ { (type, parameterType) ->
+        parameterTypeDocs.forEach second@ { (_, parameterType) ->
             jsonWriter.beginObject()
-            jsonWriter.name("name").value(type.simpleName ?: "Unknown")
+            jsonWriter.name("name").value(parameterType.name)
             jsonWriter.name("description").value(parameterType.description + "\n\n例:\n  " + parameterType.example)
             jsonWriter.name("parameters").beginArray().endArray()
             jsonWriter.endObject()

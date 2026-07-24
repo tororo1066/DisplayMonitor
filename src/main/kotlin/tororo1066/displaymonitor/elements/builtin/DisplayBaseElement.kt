@@ -16,6 +16,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitor.hitbox.IgnoreModify
@@ -121,7 +122,8 @@ abstract class DisplayBaseElement<T: Display>: DetachableElement() {
                 "- translation\n" +
                 "- right_rotation\n" +
                 "- scale\n" +
-                "- left_rotation"
+                "- left_rotation",
+        type = StringList::class
     )
     var ignoreModifies = listOf<IgnoreModify>()
 

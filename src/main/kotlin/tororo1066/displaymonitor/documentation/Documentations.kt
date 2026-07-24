@@ -74,7 +74,7 @@ val parameterTypeDocs = hashMapOf(
         """.trimIndent()
     ),
     ItemStack::class to ParameterType(
-        "Item",
+        "ItemStack",
         "アイテム",
         """
             minecraft:diamond_sword{Enchantments:[{id:"minecraft:sharpness",lvl:5}]}
@@ -119,7 +119,7 @@ val parameterTypeDocs = hashMapOf(
         "AsyncActions",
         "非同期Actionのリスト",
         """
-            - class: AsyncMessage
+            - class: Message
               message: "Hello!"
         """.trimIndent()
     ),
