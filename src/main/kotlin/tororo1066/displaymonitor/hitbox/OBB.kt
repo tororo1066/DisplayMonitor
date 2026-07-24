@@ -175,23 +175,45 @@ class OBB {
 
 
     fun intersect(obb: OBB): Boolean {
-        // 2つのOBBの中心間のベクトル
-        val t = Vector3f(center.x - obb.center.x, center.y - obb.center.y, center.z - obb.center.z)
+        val delta = Vector3f(center).sub(obb.center)
+        val axesToTest = mutableListOf<Vector3f>()
 
-        // 2つのOBBの中心間のベクトルを各軸に投影
-        val p = Vector3f(t.dot(axes[0]), t.dot(axes[1]), t.dot(axes[2]))
-        val d = Vector3f(obb.axes[0].dot(axes[0]), obb.axes[0].dot(axes[1]), obb.axes[0].dot(axes[2]))
+        addAxis(axesToTest, axes)
+        addAxis(axesToTest, obb.axes)
 
-        // 2つのOBBの中心間のベクトルを各軸に投影したものの絶対値
-        val ad = Vector3f(abs(d.x), abs(d.y), abs(d.z))
+        for (i in 0..2) {
+            for (j in 0..2) {
+                val cross = axes[i].cross(obb.axes[j], Vector3f())
+                if (cross.lengthSquared() > 1.0E-6f) {
+                    axesToTest.add(cross.normalize())
+                }
+            }
+        }
 
-        // 2つのOBBの中心間のベクトルを各軸に投影したものの絶対値がOBBの半径の和よりも小さいかどうか
-        if (abs(p.x) > halfWidths.x + ad.x) return false
-        if (abs(p.y) > halfWidths.y + ad.y) return false
-        if (abs(p.z) > halfWidths.z + ad.z) return false
+        for (axis in axesToTest) {
+            val radiusA = projectedRadius(axis, this)
+            val radiusB = projectedRadius(axis, obb)
+            if (abs(delta.dot(axis)) > radiusA + radiusB) {
+                return false
+            }
+        }
 
-        // 2つのOBBの中心間のベクトルを各軸に投影したものの絶対値がOBBの半径の和よりも小さい場合は交差している
         return true
+    }
+
+    private fun addAxis(axesToTest: MutableList<Vector3f>, axisArray: Array<Vector3f>) {
+        for (axis in axisArray) {
+            if (axis.lengthSquared() < 1.0E-6f) {
+                continue
+            }
+            axesToTest.add(axis.normalize(Vector3f()))
+        }
+    }
+
+    private fun projectedRadius(axis: Vector3f, obb: OBB): Float {
+        return abs(axis.dot(obb.axes[0])) * obb.halfWidths.x +
+            abs(axis.dot(obb.axes[1])) * obb.halfWidths.y +
+            abs(axis.dot(obb.axes[2])) * obb.halfWidths.z
     }
 
     // OBBとレイの交差判定

@@ -19,7 +19,7 @@ object ElementStorage: IElementStorage {
         elementClasses["BlockElement"] = BlockElement::class.java
         elementClasses["TextElement"] = TextElement::class.java
         elementClasses["GroupElement"] = GroupElement::class.java
-        elementClasses["HitboxElement"] = HitboxElement::class.java
+        elementClasses["CollidableElement"] = CollidableElement::class.java
 
         load()
     }
