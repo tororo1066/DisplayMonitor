@@ -2,9 +2,7 @@ package tororo1066.displaymonitor.actions
 
 import com.github.shynixn.mccoroutine.bukkit.asyncDispatcher
 import com.github.shynixn.mccoroutine.bukkit.launch
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.actions.parameters.ActionParameters
 import tororo1066.displaymonitor.config.Config
