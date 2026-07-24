@@ -13,23 +13,12 @@ class ActionConfiguration(private val key: String, configuration: IAdvancedConfi
 
     private val triggers = mutableMapOf<String, IAdvancedConfigurationSection>()
 
-    val variables = mutableMapOf<String, Any>()
-
     init {
         val actionSection = configuration.getAdvancedConfigurationSectionList("actions")
         actions.addAll(actionSection)
         configuration.getAdvancedConfigurationSectionList("triggers").forEach {
             val trigger = it.getString("trigger") ?: return@forEach
             triggers[trigger] = it
-        }
-        configuration.getStringList("variables").forEach {
-            val yml = VariableStorage.getVariableFile(it) ?: return@forEach
-            yml.getKeys(true).forEach { key ->
-                val value = yml.get(key)
-                if (value != null) {
-                    variables[key] = value
-                }
-            }
         }
     }
 
