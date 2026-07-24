@@ -67,9 +67,11 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
     }
 
+    implementation("org.joml:joml:1.10.8")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testImplementation(project(":DisplayMonitorAPI"))
+    testImplementation("io.papermc.paper:paper-api:$pluginVersion-R0.1-SNAPSHOT")
 }
 
 tasks.withType<ShadowJar> {
