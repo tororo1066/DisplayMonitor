@@ -6,6 +6,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection;
 import tororo1066.displaymonitorapi.elements.IAbstractElement;
 
 import java.io.File;
+import java.util.Map;
 
 public interface IElementStorage {
 
@@ -38,4 +39,25 @@ public interface IElementStorage {
      * @return 作成したElement
      */
     @Nullable IAbstractElement createElement(@Nullable String presetName, @Nullable String clazz, @Nullable IAdvancedConfigurationSection overrideParameters, @NotNull String context);
+
+    /**
+     * 変数を参照しながら新規にElementを作成する
+     *
+     * @param presetName プリセット名
+     * @param clazz Elementのクラス - presetNameがnullの場合は必須
+     * @param overrideParameters 上書きするパラメータ
+     * @param variables プリセット設定の評価に使用する変数
+     * @param context 呼び出し元のコンテキスト
+     * @return 作成したElement
+     */
+    @Nullable
+    default IAbstractElement createElement(
+            @Nullable String presetName,
+            @Nullable String clazz,
+            @Nullable IAdvancedConfigurationSection overrideParameters,
+            @NotNull Map<String, Object> variables,
+            @NotNull String context
+    ) {
+        return createElement(presetName, clazz, overrideParameters, context);
+    }
 }

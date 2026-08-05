@@ -123,7 +123,9 @@ open class GroupElement: DetachableElement() {
             val presetName = element.getString("preset")
             val clazz = element.getString("type")
             val overrideParameters = element.getAdvancedConfigurationSection("parameters")
-            ElementStorage.createElement(presetName, clazz, overrideParameters, "GroupElement")?.let {
+            ElementStorage.createElement(
+                presetName, clazz, overrideParameters, actionContext?.allParameters ?: emptyMap(), "GroupElement"
+            )?.let {
                 if (this.elements.containsKey(evalKey)) {
                     this.elements[evalKey]?.remove()
                 }

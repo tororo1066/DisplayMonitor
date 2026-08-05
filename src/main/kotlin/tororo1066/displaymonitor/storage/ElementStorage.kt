@@ -11,7 +11,7 @@ import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 
 object ElementStorage: IElementStorage {
-    val presetElements = mutableMapOf<String, IAbstractElement>()
+    val presetElements = mutableMapOf<String, IAdvancedConfigurationSection>()
     val elementClasses = mutableMapOf<String, Class<out IAbstractElement>>()
 
     init {
@@ -69,28 +69,46 @@ object ElementStorage: IElementStorage {
             DisplayMonitor.warn(context, DisplayMonitor.translate("element.type.not.found", type))
             return
         }
-        val element = clazz.getConstructor().newInstance()
-        element.prepare(section)
-        presetElements[section.name] = element
+        presetElements[section.name] = section
     }
 
     override fun createElement(presetName: String?, clazz: String?, overrideParameters: IAdvancedConfigurationSection?, context: String): IAbstractElement? {
-        val element: IAbstractElement
+        return createElement(presetName, clazz, overrideParameters, emptyMap(), context)
+    }
+
+    override fun createElement(
+        presetName: String?,
+        clazz: String?,
+        overrideParameters: IAdvancedConfigurationSection?,
+        variables: Map<String, Any>,
+        context: String
+    ): IAbstractElement? {
         val presetElement = presetElements[presetName]
         if (presetElement != null) {
-            element = presetElement.clone()
-            element.prepare(overrideParameters ?: AdvancedConfiguration())
-        } else {
-            val elementClass = elementClasses[clazz]
-            if (elementClass == null) {
-                DisplayMonitor.error(context, DisplayMonitor.translate("element.type.not.found", clazz))
-                return null
+            return presetElement.withParameters(variables) { section ->
+                val type = section.getString("type")
+                val elementClass = elementClasses[type]
+                if (elementClass == null) {
+                    DisplayMonitor.error(context, DisplayMonitor.translate("element.type.not.found", type))
+                    return@withParameters null
+                }
+
+                elementClass.getConstructor().newInstance().apply {
+                    prepare(section)
+                    prepare(overrideParameters ?: AdvancedConfiguration())
+                }
             }
-            element = elementClass.getConstructor().newInstance()
-            element.prepare(overrideParameters ?: AdvancedConfiguration())
         }
 
-        return element
+        val elementClass = elementClasses[clazz]
+        if (elementClass == null) {
+            DisplayMonitor.error(context, DisplayMonitor.translate("element.type.not.found", clazz))
+            return null
+        }
+
+        return elementClass.getConstructor().newInstance().apply {
+            prepare(overrideParameters ?: AdvancedConfiguration())
+        }
     }
 
     override fun registerElement(key: String, element: Class<out IAbstractElement>) {

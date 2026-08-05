@@ -196,7 +196,7 @@ public interface IAdvancedConfigurationSection extends ConfigurationSection {
      * @param <T> 戻り値の型
      * @return 戻り値
      */
-    @Nullable <T extends @NotNull Object>  T withParameters(@NotNull Map<String, Object> parameters, @NotNull Function<IAdvancedConfigurationSection, @Nullable T> function);
+    @Nullable <T extends @NotNull Object> T withParameters(@NotNull Map<String, Object> parameters, @NotNull Function<IAdvancedConfigurationSection, @Nullable T> function);
 
     @NotNull Map<@NotNull String, @Nullable Object> getEvaluatedValues(boolean deep);
 }
