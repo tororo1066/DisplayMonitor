@@ -10,6 +10,7 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.tororopluginapi.SJavaPlugin
 import java.io.File
 import java.nio.channels.FileChannel
+import java.nio.file.StandardOpenOption
 import java.util.UUID
 
 @ClassDoc(
@@ -92,7 +93,7 @@ class StoreDataAction: AbstractAction() {
                 if (!file.exists()) {
                     file.createNewFile()
                 }
-                FileChannel.open(file.toPath()).use { channel ->
+                FileChannel.open(file.toPath(), StandardOpenOption.READ, StandardOpenOption.WRITE).use { channel ->
                     channel.lock().use {
                         val yml = YamlConfiguration().apply {
                             load(file)
