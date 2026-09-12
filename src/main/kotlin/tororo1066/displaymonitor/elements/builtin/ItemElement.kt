@@ -32,7 +32,7 @@ open class ItemElement: DisplayBaseElement<ItemDisplay>() {
     override val clazz = ItemDisplay::class.java
 
     override fun applyEntity(entity: ItemDisplay) {
-        entity.itemStack = itemStack
+        entity.setItemStack(itemStack)
         entity.itemDisplayTransform = itemDisplayTransform
     }
 
