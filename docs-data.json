@@ -153,6 +153,102 @@
         ]
       },
       {
+        "name": "GiveInteractableItem",
+        "description": "対象のプレイヤーにインタラクト可能なアイテムを付与する。",
+        "parameters": [
+          {
+            "name": "interactCooldown",
+            "description": "アイテムをインタラクトしたときのクールダウン時間。単位はtick。",
+            "default": "0",
+            "type": "Int"
+          },
+          {
+            "name": "unique",
+            "description": "trueの場合、同じアイテムを複数持つことができない。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "targetOnly",
+            "description": "trueの場合、対象のプレイヤーのみがアイテムを使用できる。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "onInteract",
+            "description": "アイテムを使用したときのアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onDrop",
+            "description": "アイテムをドロップしたときのアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onSwap",
+            "description": "アイテムをスワップしたときのアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "itemStack",
+            "description": "付与するアイテム。",
+            "default": "",
+            "type": "String"
+          },
+          {
+            "name": "slot",
+            "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+            "default": "",
+            "type": "EquipmentSlot"
+          },
+          {
+            "name": "setForce",
+            "description": "trueの場合、指定されたスロットに強制的にアイテムをセットする。falseの場合、既にアイテムがある場合は追加されない。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "dropIfFull",
+            "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+            "default": "false",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "GiveItem",
+        "description": "対象のプレイヤーにアイテムを付与する。",
+        "parameters": [
+          {
+            "name": "itemStack",
+            "description": "付与するアイテム。",
+            "default": "",
+            "type": "String"
+          },
+          {
+            "name": "slot",
+            "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+            "default": "",
+            "type": "EquipmentSlot"
+          },
+          {
+            "name": "setForce",
+            "description": "trueの場合、指定されたスロットに強制的にアイテムをセットする。falseの場合、既にアイテムがある場合は追加されない。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "dropIfFull",
+            "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+            "default": "false",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
         "name": "HasElement",
         "description": "指定した名前のElementが存在するかを確認する。",
         "parameters": [
@@ -1451,48 +1547,8 @@
     "name": "Type",
     "classes": [
       {
-        "name": "Billboard",
-        "description": "選択可能な値のリスト\n\n例:\nFIXED\nVERTICAL\nHORIZONTAL\nCENTER",
-        "parameters": []
-      },
-      {
-        "name": "StringList",
-        "description": "文字列のリスト\n\n例:\n- example1\n- example2",
-        "parameters": []
-      },
-      {
-        "name": "AdvancedConfigurationSection",
-        "description": "セクション\n\n例:\nkey: value",
-        "parameters": []
-      },
-      {
-        "name": "Int",
-        "description": "整数\n\n例:\n1000",
-        "parameters": []
-      },
-      {
-        "name": "ItemStack",
-        "description": "アイテム\n\n例:\nminecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
-        "parameters": []
-      },
-      {
-        "name": "Scope",
-        "description": "選択可能な値のリスト\n\n例:\nGLOBAL\nLOCAL",
-        "parameters": []
-      },
-      {
-        "name": "Vector3f",
-        "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
-        "parameters": []
-      },
-      {
-        "name": "ItemDisplayTransform",
-        "description": "選択可能な値のリスト\n\n例:\nNONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
-        "parameters": []
-      },
-      {
-        "name": "Long",
-        "description": "整数\n\n例:\n1000",
+        "name": "Double",
+        "description": "実数\n\n例:\n1000.0",
         "parameters": []
       },
       {
@@ -1501,43 +1557,8 @@
         "parameters": []
       },
       {
-        "name": "StoreType",
-        "description": "選択可能な値のリスト\n\n例:\nRAW\nFILE\nDATABASE",
-        "parameters": []
-      },
-      {
-        "name": "Boolean",
-        "description": "真偽値\n\n例:\ntrue/false",
-        "parameters": []
-      },
-      {
-        "name": "Rotation",
-        "description": "回転\n\n例:\neuler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
-        "parameters": []
-      },
-      {
-        "name": "Actions",
-        "description": "Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "CommandType",
-        "description": "選択可能な値のリスト\n\n例:\nTARGET\nSERVER\nANY_PLAYER",
-        "parameters": []
-      },
-      {
-        "name": "Color",
-        "description": "色(ARGBまたはRGB)\n\n例:\n#ff0000\n#00000000",
-        "parameters": []
-      },
-      {
-        "name": "Location",
-        "description": "位置\n\n例:\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "Vector",
-        "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "name": "Long",
+        "description": "整数\n\n例:\n1000",
         "parameters": []
       },
       {
@@ -1546,28 +1567,33 @@
         "parameters": []
       },
       {
+        "name": "Rotation",
+        "description": "回転\n\n例:\neuler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Vector",
+        "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "EquipmentSlot",
+        "description": "選択可能な値のリスト\n\n例:\nHAND\nOFF_HAND\nFEET\nLEGS\nCHEST\nHEAD\nBODY\nSADDLE",
+        "parameters": []
+      },
+      {
+        "name": "StringList",
+        "description": "文字列のリスト\n\n例:\n- example1\n- example2",
+        "parameters": []
+      },
+      {
+        "name": "Boolean",
+        "description": "真偽値\n\n例:\ntrue/false",
+        "parameters": []
+      },
+      {
         "name": "Block",
         "description": "ブロック\n\n例:\nminecraft:oak_stairs[shape\u003dstraight]",
-        "parameters": []
-      },
-      {
-        "name": "AsyncActions",
-        "description": "非同期Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\nCENTER\nLEFT\nRIGHT",
-        "parameters": []
-      },
-      {
-        "name": "Double",
-        "description": "実数\n\n例:\n1000.0",
-        "parameters": []
-      },
-      {
-        "name": "Number",
-        "description": "数値\n\n例:\n1000",
         "parameters": []
       },
       {
@@ -1576,8 +1602,83 @@
         "parameters": []
       },
       {
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\nGLOBAL\nLOCAL",
+        "parameters": []
+      },
+      {
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\nCENTER\nLEFT\nRIGHT",
+        "parameters": []
+      },
+      {
+        "name": "ItemStack",
+        "description": "アイテム\n\n例:\nminecraft:diamond_sword{Enchantments:[{id:\"minecraft:sharpness\",lvl:5}]}\nminecraft:player_head[profile\u003d\"tororo_1066\"] (1.20.5以降)",
+        "parameters": []
+      },
+      {
+        "name": "Vector3f",
+        "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Number",
+        "description": "数値\n\n例:\n1000",
+        "parameters": []
+      },
+      {
+        "name": "Location",
+        "description": "位置\n\n例:\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\nTARGET\nSERVER\nANY_PLAYER",
+        "parameters": []
+      },
+      {
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\nFIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
+        "name": "Actions",
+        "description": "Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "AdvancedConfigurationSection",
+        "description": "セクション\n\n例:\nkey: value",
+        "parameters": []
+      },
+      {
+        "name": "StoreType",
+        "description": "選択可能な値のリスト\n\n例:\nRAW\nFILE\nDATABASE",
+        "parameters": []
+      },
+      {
+        "name": "ItemDisplayTransform",
+        "description": "選択可能な値のリスト\n\n例:\nNONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "parameters": []
+      },
+      {
+        "name": "Int",
+        "description": "整数\n\n例:\n1000",
+        "parameters": []
+      },
+      {
+        "name": "AsyncActions",
+        "description": "非同期Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
         "name": "Particle",
-        "description": "選択可能な値のリスト\n\n例:\nEXPLOSION_NORMAL\nEXPLOSION_LARGE\nEXPLOSION_HUGE\nFIREWORKS_SPARK\nWATER_BUBBLE\nWATER_SPLASH\nWATER_WAKE\nSUSPENDED\nSUSPENDED_DEPTH\nCRIT\nCRIT_MAGIC\nSMOKE_NORMAL\nSMOKE_LARGE\nSPELL\nSPELL_INSTANT\nSPELL_MOB\nSPELL_MOB_AMBIENT\nSPELL_WITCH\nDRIP_WATER\nDRIP_LAVA\nVILLAGER_ANGRY\nVILLAGER_HAPPY\nTOWN_AURA\nNOTE\nPORTAL\nENCHANTMENT_TABLE\nFLAME\nLAVA\nCLOUD\nREDSTONE\nSNOWBALL\nSNOW_SHOVEL\nSLIME\nHEART\nITEM_CRACK\nBLOCK_CRACK\nBLOCK_DUST\nWATER_DROP\nMOB_APPEARANCE\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nGUST_EMITTER\nGUST_DUST\nTRIAL_SPAWNER_DETECTION\nBLOCK_MARKER\nLEGACY_BLOCK_CRACK\nLEGACY_BLOCK_DUST\nLEGACY_FALLING_DUST",
+        "description": "選択可能な値のリスト\n\n例:\nPOOF\nEXPLOSION\nEXPLOSION_EMITTER\nFIREWORK\nBUBBLE\nSPLASH\nFISHING\nUNDERWATER\nCRIT\nENCHANTED_HIT\nSMOKE\nLARGE_SMOKE\nEFFECT\nINSTANT_EFFECT\nENTITY_EFFECT\nWITCH\nDRIPPING_WATER\nDRIPPING_LAVA\nANGRY_VILLAGER\nHAPPY_VILLAGER\nMYCELIUM\nNOTE\nPORTAL\nENCHANT\nFLAME\nLAVA\nCLOUD\nDUST\nITEM_SNOWBALL\nITEM_SLIME\nHEART\nITEM\nBLOCK\nRAIN\nELDER_GUARDIAN\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM_OF_UNDYING\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nPALE_OAK_LEAVES\nTINTED_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nSMALL_GUST\nGUST_EMITTER_LARGE\nGUST_EMITTER_SMALL\nTRIAL_SPAWNER_DETECTION\nTRIAL_SPAWNER_DETECTION_OMINOUS\nVAULT_CONNECTION\nINFESTED\nITEM_COBWEB\nDUST_PILLAR\nBLOCK_CRUMBLE\nFIREFLY\nTRAIL\nOMINOUS_SPAWNING\nRAID_OMEN\nTRIAL_OMEN\nBLOCK_MARKER",
+        "parameters": []
+      },
+      {
+        "name": "Color",
+        "description": "色(ARGBまたはRGB)\n\n例:\n#ff0000\n#00000000",
         "parameters": []
       }
     ]
