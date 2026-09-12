@@ -21,7 +21,6 @@ import java.util.function.Function
 
 object ActionStorage: IActionStorage {
     val actions = mutableMapOf<String, Class<out IAbstractAction>>()
-//    val contextByName = MapMaker().concurrencyLevel(4).weakValues().makeMap<String, IActionContext>()
     val contextByName = ConcurrentHashMap<String, IActionContext>()
 
     init {
@@ -56,6 +55,8 @@ object ActionStorage: IActionStorage {
         actions["AttachEntity"] = AttachEntityAction::class.java
         actions["HasElement"] = HasElement::class.java
         actions["Particle"] = ParticleAction::class.java
+        actions["GiveItem"] = GiveItemAction::class.java
+        actions["GiveInteractableItem"] = GiveInteractableItemAction::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 
