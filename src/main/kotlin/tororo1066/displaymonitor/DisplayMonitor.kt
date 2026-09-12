@@ -2,7 +2,7 @@ package tororo1066.displaymonitor
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.translation.GlobalTranslator
-import net.kyori.adventure.translation.TranslationRegistry
+import net.kyori.adventure.translation.TranslationStore
 import net.kyori.adventure.translation.Translator
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -94,7 +94,7 @@ class DisplayMonitor: SJavaPlugin(UseOption.SConfig), IDisplayMonitor {
     private fun registerBundle() {
 
         val context = "RegisterTranslation"
-        val registry = TranslationRegistry.create(Key.key("displaymonitor:translation"))
+        val registry = TranslationStore.messageFormat(Key.key("displaymonitor:translation"))
         GlobalTranslator.translator().removeSource(registry)
         registry.defaultLocale(Locale.getDefault())
         val jarFile = JarFile(file)
