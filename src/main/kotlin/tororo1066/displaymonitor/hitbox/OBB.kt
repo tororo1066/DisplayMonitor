@@ -254,11 +254,7 @@ class OBB {
     }
 
     companion object {
-        val villagerHappy = try {
-            Particle.valueOf("HAPPY_VILLAGER")
-        } catch (_: NoSuchFieldError) {
-            Particle.VILLAGER_HAPPY
-        }
+        val villagerHappy = Particle.HAPPY_VILLAGER
     }
 
     fun showParticle(world: World, player: Player?) {
