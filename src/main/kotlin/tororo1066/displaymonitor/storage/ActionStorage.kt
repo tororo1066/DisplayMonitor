@@ -57,6 +57,10 @@ object ActionStorage: IActionStorage {
         actions["Particle"] = ParticleAction::class.java
         actions["GiveItem"] = GiveItemAction::class.java
         actions["GiveInteractableItem"] = GiveInteractableItemAction::class.java
+        actions["ActionBar"] = ActionBarAction::class.java
+        actions["Title"] = TitleAction::class.java
+        actions["Teleport"] = TeleportAction::class.java
+        actions["OnlinePlayers"] = OnlinePlayersAction::class.java
 
         actions["PrintVariables"] = PrintVariables::class.java
 
