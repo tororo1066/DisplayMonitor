@@ -54,6 +54,21 @@ class GiveInteractableItemAction: GiveItemAction() {
         description = "アイテムをスワップしたときのアクション。"
     )
     var onSwap: Execute = Execute.empty()
+    @ParameterDoc(
+        name = "cancelInteract",
+        description = "trueの場合、アイテムを使用したときのEventをキャンセルする。"
+    )
+    var cancelInteract = false
+    @ParameterDoc(
+        name = "cancelDrop",
+        description = "trueの場合、アイテムをドロップしたときのEventをキャンセルする。"
+    )
+    var cancelDrop = false
+    @ParameterDoc(
+        name = "cancelSwap",
+        description = "trueの場合、アイテムをスワップしたときのEventをキャンセルする。"
+    )
+    var cancelSwap = false
 
     companion object {
         val interactManager = SInteractItemManager(SJavaPlugin.plugin, disableCoolTimeView = true)
@@ -88,6 +103,7 @@ class GiveInteractableItemAction: GiveItemAction() {
                     item.delete()
                     return@setInteractEvent false
                 }
+                if (cancelInteract) e.isCancelled = true
                 if (targetOnly && e.player != context.target) return@setInteractEvent false
                 onInteract(cloneContext(e.player))
                 true
@@ -97,6 +113,7 @@ class GiveInteractableItemAction: GiveItemAction() {
                     item.delete()
                     return@setDropEvent
                 }
+                if (cancelDrop) e.isCancelled = true
                 if (targetOnly && e.player != context.target) return@setDropEvent
                 onDrop(cloneContext(e.player))
             }
@@ -105,6 +122,7 @@ class GiveInteractableItemAction: GiveItemAction() {
                     item.delete()
                     return@setSwapEvent
                 }
+                if (cancelSwap) e.isCancelled = true
                 if (targetOnly && e.player != context.target) return@setSwapEvent
                 onSwap(cloneContext(e.player))
             }
@@ -120,5 +138,8 @@ class GiveInteractableItemAction: GiveItemAction() {
         onInteract = configuration.getConfigExecute("onInteract") ?: Execute.empty()
         onDrop = configuration.getConfigExecute("onDrop") ?: Execute.empty()
         onSwap = configuration.getConfigExecute("onSwap") ?: Execute.empty()
+        cancelInteract = configuration.getBoolean("cancelInteract", false)
+        cancelDrop = configuration.getBoolean("cancelDrop", false)
+        cancelSwap = configuration.getBoolean("cancelSwap", false)
     }
 }
