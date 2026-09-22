@@ -145,9 +145,15 @@
             "type": "AdvancedConfigurationSection"
           },
           {
+            "name": "apply",
+            "description": "編集内容を適用するか。",
+            "default": "true",
+            "type": "Boolean"
+          },
+          {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
-            "default": "",
+            "default": "false",
             "type": "Boolean"
           }
         ]
@@ -229,6 +235,12 @@
             "type": "String"
           },
           {
+            "name": "amount",
+            "description": "付与するアイテムの数。",
+            "default": "1",
+            "type": "Int"
+          },
+          {
             "name": "slot",
             "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
             "default": "",
@@ -257,6 +269,12 @@
             "description": "付与するアイテム。",
             "default": "",
             "type": "String"
+          },
+          {
+            "name": "amount",
+            "description": "付与するアイテムの数。",
+            "default": "1",
+            "type": "Int"
           },
           {
             "name": "slot",
@@ -1789,7 +1807,7 @@
           {
             "name": "0.value",
             "description": "数値(ラジアン)",
-            "type": "Unknown"
+            "type": "Number"
           }
         ]
       },
@@ -1805,7 +1823,7 @@
           {
             "name": "0.number",
             "description": "切り捨てる対象の数値。",
-            "type": "Unknown"
+            "type": "Number"
           }
         ]
       },
@@ -1827,7 +1845,7 @@
           {
             "name": "0.map",
             "description": "キーを取得したいエントリの変数名。",
-            "type": "Unknown"
+            "type": "String"
           }
         ]
       },
@@ -1838,7 +1856,7 @@
           {
             "name": "0.numbers",
             "description": "数値。少なくとも1つの数値が必要。",
-            "type": "Unknown"
+            "type": "Number"
           }
         ]
       },
@@ -1849,7 +1867,7 @@
           {
             "name": "0.numbers",
             "description": "数値。少なくとも1つの数値が必要。",
-            "type": "Unknown"
+            "type": "Number"
           }
         ]
       },
@@ -1860,7 +1878,7 @@
           {
             "name": "0.value",
             "description": "数値(度)",
-            "type": "Unknown"
+            "type": "Number"
           }
         ]
       },
@@ -1871,12 +1889,12 @@
           {
             "name": "0.min",
             "description": "ランダムな整数の最小値。",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
             "name": "1.max",
             "description": "ランダムな整数の最大値。",
-            "type": "Unknown"
+            "type": "Int"
           }
         ]
       },
@@ -1887,7 +1905,7 @@
           {
             "name": "0.value",
             "description": "数値(ラジアン)",
-            "type": "Unknown"
+            "type": "Number"
           }
         ]
       },
@@ -1909,7 +1927,7 @@
           {
             "name": "0.map",
             "description": "値を取得したいエントリの変数名。",
-            "type": "Unknown"
+            "type": "String"
           }
         ]
       }
