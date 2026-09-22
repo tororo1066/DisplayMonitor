@@ -14,7 +14,8 @@ class FloorFunction: AbstractFunction("floor") {
         return listOf(
             ParameterDoc(
                 name = "number",
-                description = "切り捨てる対象の数値。"
+                description = "切り捨てる対象の数値。",
+                type = Number::class
             )
         )
     }

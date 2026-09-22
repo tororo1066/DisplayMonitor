@@ -12,7 +12,8 @@ class KeyFunction: AbstractFunction("key") {
         return listOf(
             ParameterDoc(
                 name = "map",
-                description = "キーを取得したいエントリの変数名。"
+                description = "キーを取得したいエントリの変数名。",
+                type = String::class
             )
         )
     }

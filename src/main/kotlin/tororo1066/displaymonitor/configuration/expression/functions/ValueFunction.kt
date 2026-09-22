@@ -12,7 +12,8 @@ class ValueFunction: AbstractFunction("value") {
         return listOf(
             ParameterDoc(
                 name = "map",
-                description = "値を取得したいエントリの変数名。"
+                description = "値を取得したいエントリの変数名。",
+                type = String::class
             )
         )
     }

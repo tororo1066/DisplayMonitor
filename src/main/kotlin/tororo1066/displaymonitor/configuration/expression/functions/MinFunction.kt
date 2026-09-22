@@ -12,7 +12,8 @@ class MinFunction: AbstractFunction("min") {
         return listOf(
             ParameterDoc(
                 name = "numbers",
-                description = "数値。少なくとも1つの数値が必要。"
+                description = "数値。少なくとも1つの数値が必要。",
+                type = Number::class
             )
         )
     }

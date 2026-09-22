@@ -13,7 +13,8 @@ class RadiansFunction: AbstractFunction("radians") {
         return listOf(
             ParameterDoc(
                 name = "value",
-                description = "数値(度)"
+                description = "数値(度)",
+                type = Number::class
             )
         )
     }

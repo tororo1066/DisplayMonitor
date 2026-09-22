@@ -14,7 +14,8 @@ class CosFunction: AbstractFunction("cos") {
         return listOf(
             ParameterDoc(
                 name = "value",
-                description = "数値(ラジアン)"
+                description = "数値(ラジアン)",
+                type = Number::class
             )
         )
     }
