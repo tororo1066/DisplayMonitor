@@ -1,5 +1,5 @@
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Test
 import tororo1066.displaymonitor.configuration.expression.evaluateRPN
 import tororo1066.displaymonitor.configuration.expression.functions.DateFunction
 import tororo1066.displaymonitor.configuration.expression.toRPN

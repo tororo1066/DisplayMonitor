@@ -7,8 +7,8 @@ import org.bukkit.persistence.PersistentDataType
 import org.joml.Vector3f
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.hitbox.OBB
 import tororo1066.displaymonitor.elements.AbstractElement
+import tororo1066.displaymonitor.hitbox.OBB
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.elements.Settable
 import tororo1066.tororopluginapi.SJavaPlugin

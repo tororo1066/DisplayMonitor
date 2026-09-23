@@ -8,7 +8,6 @@ import tororo1066.displaymonitorapi.configuration.IAdvancedConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Actionの実行に関する情報を保持するクラス

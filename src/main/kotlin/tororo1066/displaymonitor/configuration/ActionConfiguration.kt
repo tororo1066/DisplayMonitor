@@ -1,7 +1,6 @@
 package tororo1066.displaymonitor.configuration
 
 import tororo1066.displaymonitor.actions.ActionRunner
-import tororo1066.displaymonitor.storage.VariableStorage
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IActionConfiguration
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection

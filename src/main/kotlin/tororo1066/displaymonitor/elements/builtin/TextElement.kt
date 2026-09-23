@@ -2,11 +2,9 @@ package tororo1066.displaymonitor.elements.builtin
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Color
-import org.bukkit.entity.Display
 import org.bukkit.entity.TextDisplay
 import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
-import tororo1066.displaymonitor.documentation.ParameterType
 import tororo1066.displaymonitor.elements.AbstractElement
 import tororo1066.displaymonitorapi.elements.Settable
 

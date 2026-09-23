@@ -10,9 +10,9 @@ import tororo1066.commandapi.CommandArguments
 import tororo1066.commandapi.argumentType.BooleanArg
 import tororo1066.commandapi.argumentType.EntityArg
 import tororo1066.commandapi.argumentType.StringArg
-import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.actions.ActionContext
 import tororo1066.displaymonitor.actions.PublicActionContext
+import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.storage.ActionStorage
 import tororo1066.displaymonitor.storage.ElementStorage
 import tororo1066.displaymonitor.storage.VariableStorage

@@ -1,7 +1,6 @@
 package tororo1066.displaymonitor.elements.builtin
 
 import org.bukkit.Material
-import org.bukkit.entity.Display
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.ItemDisplay.ItemDisplayTransform
 import org.bukkit.inventory.ItemStack

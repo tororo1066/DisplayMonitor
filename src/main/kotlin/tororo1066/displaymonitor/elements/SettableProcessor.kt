@@ -15,10 +15,9 @@ import tororo1066.displaymonitor.Utils
 import tororo1066.displaymonitorapi.configuration.AsyncExecute
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
+import tororo1066.displaymonitorapi.elements.CustomSettable
 import tororo1066.displaymonitorapi.elements.ISettableProcessor
 import tororo1066.displaymonitorapi.elements.Settable
-import tororo1066.displaymonitorapi.elements.CustomSettable
-import tororo1066.tororopluginapi.SJavaPlugin
 import tororo1066.tororopluginapi.otherUtils.UsefulUtility
 import java.lang.reflect.Field
 import java.util.IdentityHashMap

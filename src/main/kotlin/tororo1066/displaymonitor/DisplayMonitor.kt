@@ -13,11 +13,7 @@ import tororo1066.displaymonitor.commands.DisplayCommands
 import tororo1066.displaymonitor.config.Config
 import tororo1066.displaymonitor.config.sub.StoreDataConfig
 import tororo1066.displaymonitor.elements.SettableProcessor
-import tororo1066.displaymonitor.storage.ActionStorage
-import tororo1066.displaymonitor.storage.ElementStorage
-import tororo1066.displaymonitor.storage.FunctionStorage
-import tororo1066.displaymonitor.storage.VariableStorage
-import tororo1066.displaymonitor.storage.WorkspaceStorage
+import tororo1066.displaymonitor.storage.*
 import tororo1066.displaymonitorapi.IDisplayMonitor
 import tororo1066.displaymonitorapi.IDisplayMonitor.DisplayMonitorInstance
 import tororo1066.displaymonitorapi.IDisplayUtils
