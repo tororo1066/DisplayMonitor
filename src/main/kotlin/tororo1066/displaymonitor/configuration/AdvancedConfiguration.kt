@@ -89,6 +89,7 @@ class AdvancedConfiguration: AdvancedConfigurationSection(), IAdvancedConfigurat
     override fun clone(): AdvancedConfiguration {
         val clone = AdvancedConfiguration()
         clone.parameters = parameters.toMutableMap()
+        clone.publicContext = publicContext
 
         clone.map.putAll(this.map)
         return clone
