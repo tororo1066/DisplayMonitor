@@ -1,0 +1,3697 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DisplayMonitor configuration",
+  "description": "Action definitions and Element presets used by DisplayMonitor.",
+  "type": "object",
+  "additionalProperties": {
+    "anyOf": [
+      {
+        "$ref": "#/definitions/internal:action-configuration"
+      },
+      {
+        "$ref": "#/definitions/internal:element-definition"
+      }
+    ]
+  },
+  "definitions": {
+    "action:AccessAction": {
+      "type": "object",
+      "title": "AccessAction",
+      "description": "実行中のActionのコンテキストにアクセスする。",
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "アクセスするActionの名前。"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "アクセスしたActionに対して実行するアクション。"
+        },
+        "class": {
+          "enum": [
+            "AccessAction"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:ActionBar": {
+      "type": "object",
+      "title": "ActionBar",
+      "description": "対象にアクションバーメッセージを送信する。",
+      "properties": {
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "送信するメッセージ。"
+        },
+        "class": {
+          "enum": [
+            "ActionBar"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Asynchronous": {
+      "type": "object",
+      "title": "Asynchronous",
+      "description": "非同期でアクションを実行する。",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "非同期で実行するアクションのリスト。"
+        },
+        "class": {
+          "enum": [
+            "Asynchronous"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:AttachEntity": {
+      "type": "object",
+      "title": "AttachEntity",
+      "description": "targetに対して指定したElementをアタッチする。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。",
+          "default": false
+        },
+        "name": {
+          "type": "string",
+          "description": "アタッチするElementの名前。"
+        },
+        "class": {
+          "enum": [
+            "AttachEntity"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:CheckEntity": {
+      "type": "object",
+      "title": "CheckEntity",
+      "description": "対象が指定したエンティティであるかを確認する。",
+      "properties": {
+        "allowedEntities": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "許可するエンティティのリスト。"
+        },
+        "disallowedEntities": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "許可しないエンティティのリスト。"
+        },
+        "else": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "条件を満たさなかった場合に実行するアクション。"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "条件を満たした場合に実行するアクション。"
+        },
+        "class": {
+          "enum": [
+            "CheckEntity"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Command": {
+      "type": "object",
+      "title": "Command",
+      "description": "コマンドを実行する。",
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "実行するコマンド。"
+        },
+        "console": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "コンソールから実行するか。"
+        },
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "class": {
+          "enum": [
+            "Command"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Delay": {
+      "type": "object",
+      "title": "Delay",
+      "description": "指定した時間だけ待機する。",
+      "properties": {
+        "delay": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "待機する時間。(ミリ秒)",
+          "default": 0
+        },
+        "class": {
+          "enum": [
+            "Delay"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:EditElement": {
+      "type": "object",
+      "title": "EditElement",
+      "description": "Elementを編集する。",
+      "properties": {
+        "apply": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "編集内容を適用するか。",
+          "default": true
+        },
+        "edit": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "編集する内容。"
+        },
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。",
+          "default": false
+        },
+        "name": {
+          "type": "string",
+          "description": "編集するElementの名前。"
+        },
+        "class": {
+          "enum": [
+            "EditElement"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:End": {
+      "type": "object",
+      "title": "End",
+      "description": "全てのElementを削除し、Actionを終了する。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "class": {
+          "enum": [
+            "End"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:GiveInteractableItem": {
+      "type": "object",
+      "title": "GiveInteractableItem",
+      "description": "対象のプレイヤーにインタラクト可能なアイテムを付与する。",
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "付与するアイテムの数。",
+          "default": 1
+        },
+        "cancelDrop": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、アイテムをドロップしたときのEventをキャンセルする。"
+        },
+        "cancelInteract": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、アイテムを使用したときのEventをキャンセルする。"
+        },
+        "cancelSwap": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、アイテムをスワップしたときのEventをキャンセルする。"
+        },
+        "dropIfFull": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+          "default": false
+        },
+        "interactCooldown": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "アイテムをインタラクトしたときのクールダウン時間。単位はtick。",
+          "default": 0
+        },
+        "itemStack": {
+          "type": "string",
+          "description": "付与するアイテム。"
+        },
+        "onDrop": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "アイテムをドロップしたときのアクション。"
+        },
+        "onInteract": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "アイテムを使用したときのアクション。 isRightClickとisLeftClickのパラメータが追加される。"
+        },
+        "onSwap": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "アイテムをスワップしたときのアクション。"
+        },
+        "setForce": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、指定されたスロットに強制的にアイテムをセットする。falseの場合、既にアイテムがある場合は追加されない。",
+          "default": false
+        },
+        "slot": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "enum": [
+                            "HAND",
+                            "OFF_HAND",
+                            "FEET",
+                            "LEGS",
+                            "CHEST",
+                            "HEAD",
+                            "BODY",
+                            "SADDLE"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[hH][aA][nN][dD]|[oO][fF][fF]_[hH][aA][nN][dD]|[fF][eE][eE][tT]|[lL][eE][gG][sS]|[cC][hH][eE][sS][tT]|[hH][eE][aA][dD]|[bB][oO][dD][yY]|[sS][aA][dD][dD][lL][eE])$"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+                    }
+                  ]
+                },
+                {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。"
+        },
+        "targetOnly": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、対象のプレイヤーのみがアイテムを使用できる。",
+          "default": false
+        },
+        "unique": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、同じアイテムを複数持つことができない。",
+          "default": false
+        },
+        "class": {
+          "enum": [
+            "GiveInteractableItem"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:GiveItem": {
+      "type": "object",
+      "title": "GiveItem",
+      "description": "対象のプレイヤーにアイテムを付与する。",
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "付与するアイテムの数。",
+          "default": 1
+        },
+        "dropIfFull": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+          "default": false
+        },
+        "itemStack": {
+          "type": "string",
+          "description": "付与するアイテム。"
+        },
+        "setForce": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "trueの場合、指定されたスロットに強制的にアイテムをセットする。falseの場合、既にアイテムがある場合は追加されない。",
+          "default": false
+        },
+        "slot": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "enum": [
+                            "HAND",
+                            "OFF_HAND",
+                            "FEET",
+                            "LEGS",
+                            "CHEST",
+                            "HEAD",
+                            "BODY",
+                            "SADDLE"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[hH][aA][nN][dD]|[oO][fF][fF]_[hH][aA][nN][dD]|[fF][eE][eE][tT]|[lL][eE][gG][sS]|[cC][hH][eE][sS][tT]|[hH][eE][aA][dD]|[bB][oO][dD][yY]|[sS][aA][dD][dD][lL][eE])$"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+                    }
+                  ]
+                },
+                {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。"
+        },
+        "class": {
+          "enum": [
+            "GiveItem"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:HasElement": {
+      "type": "object",
+      "title": "HasElement",
+      "description": "指定した名前のElementが存在するかを確認する。",
+      "properties": {
+        "else": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "条件を満たさなかった場合に実行するアクション。"
+        },
+        "name": {
+          "type": "string",
+          "description": "Elementの名前。"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "条件を満たした場合に実行するアクション。"
+        },
+        "class": {
+          "enum": [
+            "HasElement"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:If": {
+      "type": "object",
+      "title": "If",
+      "description": "指定した条件を満たすかどうかを確認する。",
+      "properties": {
+        "else": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "条件を満たさなかった場合に実行するアクション。"
+        },
+        "expression": {
+          "type": "string",
+          "description": "評価する式。"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "条件を満たした場合に実行するアクション。"
+        },
+        "class": {
+          "enum": [
+            "If"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Message": {
+      "type": "object",
+      "title": "Message",
+      "description": "対象にメッセージを送信する。",
+      "properties": {
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "送信するメッセージ。"
+        },
+        "class": {
+          "enum": [
+            "Message"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:ModifyVariable": {
+      "type": "object",
+      "title": "ModifyVariable",
+      "description": "変数を変更する。",
+      "properties": {
+        "scope": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "enum": [
+                    "GLOBAL",
+                    "LOCAL"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[gG][lL][oO][bB][aA][lL]|[lL][oO][cC][aA][lL])$"
+                }
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+            }
+          ],
+          "description": "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。"
+        },
+        "value": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "description": "変数に代入する値。"
+        },
+        "variable": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "変更する変数の名前。"
+        },
+        "variables": {
+          "type": "object",
+          "description": "変数のマップ。"
+        },
+        "class": {
+          "enum": [
+            "ModifyVariable"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:MoveElement": {
+      "type": "object",
+      "title": "MoveElement",
+      "description": "Elementを移動する。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "name": {
+          "type": "string",
+          "description": "移動するElementの名前。"
+        },
+        "class": {
+          "enum": [
+            "MoveElement"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:OnlinePlayers": {
+      "type": "object",
+      "title": "OnlinePlayers",
+      "description": "オンラインのプレイヤーに対してアクションを実行する。",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "実行するアクションのリスト。"
+        },
+        "variableName": {
+          "type": "string",
+          "description": "繰り返し回数を格納する変数名。指定しない場合は`online.count`に格納される。"
+        },
+        "class": {
+          "enum": [
+            "OnlinePlayers"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Package": {
+      "type": "object",
+      "title": "Package",
+      "description": "複数のアクションを一つのアクションに纏めて実行する。",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "実行するアクション。"
+        },
+        "class": {
+          "enum": [
+            "Package"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Particle": {
+      "type": "object",
+      "title": "Particle",
+      "description": "指定したパーティクルを表示する。",
+      "properties": {
+        "count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "表示するパーティクルの数。",
+          "default": 1
+        },
+        "dust": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "パーティクルの色。hex形式で指定。"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "パーティクルの大きさ。",
+              "default": 1.0
+            }
+          }
+        },
+        "extra": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "パーティクルの追加データ。パーティクルによって意味が異なる。",
+          "default": 0.0
+        },
+        "offset": {
+          "type": "string",
+          "description": "パーティクルのぶれ。",
+          "default": "0.0,0.0,0.0"
+        },
+        "particle": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "POOF",
+                        "EXPLOSION",
+                        "EXPLOSION_EMITTER",
+                        "FIREWORK",
+                        "BUBBLE",
+                        "SPLASH",
+                        "FISHING",
+                        "UNDERWATER",
+                        "CRIT",
+                        "ENCHANTED_HIT",
+                        "SMOKE",
+                        "LARGE_SMOKE",
+                        "EFFECT",
+                        "INSTANT_EFFECT",
+                        "ENTITY_EFFECT",
+                        "WITCH",
+                        "DRIPPING_WATER",
+                        "DRIPPING_LAVA",
+                        "ANGRY_VILLAGER",
+                        "HAPPY_VILLAGER",
+                        "MYCELIUM",
+                        "NOTE",
+                        "PORTAL",
+                        "ENCHANT",
+                        "FLAME",
+                        "LAVA",
+                        "CLOUD",
+                        "DUST",
+                        "ITEM_SNOWBALL",
+                        "ITEM_SLIME",
+                        "HEART",
+                        "ITEM",
+                        "BLOCK",
+                        "RAIN",
+                        "ELDER_GUARDIAN",
+                        "DRAGON_BREATH",
+                        "END_ROD",
+                        "DAMAGE_INDICATOR",
+                        "SWEEP_ATTACK",
+                        "FALLING_DUST",
+                        "TOTEM_OF_UNDYING",
+                        "SPIT",
+                        "SQUID_INK",
+                        "BUBBLE_POP",
+                        "CURRENT_DOWN",
+                        "BUBBLE_COLUMN_UP",
+                        "NAUTILUS",
+                        "DOLPHIN",
+                        "SNEEZE",
+                        "CAMPFIRE_COSY_SMOKE",
+                        "CAMPFIRE_SIGNAL_SMOKE",
+                        "COMPOSTER",
+                        "FLASH",
+                        "FALLING_LAVA",
+                        "LANDING_LAVA",
+                        "FALLING_WATER",
+                        "DRIPPING_HONEY",
+                        "FALLING_HONEY",
+                        "LANDING_HONEY",
+                        "FALLING_NECTAR",
+                        "SOUL_FIRE_FLAME",
+                        "ASH",
+                        "CRIMSON_SPORE",
+                        "WARPED_SPORE",
+                        "SOUL",
+                        "DRIPPING_OBSIDIAN_TEAR",
+                        "FALLING_OBSIDIAN_TEAR",
+                        "LANDING_OBSIDIAN_TEAR",
+                        "REVERSE_PORTAL",
+                        "WHITE_ASH",
+                        "DUST_COLOR_TRANSITION",
+                        "VIBRATION",
+                        "FALLING_SPORE_BLOSSOM",
+                        "SPORE_BLOSSOM_AIR",
+                        "SMALL_FLAME",
+                        "SNOWFLAKE",
+                        "DRIPPING_DRIPSTONE_LAVA",
+                        "FALLING_DRIPSTONE_LAVA",
+                        "DRIPPING_DRIPSTONE_WATER",
+                        "FALLING_DRIPSTONE_WATER",
+                        "GLOW_SQUID_INK",
+                        "GLOW",
+                        "WAX_ON",
+                        "WAX_OFF",
+                        "ELECTRIC_SPARK",
+                        "SCRAPE",
+                        "SONIC_BOOM",
+                        "SCULK_SOUL",
+                        "SCULK_CHARGE",
+                        "SCULK_CHARGE_POP",
+                        "SHRIEK",
+                        "CHERRY_LEAVES",
+                        "PALE_OAK_LEAVES",
+                        "TINTED_LEAVES",
+                        "EGG_CRACK",
+                        "DUST_PLUME",
+                        "WHITE_SMOKE",
+                        "GUST",
+                        "SMALL_GUST",
+                        "GUST_EMITTER_LARGE",
+                        "GUST_EMITTER_SMALL",
+                        "TRIAL_SPAWNER_DETECTION",
+                        "TRIAL_SPAWNER_DETECTION_OMINOUS",
+                        "VAULT_CONNECTION",
+                        "INFESTED",
+                        "ITEM_COBWEB",
+                        "DUST_PILLAR",
+                        "BLOCK_CRUMBLE",
+                        "FIREFLY",
+                        "TRAIL",
+                        "OMINOUS_SPAWNING",
+                        "RAID_OMEN",
+                        "TRIAL_OMEN",
+                        "BLOCK_MARKER"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[pP][oO][oO][fF]|[eE][xX][pP][lL][oO][sS][iI][oO][nN]|[eE][xX][pP][lL][oO][sS][iI][oO][nN]_[eE][mM][iI][tT][tT][eE][rR]|[fF][iI][rR][eE][wW][oO][rR][kK]|[bB][uU][bB][bB][lL][eE]|[sS][pP][lL][aA][sS][hH]|[fF][iI][sS][hH][iI][nN][gG]|[uU][nN][dD][eE][rR][wW][aA][tT][eE][rR]|[cC][rR][iI][tT]|[eE][nN][cC][hH][aA][nN][tT][eE][dD]_[hH][iI][tT]|[sS][mM][oO][kK][eE]|[lL][aA][rR][gG][eE]_[sS][mM][oO][kK][eE]|[eE][fF][fF][eE][cC][tT]|[iI][nN][sS][tT][aA][nN][tT]_[eE][fF][fF][eE][cC][tT]|[eE][nN][tT][iI][tT][yY]_[eE][fF][fF][eE][cC][tT]|[wW][iI][tT][cC][hH]|[dD][rR][iI][pP][pP][iI][nN][gG]_[wW][aA][tT][eE][rR]|[dD][rR][iI][pP][pP][iI][nN][gG]_[lL][aA][vV][aA]|[aA][nN][gG][rR][yY]_[vV][iI][lL][lL][aA][gG][eE][rR]|[hH][aA][pP][pP][yY]_[vV][iI][lL][lL][aA][gG][eE][rR]|[mM][yY][cC][eE][lL][iI][uU][mM]|[nN][oO][tT][eE]|[pP][oO][rR][tT][aA][lL]|[eE][nN][cC][hH][aA][nN][tT]|[fF][lL][aA][mM][eE]|[lL][aA][vV][aA]|[cC][lL][oO][uU][dD]|[dD][uU][sS][tT]|[iI][tT][eE][mM]_[sS][nN][oO][wW][bB][aA][lL][lL]|[iI][tT][eE][mM]_[sS][lL][iI][mM][eE]|[hH][eE][aA][rR][tT]|[iI][tT][eE][mM]|[bB][lL][oO][cC][kK]|[rR][aA][iI][nN]|[eE][lL][dD][eE][rR]_[gG][uU][aA][rR][dD][iI][aA][nN]|[dD][rR][aA][gG][oO][nN]_[bB][rR][eE][aA][tT][hH]|[eE][nN][dD]_[rR][oO][dD]|[dD][aA][mM][aA][gG][eE]_[iI][nN][dD][iI][cC][aA][tT][oO][rR]|[sS][wW][eE][eE][pP]_[aA][tT][tT][aA][cC][kK]|[fF][aA][lL][lL][iI][nN][gG]_[dD][uU][sS][tT]|[tT][oO][tT][eE][mM]_[oO][fF]_[uU][nN][dD][yY][iI][nN][gG]|[sS][pP][iI][tT]|[sS][qQ][uU][iI][dD]_[iI][nN][kK]|[bB][uU][bB][bB][lL][eE]_[pP][oO][pP]|[cC][uU][rR][rR][eE][nN][tT]_[dD][oO][wW][nN]|[bB][uU][bB][bB][lL][eE]_[cC][oO][lL][uU][mM][nN]_[uU][pP]|[nN][aA][uU][tT][iI][lL][uU][sS]|[dD][oO][lL][pP][hH][iI][nN]|[sS][nN][eE][eE][zZ][eE]|[cC][aA][mM][pP][fF][iI][rR][eE]_[cC][oO][sS][yY]_[sS][mM][oO][kK][eE]|[cC][aA][mM][pP][fF][iI][rR][eE]_[sS][iI][gG][nN][aA][lL]_[sS][mM][oO][kK][eE]|[cC][oO][mM][pP][oO][sS][tT][eE][rR]|[fF][lL][aA][sS][hH]|[fF][aA][lL][lL][iI][nN][gG]_[lL][aA][vV][aA]|[lL][aA][nN][dD][iI][nN][gG]_[lL][aA][vV][aA]|[fF][aA][lL][lL][iI][nN][gG]_[wW][aA][tT][eE][rR]|[dD][rR][iI][pP][pP][iI][nN][gG]_[hH][oO][nN][eE][yY]|[fF][aA][lL][lL][iI][nN][gG]_[hH][oO][nN][eE][yY]|[lL][aA][nN][dD][iI][nN][gG]_[hH][oO][nN][eE][yY]|[fF][aA][lL][lL][iI][nN][gG]_[nN][eE][cC][tT][aA][rR]|[sS][oO][uU][lL]_[fF][iI][rR][eE]_[fF][lL][aA][mM][eE]|[aA][sS][hH]|[cC][rR][iI][mM][sS][oO][nN]_[sS][pP][oO][rR][eE]|[wW][aA][rR][pP][eE][dD]_[sS][pP][oO][rR][eE]|[sS][oO][uU][lL]|[dD][rR][iI][pP][pP][iI][nN][gG]_[oO][bB][sS][iI][dD][iI][aA][nN]_[tT][eE][aA][rR]|[fF][aA][lL][lL][iI][nN][gG]_[oO][bB][sS][iI][dD][iI][aA][nN]_[tT][eE][aA][rR]|[lL][aA][nN][dD][iI][nN][gG]_[oO][bB][sS][iI][dD][iI][aA][nN]_[tT][eE][aA][rR]|[rR][eE][vV][eE][rR][sS][eE]_[pP][oO][rR][tT][aA][lL]|[wW][hH][iI][tT][eE]_[aA][sS][hH]|[dD][uU][sS][tT]_[cC][oO][lL][oO][rR]_[tT][rR][aA][nN][sS][iI][tT][iI][oO][nN]|[vV][iI][bB][rR][aA][tT][iI][oO][nN]|[fF][aA][lL][lL][iI][nN][gG]_[sS][pP][oO][rR][eE]_[bB][lL][oO][sS][sS][oO][mM]|[sS][pP][oO][rR][eE]_[bB][lL][oO][sS][sS][oO][mM]_[aA][iI][rR]|[sS][mM][aA][lL][lL]_[fF][lL][aA][mM][eE]|[sS][nN][oO][wW][fF][lL][aA][kK][eE]|[dD][rR][iI][pP][pP][iI][nN][gG]_[dD][rR][iI][pP][sS][tT][oO][nN][eE]_[lL][aA][vV][aA]|[fF][aA][lL][lL][iI][nN][gG]_[dD][rR][iI][pP][sS][tT][oO][nN][eE]_[lL][aA][vV][aA]|[dD][rR][iI][pP][pP][iI][nN][gG]_[dD][rR][iI][pP][sS][tT][oO][nN][eE]_[wW][aA][tT][eE][rR]|[fF][aA][lL][lL][iI][nN][gG]_[dD][rR][iI][pP][sS][tT][oO][nN][eE]_[wW][aA][tT][eE][rR]|[gG][lL][oO][wW]_[sS][qQ][uU][iI][dD]_[iI][nN][kK]|[gG][lL][oO][wW]|[wW][aA][xX]_[oO][nN]|[wW][aA][xX]_[oO][fF][fF]|[eE][lL][eE][cC][tT][rR][iI][cC]_[sS][pP][aA][rR][kK]|[sS][cC][rR][aA][pP][eE]|[sS][oO][nN][iI][cC]_[bB][oO][oO][mM]|[sS][cC][uU][lL][kK]_[sS][oO][uU][lL]|[sS][cC][uU][lL][kK]_[cC][hH][aA][rR][gG][eE]|[sS][cC][uU][lL][kK]_[cC][hH][aA][rR][gG][eE]_[pP][oO][pP]|[sS][hH][rR][iI][eE][kK]|[cC][hH][eE][rR][rR][yY]_[lL][eE][aA][vV][eE][sS]|[pP][aA][lL][eE]_[oO][aA][kK]_[lL][eE][aA][vV][eE][sS]|[tT][iI][nN][tT][eE][dD]_[lL][eE][aA][vV][eE][sS]|[eE][gG][gG]_[cC][rR][aA][cC][kK]|[dD][uU][sS][tT]_[pP][lL][uU][mM][eE]|[wW][hH][iI][tT][eE]_[sS][mM][oO][kK][eE]|[gG][uU][sS][tT]|[sS][mM][aA][lL][lL]_[gG][uU][sS][tT]|[gG][uU][sS][tT]_[eE][mM][iI][tT][tT][eE][rR]_[lL][aA][rR][gG][eE]|[gG][uU][sS][tT]_[eE][mM][iI][tT][tT][eE][rR]_[sS][mM][aA][lL][lL]|[tT][rR][iI][aA][lL]_[sS][pP][aA][wW][nN][eE][rR]_[dD][eE][tT][eE][cC][tT][iI][oO][nN]|[tT][rR][iI][aA][lL]_[sS][pP][aA][wW][nN][eE][rR]_[dD][eE][tT][eE][cC][tT][iI][oO][nN]_[oO][mM][iI][nN][oO][uU][sS]|[vV][aA][uU][lL][tT]_[cC][oO][nN][nN][eE][cC][tT][iI][oO][nN]|[iI][nN][fF][eE][sS][tT][eE][dD]|[iI][tT][eE][mM]_[cC][oO][bB][wW][eE][bB]|[dD][uU][sS][tT]_[pP][iI][lL][lL][aA][rR]|[bB][lL][oO][cC][kK]_[cC][rR][uU][mM][bB][lL][eE]|[fF][iI][rR][eE][fF][lL][yY]|[tT][rR][aA][iI][lL]|[oO][mM][iI][nN][oO][uU][sS]_[sS][pP][aA][wW][nN][iI][nN][gG]|[rR][aA][iI][dD]_[oO][mM][eE][nN]|[tT][rR][iI][aA][lL]_[oO][mM][eE][nN]|[bB][lL][oO][cC][kK]_[mM][aA][rR][kK][eE][rR])$"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "表示するパーティクルの種類。"
+        },
+        "radius": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "パーティクルを表示する範囲の半径。0の場合はreceiversの設定が使われる。",
+          "default": 0
+        },
+        "receivers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "パーティクルを受け取るプレイヤーの設定。radiusが0の場合に使用される。"
+        },
+        "class": {
+          "enum": [
+            "Particle"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:PlaySound": {
+      "type": "object",
+      "title": "PlaySound",
+      "description": "指定したサウンドを対象に再生する。",
+      "properties": {
+        "pitch": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "サウンドのピッチ。",
+          "default": 1.0
+        },
+        "public": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "サウンドが周りのプレイヤーにも聞こえるかどうか。",
+          "default": false
+        },
+        "receivers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "サウンドを聞こえるプレイヤーのリスト。プレイヤーのUUIDまたは名前を指定する。publicがtrueの場合は無視される。"
+        },
+        "sound": {
+          "type": "string",
+          "description": "再生するサウンドの名前。例: minecraft:entity.player.levelup"
+        },
+        "targetLocation": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "サウンドを再生する位置を対象の位置にするかどうか。",
+          "default": false
+        },
+        "volume": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "サウンドの音量。",
+          "default": 1.0
+        },
+        "class": {
+          "enum": [
+            "PlaySound"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Random": {
+      "type": "object",
+      "title": "Random",
+      "description": "重み付きでランダムにアクションを実行する。",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "実行するアクションのリスト。そのセクション内にrandom_weightを指定することで重みを指定できる。"
+        },
+        "class": {
+          "enum": [
+            "Random"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:RemoveAllElement": {
+      "type": "object",
+      "title": "RemoveAllElement",
+      "description": "全てのElementを削除する。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "class": {
+          "enum": [
+            "RemoveAllElement"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:RemoveElement": {
+      "type": "object",
+      "title": "RemoveElement",
+      "description": "Elementを削除する。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "name": {
+          "type": "string",
+          "description": "削除するElementの名前。"
+        },
+        "class": {
+          "enum": [
+            "RemoveElement"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:RemoveEntity": {
+      "type": "object",
+      "title": "RemoveEntity",
+      "description": "Entityを削除する。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "class": {
+          "enum": [
+            "RemoveEntity"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Repeat": {
+      "type": "object",
+      "title": "Repeat",
+      "description": "指定した回数だけアクションを繰り返す。",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "繰り返すアクションのリスト。"
+        },
+        "iterable": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {}
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "繰り返し処理を行うリスト、またはその変数名。指定した場合、`times`は無視される。"
+        },
+        "iterableVariableName": {
+          "type": "string",
+          "description": "`iterable`で指定したリストの各要素を格納する変数名。指定しない場合は`repeat.item`に格納される。"
+        },
+        "times": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "繰り返す回数。\n`infinity` で無限に繰り返す。"
+        },
+        "variableName": {
+          "type": "string",
+          "description": "繰り返し回数を格納する変数名。指定しない場合は`repeat.count`に格納される。"
+        },
+        "class": {
+          "enum": [
+            "Repeat"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:RestoreData": {
+      "type": "object",
+      "title": "RestoreData",
+      "description": "StoreDataで保存されたデータを復元する。",
+      "properties": {
+        "keys": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "復元するキーのリスト。"
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "enum": [
+                    "GLOBAL",
+                    "LOCAL"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[gG][lL][oO][bB][aA][lL]|[lL][oO][cC][aA][lL])$"
+                }
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+            }
+          ],
+          "description": "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。",
+          "default": "LOCAL"
+        },
+        "storeType": {
+          "anyOf": [
+            {
+              "enum": [
+                "RAW",
+                "FILE"
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "^(?:[rR][aA][wW]|[fF][iI][lL][eE])$"
+            }
+          ],
+          "description": "取得先の種類。\nRAW: メモリ上に保存される。サーバーを再起動すると消える。\nFILE: プラグインのStoreDataフォルダ内に保存される。",
+          "default": "RAW"
+        },
+        "uuid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "対象のUUID。指定しない場合はアクションのターゲットのUUIDになる。"
+        },
+        "class": {
+          "enum": [
+            "RestoreData"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:RunAction": {
+      "type": "object",
+      "title": "RunAction",
+      "description": "指定されたActionを実行する。",
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "実行するActionの名前。"
+        },
+        "actionName": {
+          "type": "string",
+          "description": "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。"
+        },
+        "cloneContext": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "コンテキストを複製するか。"
+        },
+        "globalVariables": {
+          "type": "object",
+          "description": "実行時のグローバル変数。 コンテキストを複製していても終了後も保持される。"
+        },
+        "override": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "既に存在するactionNameのActionを上書きするか。"
+        },
+        "variables": {
+          "type": "object",
+          "description": "実行時の変数。 コンテキストを複製していると終了後に破棄される。"
+        },
+        "class": {
+          "enum": [
+            "RunAction"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:SetBlock": {
+      "type": "object",
+      "title": "SetBlock",
+      "description": "指定した位置にブロックを設置する。",
+      "properties": {
+        "block": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "設置するブロック。"
+        },
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "class": {
+          "enum": [
+            "SetBlock"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:SetWorkspace": {
+      "type": "object",
+      "title": "SetWorkspace",
+      "description": "Workspaceを設定する。",
+      "properties": {
+        "workspace": {
+          "type": "string",
+          "description": "Workspace名。"
+        },
+        "class": {
+          "enum": [
+            "SetWorkspace"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Stop": {
+      "type": "object",
+      "title": "Stop",
+      "description": "現在のセクションの実行を停止する。\nAsynchronousやRepeatなどでセクションが分岐している場合、そのセクションのみが停止される。",
+      "properties": {
+        "class": {
+          "enum": [
+            "Stop"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:StoreData": {
+      "type": "object",
+      "title": "StoreData",
+      "description": "データを保存する。",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "保存または削除するキー。"
+              },
+              "value": {
+                "description": "保存する値。"
+              },
+              "remove": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "trueの場合、キーのデータを削除する。"
+              }
+            },
+            "required": [
+              "key"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "value"
+                ]
+              },
+              {
+                "required": [
+                  "remove"
+                ]
+              }
+            ]
+          },
+          "description": "保存するデータのリスト。\n- key: 保存するキー\n  value: 保存する値\nのように指定する。\n- key: 保存するキー\n  remove: true\nとするとそのキーのデータを削除できる。"
+        },
+        "storeType": {
+          "anyOf": [
+            {
+              "enum": [
+                "RAW",
+                "FILE"
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "^(?:[rR][aA][wW]|[fF][iI][lL][eE])$"
+            }
+          ],
+          "description": "保存先の種類。\nRAW: メモリ上に保存される。サーバーを再起動すると消える。\nFILE: プラグインのStoreDataフォルダ内に保存される。",
+          "default": "RAW"
+        },
+        "uuid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "対象のUUID。指定しない場合はアクションのターゲットのUUIDになる。"
+        },
+        "class": {
+          "enum": [
+            "StoreData"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:SummonElement": {
+      "type": "object",
+      "title": "SummonElement",
+      "description": "Elementを召喚する。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "lockPitch": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Elementのピッチを0に固定するか。"
+        },
+        "name": {
+          "type": "string",
+          "description": "Elementの名前。"
+        },
+        "offset": {
+          "type": "string",
+          "description": "Elementの位置のオフセット。"
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Elementのパラメータ。"
+        },
+        "preset": {
+          "type": "string",
+          "description": "Elementのプリセット名。 presetが指定されている場合、typeは無視される。"
+        },
+        "relativeOffset": {
+          "type": "string",
+          "description": "Elementの位置の相対オフセット。"
+        },
+        "type": {
+          "type": "string",
+          "description": "Elementのクラス名。"
+        },
+        "class": {
+          "enum": [
+            "SummonElement"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Target": {
+      "type": "object",
+      "title": "Target",
+      "description": "データを変更してアクションを実行する。",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "実行するアクションのリスト。"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "実行する位置。"
+        },
+        "offset": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "位置のオフセット。"
+        },
+        "relativeOffset": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "位置の相対オフセット。"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "変更する対象。プレイヤーのUUIDまたは名前を指定する。"
+        },
+        "class": {
+          "enum": [
+            "Target"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Teleport": {
+      "type": "object",
+      "title": "Teleport",
+      "description": "対象を指定した位置にテレポートする。",
+      "properties": {
+        "forceSync": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "強制的に同期的に実行するか。"
+        },
+        "class": {
+          "enum": [
+            "Teleport"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:Title": {
+      "type": "object",
+      "title": "Title",
+      "description": "対象にタイトルを送信する。",
+      "properties": {
+        "fadeIn": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "フェードインの時間。tick単位。",
+          "default": 0
+        },
+        "fadeOut": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "フェードアウトの時間。tick単位。",
+          "default": 0
+        },
+        "stay": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "表示時間。tick単位。",
+          "default": 60
+        },
+        "subtitle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "送信するサブタイトル。"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "送信するメッセージ。"
+        },
+        "class": {
+          "enum": [
+            "Title"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:UpdateParameters": {
+      "type": "object",
+      "title": "UpdateParameters",
+      "description": "デフォルトのパラメータを更新する。",
+      "properties": {
+        "class": {
+          "enum": [
+            "UpdateParameters"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "action:WaitCommand": {
+      "type": "object",
+      "title": "WaitCommand",
+      "description": "指定したコマンドが実行されるまで待機する。",
+      "properties": {
+        "cancelCommand": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "コマンドの実行をキャンセルするか。"
+        },
+        "command": {
+          "type": "string",
+          "description": "待機するコマンド。"
+        },
+        "commandType": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "enum": [
+                    "TARGET",
+                    "SERVER",
+                    "ANY_PLAYER"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[tT][aA][rR][gG][eE][tT]|[sS][eE][rR][vV][eE][rR]|[aA][nN][yY]_[pP][lL][aA][yY][eE][rR])$"
+                }
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+            }
+          ],
+          "description": "コマンドを実行する対象を指定する。",
+          "default": "target"
+        },
+        "else": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "タイムアウトした場合のアクション。"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/internal:action-item"
+          },
+          "description": "コマンドが実行された場合のアクション。"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。"
+        },
+        "class": {
+          "enum": [
+            "WaitCommand"
+          ],
+          "description": "実行するActionの種類。"
+        }
+      },
+      "required": [
+        "class"
+      ]
+    },
+    "element:BlockElement": {
+      "type": "object",
+      "title": "BlockElement",
+      "description": "ブロックを表示するElement。",
+      "properties": {
+        "block": {
+          "type": "string",
+          "description": "表示するブロック。",
+          "default": "minecraft:stone"
+        },
+        "displayParameters": {
+          "type": "object",
+          "properties": {
+            "billboard": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "FIXED",
+                        "VERTICAL",
+                        "HORIZONTAL",
+                        "CENTER"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[fF][iI][xX][eE][dD]|[vV][eE][rR][tT][iI][cC][aA][lL]|[hH][oO][rR][iI][zZ][oO][nN][tT][aA][lL]|[cC][eE][nN][tT][eE][rR])$"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+                }
+              ],
+              "description": "ビルボード"
+            },
+            "brightness": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "block": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ],
+                      "description": "ブロック光源の明るさ。"
+                    },
+                    "sky": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ],
+                      "description": "空の明るさ。"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "明るさ"
+            },
+            "interpolationDelay": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "補間遅延"
+            },
+            "interpolationDuration": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "補間時間"
+            },
+            "leftRotation": {
+              "type": "string",
+              "description": "左回転"
+            },
+            "rightRotation": {
+              "type": "string",
+              "description": "右回転"
+            },
+            "scale": {
+              "type": "string",
+              "description": "大きさ"
+            },
+            "shadowRadius": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "影の半径"
+            },
+            "shadowStrength": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "影の強さ"
+            },
+            "teleportDuration": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "テレポート時間"
+            },
+            "translation": {
+              "type": "string",
+              "description": "オフセット"
+            }
+          }
+        },
+        "glow": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "エンティティを光らせるか。",
+          "default": false
+        },
+        "glowColor": {
+          "type": "string",
+          "description": "エンティティの光る色。",
+          "default": "#FFFFFF"
+        },
+        "ignoreModifies": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation"
+        },
+        "interactablePlayers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "操作可能なプレイヤーの制限。"
+        },
+        "interactionDistance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定距離。",
+          "default": 4.0
+        },
+        "interactionScale": {
+          "type": "string",
+          "description": "クリックの判定範囲。",
+          "default": "1,1,1"
+        },
+        "onDetach": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Elementが他のエンティティから外れた時のアクション。"
+        },
+        "onHover": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ホバー時のアクション。"
+        },
+        "onInteract": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "クリック時のアクション。"
+        },
+        "onSpawn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "スポーン時のアクション。"
+        },
+        "onTick": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "1Tick毎に実行されるアクション。"
+        },
+        "onUnhover": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ホバー解除時のアクション。"
+        },
+        "switchHover": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+          "default": true
+        },
+        "visiblePlayers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "表示するプレイヤーの制限。"
+        },
+        "visualizeHitbox": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+          "default": false
+        },
+        "type": {
+          "enum": [
+            "BlockElement"
+          ],
+          "description": "生成するElementの種類。"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "element:CollidableElement": {
+      "type": "object",
+      "title": "CollidableElement",
+      "description": "衝突判定を行うElement。",
+      "properties": {
+        "depth": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "判定する奥行。",
+          "default": 1.0
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "判定する高さ。",
+          "default": 1.0
+        },
+        "onCollide": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "衝突時に実行するアクション。"
+        },
+        "switchCollide": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "衝突時のアクションを切り替えた時のみに実行するか。",
+          "default": true
+        },
+        "visualizeHitbox": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+          "default": false
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "判定する幅。",
+          "default": 1.0
+        },
+        "type": {
+          "enum": [
+            "CollidableElement"
+          ],
+          "description": "生成するElementの種類。"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "element:GroupElement": {
+      "type": "object",
+      "title": "GroupElement",
+      "description": "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。",
+      "properties": {
+        "edit": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Elementの編集内容。"
+        },
+        "elements": {
+          "type": "object",
+          "description": "新規に追加するElement。"
+        },
+        "onDetach": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Elementが他のエンティティから外れた時のアクション。"
+        },
+        "remove": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "削除するElementの名前。"
+        },
+        "type": {
+          "enum": [
+            "GroupElement"
+          ],
+          "description": "生成するElementの種類。"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "element:ItemElement": {
+      "type": "object",
+      "title": "ItemElement",
+      "description": "アイテムを表示するElement。",
+      "properties": {
+        "displayParameters": {
+          "type": "object",
+          "properties": {
+            "billboard": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "FIXED",
+                        "VERTICAL",
+                        "HORIZONTAL",
+                        "CENTER"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[fF][iI][xX][eE][dD]|[vV][eE][rR][tT][iI][cC][aA][lL]|[hH][oO][rR][iI][zZ][oO][nN][tT][aA][lL]|[cC][eE][nN][tT][eE][rR])$"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+                }
+              ],
+              "description": "ビルボード"
+            },
+            "brightness": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "block": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ],
+                      "description": "ブロック光源の明るさ。"
+                    },
+                    "sky": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ],
+                      "description": "空の明るさ。"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "明るさ"
+            },
+            "interpolationDelay": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "補間遅延"
+            },
+            "interpolationDuration": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "補間時間"
+            },
+            "leftRotation": {
+              "type": "string",
+              "description": "左回転"
+            },
+            "rightRotation": {
+              "type": "string",
+              "description": "右回転"
+            },
+            "scale": {
+              "type": "string",
+              "description": "大きさ"
+            },
+            "shadowRadius": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "影の半径"
+            },
+            "shadowStrength": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "影の強さ"
+            },
+            "teleportDuration": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "テレポート時間"
+            },
+            "translation": {
+              "type": "string",
+              "description": "オフセット"
+            }
+          }
+        },
+        "glow": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "エンティティを光らせるか。",
+          "default": false
+        },
+        "glowColor": {
+          "type": "string",
+          "description": "エンティティの光る色。",
+          "default": "#FFFFFF"
+        },
+        "ignoreModifies": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation"
+        },
+        "interactablePlayers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "操作可能なプレイヤーの制限。"
+        },
+        "interactionDistance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定距離。",
+          "default": 4.0
+        },
+        "interactionScale": {
+          "type": "string",
+          "description": "クリックの判定範囲。",
+          "default": "1,1,1"
+        },
+        "itemDisplayTransform": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "enum": [
+                    "NONE",
+                    "THIRDPERSON_LEFTHAND",
+                    "THIRDPERSON_RIGHTHAND",
+                    "FIRSTPERSON_LEFTHAND",
+                    "FIRSTPERSON_RIGHTHAND",
+                    "HEAD",
+                    "GUI",
+                    "GROUND",
+                    "FIXED"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[nN][oO][nN][eE]|[tT][hH][iI][rR][dD][pP][eE][rR][sS][oO][nN]_[lL][eE][fF][tT][hH][aA][nN][dD]|[tT][hH][iI][rR][dD][pP][eE][rR][sS][oO][nN]_[rR][iI][gG][hH][tT][hH][aA][nN][dD]|[fF][iI][rR][sS][tT][pP][eE][rR][sS][oO][nN]_[lL][eE][fF][tT][hH][aA][nN][dD]|[fF][iI][rR][sS][tT][pP][eE][rR][sS][oO][nN]_[rR][iI][gG][hH][tT][hH][aA][nN][dD]|[hH][eE][aA][dD]|[gG][uU][iI]|[gG][rR][oO][uU][nN][dD]|[fF][iI][xX][eE][dD])$"
+                }
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+            }
+          ],
+          "description": "アイテムの表示方法。",
+          "default": "FIXED"
+        },
+        "itemStack": {
+          "type": "string",
+          "description": "表示するアイテム。",
+          "default": "minecraft:stone"
+        },
+        "onDetach": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Elementが他のエンティティから外れた時のアクション。"
+        },
+        "onHover": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ホバー時のアクション。"
+        },
+        "onInteract": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "クリック時のアクション。"
+        },
+        "onSpawn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "スポーン時のアクション。"
+        },
+        "onTick": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "1Tick毎に実行されるアクション。"
+        },
+        "onUnhover": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ホバー解除時のアクション。"
+        },
+        "switchHover": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+          "default": true
+        },
+        "visiblePlayers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "表示するプレイヤーの制限。"
+        },
+        "visualizeHitbox": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+          "default": false
+        },
+        "type": {
+          "enum": [
+            "ItemElement"
+          ],
+          "description": "生成するElementの種類。"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "element:TextElement": {
+      "type": "object",
+      "title": "TextElement",
+      "description": "テキストを表示するElement。",
+      "properties": {
+        "alignment": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "enum": [
+                    "CENTER",
+                    "LEFT",
+                    "RIGHT"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[cC][eE][nN][tT][eE][rR]|[lL][eE][fF][tT]|[rR][iI][gG][hH][tT])$"
+                }
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+            }
+          ],
+          "description": "テキストの配置。",
+          "default": "CENTER"
+        },
+        "backgroundColor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "背景色。"
+        },
+        "defaultBackground": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "デフォルトの背景色を使用するか。",
+          "default": false
+        },
+        "displayParameters": {
+          "type": "object",
+          "properties": {
+            "billboard": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "FIXED",
+                        "VERTICAL",
+                        "HORIZONTAL",
+                        "CENTER"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[fF][iI][xX][eE][dD]|[vV][eE][rR][tT][iI][cC][aA][lL]|[hH][oO][rR][iI][zZ][oO][nN][tT][aA][lL]|[cC][eE][nN][tT][eE][rR])$"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "pattern": "\\$\\{[\\s\\S]*\\}|@[A-Za-z0-9_.:/\\\\#-]+|\"(?:[^\"\\\\]|\\\\.)*\"|\\+|\u003d\u003d|!\u003d|\u003e\u003d|\u003c\u003d|\u0026\u0026|\\|\\||[()\u003c\u003e]"
+                }
+              ],
+              "description": "ビルボード"
+            },
+            "brightness": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "block": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ],
+                      "description": "ブロック光源の明るさ。"
+                    },
+                    "sky": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ],
+                      "description": "空の明るさ。"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "明るさ"
+            },
+            "interpolationDelay": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "補間遅延"
+            },
+            "interpolationDuration": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "補間時間"
+            },
+            "leftRotation": {
+              "type": "string",
+              "description": "左回転"
+            },
+            "rightRotation": {
+              "type": "string",
+              "description": "右回転"
+            },
+            "scale": {
+              "type": "string",
+              "description": "大きさ"
+            },
+            "shadowRadius": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "影の半径"
+            },
+            "shadowStrength": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "影の強さ"
+            },
+            "teleportDuration": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "テレポート時間"
+            },
+            "translation": {
+              "type": "string",
+              "description": "オフセット"
+            }
+          }
+        },
+        "glow": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "エンティティを光らせるか。",
+          "default": false
+        },
+        "glowColor": {
+          "type": "string",
+          "description": "エンティティの光る色。",
+          "default": "#FFFFFF"
+        },
+        "ignoreModifies": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation"
+        },
+        "interactablePlayers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "操作可能なプレイヤーの制限。"
+        },
+        "interactionDistance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定距離。",
+          "default": 4.0
+        },
+        "interactionScale": {
+          "type": "string",
+          "description": "クリックの判定範囲。",
+          "default": "1,1,1"
+        },
+        "lineWidth": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "行の幅。",
+          "default": 200
+        },
+        "onDetach": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Elementが他のエンティティから外れた時のアクション。"
+        },
+        "onHover": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ホバー時のアクション。"
+        },
+        "onInteract": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "クリック時のアクション。"
+        },
+        "onSpawn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "スポーン時のアクション。"
+        },
+        "onTick": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "1Tick毎に実行されるアクション。"
+        },
+        "onUnhover": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/internal:action-item"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ホバー解除時のアクション。"
+        },
+        "seeThrough": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "透過するか。",
+          "default": false
+        },
+        "shadow": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "影を表示するか。",
+          "default": false
+        },
+        "switchHover": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+          "default": true
+        },
+        "text": {
+          "type": "string",
+          "description": "表示するテキスト。",
+          "default": "undefined"
+        },
+        "textOpacity": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "テキストの透明度。",
+          "default": -1
+        },
+        "visiblePlayers": {
+          "type": "object",
+          "properties": {
+            "allowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            },
+            "disallowedPlayers": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。"
+            }
+          },
+          "description": "表示するプレイヤーの制限。"
+        },
+        "visualizeHitbox": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+          "default": false
+        },
+        "type": {
+          "enum": [
+            "TextElement"
+          ],
+          "description": "生成するElementの種類。"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "internal:action-item": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/action:AccessAction"
+        },
+        {
+          "$ref": "#/definitions/action:ActionBar"
+        },
+        {
+          "$ref": "#/definitions/action:Asynchronous"
+        },
+        {
+          "$ref": "#/definitions/action:AttachEntity"
+        },
+        {
+          "$ref": "#/definitions/action:CheckEntity"
+        },
+        {
+          "$ref": "#/definitions/action:Command"
+        },
+        {
+          "$ref": "#/definitions/action:Delay"
+        },
+        {
+          "$ref": "#/definitions/action:EditElement"
+        },
+        {
+          "$ref": "#/definitions/action:End"
+        },
+        {
+          "$ref": "#/definitions/action:GiveInteractableItem"
+        },
+        {
+          "$ref": "#/definitions/action:GiveItem"
+        },
+        {
+          "$ref": "#/definitions/action:HasElement"
+        },
+        {
+          "$ref": "#/definitions/action:If"
+        },
+        {
+          "$ref": "#/definitions/action:Message"
+        },
+        {
+          "$ref": "#/definitions/action:ModifyVariable"
+        },
+        {
+          "$ref": "#/definitions/action:MoveElement"
+        },
+        {
+          "$ref": "#/definitions/action:OnlinePlayers"
+        },
+        {
+          "$ref": "#/definitions/action:Package"
+        },
+        {
+          "$ref": "#/definitions/action:Particle"
+        },
+        {
+          "$ref": "#/definitions/action:PlaySound"
+        },
+        {
+          "$ref": "#/definitions/action:Random"
+        },
+        {
+          "$ref": "#/definitions/action:RemoveAllElement"
+        },
+        {
+          "$ref": "#/definitions/action:RemoveElement"
+        },
+        {
+          "$ref": "#/definitions/action:RemoveEntity"
+        },
+        {
+          "$ref": "#/definitions/action:Repeat"
+        },
+        {
+          "$ref": "#/definitions/action:RestoreData"
+        },
+        {
+          "$ref": "#/definitions/action:RunAction"
+        },
+        {
+          "$ref": "#/definitions/action:SetBlock"
+        },
+        {
+          "$ref": "#/definitions/action:SetWorkspace"
+        },
+        {
+          "$ref": "#/definitions/action:Stop"
+        },
+        {
+          "$ref": "#/definitions/action:StoreData"
+        },
+        {
+          "$ref": "#/definitions/action:SummonElement"
+        },
+        {
+          "$ref": "#/definitions/action:Target"
+        },
+        {
+          "$ref": "#/definitions/action:Teleport"
+        },
+        {
+          "$ref": "#/definitions/action:Title"
+        },
+        {
+          "$ref": "#/definitions/action:UpdateParameters"
+        },
+        {
+          "$ref": "#/definitions/action:WaitCommand"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "class": {
+              "type": "string",
+              "not": {
+                "enum": [
+                  "AccessAction",
+                  "ActionBar",
+                  "Asynchronous",
+                  "AttachEntity",
+                  "CheckEntity",
+                  "Command",
+                  "Delay",
+                  "EditElement",
+                  "End",
+                  "GiveInteractableItem",
+                  "GiveItem",
+                  "HasElement",
+                  "If",
+                  "Message",
+                  "ModifyVariable",
+                  "MoveElement",
+                  "OnlinePlayers",
+                  "Package",
+                  "Particle",
+                  "PlaySound",
+                  "Random",
+                  "RemoveAllElement",
+                  "RemoveElement",
+                  "RemoveEntity",
+                  "Repeat",
+                  "RestoreData",
+                  "RunAction",
+                  "SetBlock",
+                  "SetWorkspace",
+                  "Stop",
+                  "StoreData",
+                  "SummonElement",
+                  "Target",
+                  "Teleport",
+                  "Title",
+                  "UpdateParameters",
+                  "WaitCommand"
+                ]
+              }
+            }
+          },
+          "required": [
+            "class"
+          ]
+        }
+      ]
+    },
+    "internal:action-list": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/internal:action-item"
+      }
+    },
+    "internal:action-configuration": {
+      "type": "object",
+      "properties": {
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trigger": {
+                "type": "string",
+                "description": "Actionを実行するイベント名。"
+              }
+            },
+            "required": [
+              "trigger"
+            ]
+          }
+        },
+        "actions": {
+          "$ref": "#/definitions/internal:action-list"
+        }
+      },
+      "not": {
+        "required": [
+          "type"
+        ]
+      }
+    },
+    "internal:element-definition": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/element:BlockElement"
+        },
+        {
+          "$ref": "#/definitions/element:CollidableElement"
+        },
+        {
+          "$ref": "#/definitions/element:GroupElement"
+        },
+        {
+          "$ref": "#/definitions/element:ItemElement"
+        },
+        {
+          "$ref": "#/definitions/element:TextElement"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "not": {
+                "enum": [
+                  "BlockElement",
+                  "CollidableElement",
+                  "GroupElement",
+                  "ItemElement",
+                  "TextElement"
+                ]
+              }
+            }
+          },
+          "required": [
+            "type"
+          ]
+        }
+      ]
+    }
+  }
+}

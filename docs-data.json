@@ -49,16 +49,16 @@
         "description": "targetに対して指定したElementをアタッチする。",
         "parameters": [
           {
-            "name": "name",
-            "description": "アタッチするElementの名前。",
-            "default": "",
-            "type": "String"
-          },
-          {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
             "default": "false",
             "type": "Boolean"
+          },
+          {
+            "name": "name",
+            "description": "アタッチするElementの名前。",
+            "default": "",
+            "type": "String"
           }
         ]
       },
@@ -79,14 +79,14 @@
             "type": "StringList"
           },
           {
-            "name": "then",
-            "description": "条件を満たした場合に実行するアクション。",
+            "name": "else",
+            "description": "条件を満たさなかった場合に実行するアクション。",
             "default": "",
             "type": "Actions"
           },
           {
-            "name": "else",
-            "description": "条件を満たさなかった場合に実行するアクション。",
+            "name": "then",
+            "description": "条件を満たした場合に実行するアクション。",
             "default": "",
             "type": "Actions"
           }
@@ -133,10 +133,10 @@
         "description": "Elementを編集する。",
         "parameters": [
           {
-            "name": "name",
-            "description": "編集するElementの名前。",
-            "default": "",
-            "type": "String"
+            "name": "apply",
+            "description": "編集内容を適用するか。",
+            "default": "true",
+            "type": "Boolean"
           },
           {
             "name": "edit",
@@ -145,16 +145,16 @@
             "type": "AdvancedConfigurationSection"
           },
           {
-            "name": "apply",
-            "description": "編集内容を適用するか。",
-            "default": "true",
-            "type": "Boolean"
-          },
-          {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
             "default": "false",
             "type": "Boolean"
+          },
+          {
+            "name": "name",
+            "description": "編集するElementの名前。",
+            "default": "",
+            "type": "String"
           }
         ]
       },
@@ -175,50 +175,20 @@
         "description": "対象のプレイヤーにインタラクト可能なアイテムを付与する。",
         "parameters": [
           {
-            "name": "interactCooldown",
-            "description": "アイテムをインタラクトしたときのクールダウン時間。単位はtick。",
-            "default": "0",
+            "name": "amount",
+            "description": "付与するアイテムの数。",
+            "default": "1",
             "type": "Int"
-          },
-          {
-            "name": "unique",
-            "description": "trueの場合、同じアイテムを複数持つことができない。",
-            "default": "false",
-            "type": "Boolean"
-          },
-          {
-            "name": "targetOnly",
-            "description": "trueの場合、対象のプレイヤーのみがアイテムを使用できる。",
-            "default": "false",
-            "type": "Boolean"
-          },
-          {
-            "name": "onInteract",
-            "description": "アイテムを使用したときのアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onDrop",
-            "description": "アイテムをドロップしたときのアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onSwap",
-            "description": "アイテムをスワップしたときのアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "cancelInteract",
-            "description": "trueの場合、アイテムを使用したときのEventをキャンセルする。",
-            "default": "",
-            "type": "Boolean"
           },
           {
             "name": "cancelDrop",
             "description": "trueの場合、アイテムをドロップしたときのEventをキャンセルする。",
+            "default": "",
+            "type": "Boolean"
+          },
+          {
+            "name": "cancelInteract",
+            "description": "trueの場合、アイテムを使用したときのEventをキャンセルする。",
             "default": "",
             "type": "Boolean"
           },
@@ -229,22 +199,40 @@
             "type": "Boolean"
           },
           {
+            "name": "dropIfFull",
+            "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "interactCooldown",
+            "description": "アイテムをインタラクトしたときのクールダウン時間。単位はtick。",
+            "default": "0",
+            "type": "Int"
+          },
+          {
             "name": "itemStack",
             "description": "付与するアイテム。",
             "default": "",
             "type": "String"
           },
           {
-            "name": "amount",
-            "description": "付与するアイテムの数。",
-            "default": "1",
-            "type": "Int"
+            "name": "onDrop",
+            "description": "アイテムをドロップしたときのアクション。",
+            "default": "",
+            "type": "Actions"
           },
           {
-            "name": "slot",
-            "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+            "name": "onInteract",
+            "description": "アイテムを使用したときのアクション。 isRightClickとisLeftClickのパラメータが追加される。",
             "default": "",
-            "type": "EquipmentSlot"
+            "type": "Actions"
+          },
+          {
+            "name": "onSwap",
+            "description": "アイテムをスワップしたときのアクション。",
+            "default": "",
+            "type": "Actions"
           },
           {
             "name": "setForce",
@@ -253,8 +241,20 @@
             "type": "Boolean"
           },
           {
-            "name": "dropIfFull",
-            "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+            "name": "slot",
+            "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+            "default": "",
+            "type": "EquipmentSlot"
+          },
+          {
+            "name": "targetOnly",
+            "description": "trueの場合、対象のプレイヤーのみがアイテムを使用できる。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "unique",
+            "description": "trueの場合、同じアイテムを複数持つことができない。",
             "default": "false",
             "type": "Boolean"
           }
@@ -265,22 +265,22 @@
         "description": "対象のプレイヤーにアイテムを付与する。",
         "parameters": [
           {
-            "name": "itemStack",
-            "description": "付与するアイテム。",
-            "default": "",
-            "type": "String"
-          },
-          {
             "name": "amount",
             "description": "付与するアイテムの数。",
             "default": "1",
             "type": "Int"
           },
           {
-            "name": "slot",
-            "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+            "name": "dropIfFull",
+            "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "itemStack",
+            "description": "付与するアイテム。",
             "default": "",
-            "type": "EquipmentSlot"
+            "type": "String"
           },
           {
             "name": "setForce",
@@ -289,10 +289,10 @@
             "type": "Boolean"
           },
           {
-            "name": "dropIfFull",
-            "description": "trueの場合、アイテムが付与できない場合にアイテムをドロップする。falseの場合、アイテムが付与できない場合は失敗する。",
-            "default": "false",
-            "type": "Boolean"
+            "name": "slot",
+            "description": "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+            "default": "",
+            "type": "EquipmentSlot"
           }
         ]
       },
@@ -300,6 +300,12 @@
         "name": "HasElement",
         "description": "指定した名前のElementが存在するかを確認する。",
         "parameters": [
+          {
+            "name": "else",
+            "description": "条件を満たさなかった場合に実行するアクション。",
+            "default": "",
+            "type": "Actions"
+          },
           {
             "name": "name",
             "description": "Elementの名前。",
@@ -311,12 +317,6 @@
             "description": "条件を満たした場合に実行するアクション。",
             "default": "",
             "type": "Actions"
-          },
-          {
-            "name": "else",
-            "description": "条件を満たさなかった場合に実行するアクション。",
-            "default": "",
-            "type": "Actions"
           }
         ]
       },
@@ -324,6 +324,12 @@
         "name": "If",
         "description": "指定した条件を満たすかどうかを確認する。",
         "parameters": [
+          {
+            "name": "else",
+            "description": "条件を満たさなかった場合に実行するアクション。",
+            "default": "",
+            "type": "Actions"
+          },
           {
             "name": "expression",
             "description": "評価する式。",
@@ -333,12 +339,6 @@
           {
             "name": "then",
             "description": "条件を満たした場合に実行するアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "else",
-            "description": "条件を満たさなかった場合に実行するアクション。",
             "default": "",
             "type": "Actions"
           }
@@ -361,28 +361,28 @@
         "description": "変数を変更する。",
         "parameters": [
           {
+            "name": "scope",
+            "description": "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。",
+            "default": "",
+            "type": "Scope"
+          },
+          {
+            "name": "value",
+            "description": "変数に代入する値。",
+            "default": "",
+            "type": "Any"
+          },
+          {
             "name": "variable",
             "description": "変更する変数の名前。",
             "default": "",
             "type": "String"
           },
           {
-            "name": "value",
-            "description": "変数に代入する値。",
-            "default": "",
-            "type": "Unknown"
-          },
-          {
             "name": "variables",
             "description": "変数のマップ。",
             "default": "",
             "type": "AdvancedConfigurationSection"
-          },
-          {
-            "name": "scope",
-            "description": "変数のスコープ。GLOBALはグローバル変数、LOCALはローカル変数。",
-            "default": "",
-            "type": "Scope"
           }
         ]
       },
@@ -391,16 +391,16 @@
         "description": "Elementを移動する。",
         "parameters": [
           {
-            "name": "name",
-            "description": "移動するElementの名前。",
-            "default": "",
-            "type": "String"
-          },
-          {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
             "default": "",
             "type": "Boolean"
+          },
+          {
+            "name": "name",
+            "description": "移動するElementの名前。",
+            "default": "",
+            "type": "String"
           }
         ]
       },
@@ -439,28 +439,10 @@
         "description": "指定したパーティクルを表示する。",
         "parameters": [
           {
-            "name": "particle",
-            "description": "表示するパーティクルの種類。",
-            "default": "null",
-            "type": "Particle"
-          },
-          {
             "name": "count",
             "description": "表示するパーティクルの数。",
             "default": "1",
             "type": "Int"
-          },
-          {
-            "name": "offset",
-            "description": "パーティクルのぶれ。",
-            "default": "0.0,0.0,0.0",
-            "type": "Vector"
-          },
-          {
-            "name": "extra",
-            "description": "パーティクルの追加データ。パーティクルによって意味が異なる。",
-            "default": "0.0",
-            "type": "Double"
           },
           {
             "name": "dust.color",
@@ -475,10 +457,34 @@
             "type": "Float"
           },
           {
+            "name": "extra",
+            "description": "パーティクルの追加データ。パーティクルによって意味が異なる。",
+            "default": "0.0",
+            "type": "Double"
+          },
+          {
+            "name": "offset",
+            "description": "パーティクルのぶれ。",
+            "default": "0.0,0.0,0.0",
+            "type": "Vector"
+          },
+          {
+            "name": "particle",
+            "description": "表示するパーティクルの種類。",
+            "default": "null",
+            "type": "Particle"
+          },
+          {
             "name": "radius",
             "description": "パーティクルを表示する範囲の半径。0の場合はreceiversの設定が使われる。",
             "default": "0",
             "type": "Int"
+          },
+          {
+            "name": "receivers",
+            "description": "パーティクルを受け取るプレイヤーの設定。radiusが0の場合に使用される。",
+            "default": "",
+            "type": "AllowedPlayers"
           },
           {
             "name": "receivers.allowedPlayers",
@@ -491,12 +497,6 @@
             "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
             "default": "",
             "type": "StringList"
-          },
-          {
-            "name": "receivers",
-            "description": "パーティクルを受け取るプレイヤーの設定。radiusが0の場合に使用される。",
-            "default": "",
-            "type": "Unknown"
           }
         ]
       },
@@ -504,18 +504,6 @@
         "name": "PlaySound",
         "description": "指定したサウンドを対象に再生する。",
         "parameters": [
-          {
-            "name": "sound",
-            "description": "再生するサウンドの名前。例: minecraft:entity.player.levelup",
-            "default": "",
-            "type": "String"
-          },
-          {
-            "name": "volume",
-            "description": "サウンドの音量。",
-            "default": "1.0",
-            "type": "Float"
-          },
           {
             "name": "pitch",
             "description": "サウンドのピッチ。",
@@ -529,10 +517,10 @@
             "type": "Boolean"
           },
           {
-            "name": "targetLocation",
-            "description": "サウンドを再生する位置を対象の位置にするかどうか。",
-            "default": "false",
-            "type": "Boolean"
+            "name": "receivers",
+            "description": "サウンドを聞こえるプレイヤーのリスト。プレイヤーのUUIDまたは名前を指定する。publicがtrueの場合は無視される。",
+            "default": "",
+            "type": "AllowedPlayers"
           },
           {
             "name": "receivers.allowedPlayers",
@@ -547,10 +535,22 @@
             "type": "StringList"
           },
           {
-            "name": "receivers",
-            "description": "サウンドを聞こえるプレイヤーのリスト。プレイヤーのUUIDまたは名前を指定する。publicがtrueの場合は無視される。",
+            "name": "sound",
+            "description": "再生するサウンドの名前。例: minecraft:entity.player.levelup",
             "default": "",
-            "type": "Unknown"
+            "type": "String"
+          },
+          {
+            "name": "targetLocation",
+            "description": "サウンドを再生する位置を対象の位置にするかどうか。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "volume",
+            "description": "サウンドの音量。",
+            "default": "1.0",
+            "type": "Float"
           }
         ]
       },
@@ -583,16 +583,16 @@
         "description": "Elementを削除する。",
         "parameters": [
           {
-            "name": "name",
-            "description": "削除するElementの名前。",
-            "default": "",
-            "type": "String"
-          },
-          {
             "name": "forceSync",
             "description": "強制的に同期的に実行するか。",
             "default": "",
             "type": "Boolean"
+          },
+          {
+            "name": "name",
+            "description": "削除するElementの名前。",
+            "default": "",
+            "type": "String"
           }
         ]
       },
@@ -613,32 +613,32 @@
         "description": "指定した回数だけアクションを繰り返す。",
         "parameters": [
           {
-            "name": "times",
-            "description": "繰り返す回数。\n`infinity` で無限に繰り返す。",
-            "default": "",
-            "type": "Int"
-          },
-          {
             "name": "actions",
             "description": "繰り返すアクションのリスト。",
             "default": "",
             "type": "Actions"
           },
           {
-            "name": "variableName",
-            "description": "繰り返し回数を格納する変数名。指定しない場合は`repeat.count`に格納される。",
-            "default": "",
-            "type": "String"
-          },
-          {
             "name": "iterable",
             "description": "繰り返し処理を行うリスト、またはその変数名。指定した場合、`times`は無視される。",
             "default": "",
-            "type": "Unknown"
+            "type": "Array"
           },
           {
             "name": "iterableVariableName",
             "description": "`iterable`で指定したリストの各要素を格納する変数名。指定しない場合は`repeat.item`に格納される。",
+            "default": "",
+            "type": "String"
+          },
+          {
+            "name": "times",
+            "description": "繰り返す回数。\n`infinity` で無限に繰り返す。",
+            "default": "",
+            "type": "Int"
+          },
+          {
+            "name": "variableName",
+            "description": "繰り返し回数を格納する変数名。指定しない場合は`repeat.count`に格納される。",
             "default": "",
             "type": "String"
           }
@@ -649,10 +649,10 @@
         "description": "StoreDataで保存されたデータを復元する。",
         "parameters": [
           {
-            "name": "storeType",
-            "description": "取得先の種類。\nRAW: メモリ上に保存される。サーバーを再起動すると消える。\nFILE: プラグインのStoreDataフォルダ内に保存される。\nDATABASE: 未対応。",
-            "default": "RAW",
-            "type": "StoreType"
+            "name": "keys",
+            "description": "復元するキーのリスト。",
+            "default": "",
+            "type": "StringList"
           },
           {
             "name": "scope",
@@ -661,16 +661,16 @@
             "type": "Scope"
           },
           {
-            "name": "keys",
-            "description": "復元するキーのリスト。",
-            "default": "",
-            "type": "StringList"
+            "name": "storeType",
+            "description": "取得先の種類。\nRAW: メモリ上に保存される。サーバーを再起動すると消える。\nFILE: プラグインのStoreDataフォルダ内に保存される。",
+            "default": "RAW",
+            "type": "StoreType"
           },
           {
             "name": "uuid",
             "description": "対象のUUID。指定しない場合はアクションのターゲットのUUIDになる。",
             "default": "",
-            "type": "Unknown"
+            "type": "UUID"
           }
         ]
       },
@@ -685,8 +685,26 @@
             "type": "String"
           },
           {
+            "name": "actionName",
+            "description": "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。",
+            "default": "",
+            "type": "String"
+          },
+          {
             "name": "cloneContext",
             "description": "コンテキストを複製するか。",
+            "default": "",
+            "type": "Boolean"
+          },
+          {
+            "name": "globalVariables",
+            "description": "実行時のグローバル変数。 コンテキストを複製していても終了後も保持される。",
+            "default": "",
+            "type": "AdvancedConfigurationSection"
+          },
+          {
+            "name": "override",
+            "description": "既に存在するactionNameのActionを上書きするか。",
             "default": "",
             "type": "Boolean"
           },
@@ -695,18 +713,6 @@
             "description": "実行時の変数。 コンテキストを複製していると終了後に破棄される。",
             "default": "",
             "type": "AdvancedConfigurationSection"
-          },
-          {
-            "name": "actionName",
-            "description": "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。",
-            "default": "",
-            "type": "String"
-          },
-          {
-            "name": "override",
-            "description": "既に存在するactionNameのActionを上書きするか。",
-            "default": "",
-            "type": "Boolean"
           }
         ]
       },
@@ -750,22 +756,22 @@
         "description": "データを保存する。",
         "parameters": [
           {
-            "name": "storeType",
-            "description": "保存先の種類。\nRAW: メモリ上に保存される。サーバーを再起動すると消える。\nFILE: プラグインのStoreDataフォルダ内に保存される。\nDATABASE: 未対応。",
-            "default": "RAW",
-            "type": "StoreType"
-          },
-          {
             "name": "data",
             "description": "保存するデータのリスト。\n- key: 保存するキー\n  value: 保存する値\nのように指定する。\n- key: 保存するキー\n  remove: true\nとするとそのキーのデータを削除できる。",
             "default": "",
-            "type": "Unknown"
+            "type": "ObjectList"
+          },
+          {
+            "name": "storeType",
+            "description": "保存先の種類。\nRAW: メモリ上に保存される。サーバーを再起動すると消える。\nFILE: プラグインのStoreDataフォルダ内に保存される。",
+            "default": "RAW",
+            "type": "StoreType"
           },
           {
             "name": "uuid",
             "description": "対象のUUID。指定しない場合はアクションのターゲットのUUIDになる。",
             "default": "",
-            "type": "Unknown"
+            "type": "UUID"
           }
         ]
       },
@@ -774,14 +780,20 @@
         "description": "Elementを召喚する。",
         "parameters": [
           {
-            "name": "name",
-            "description": "Elementの名前。",
+            "name": "forceSync",
+            "description": "強制的に同期的に実行するか。",
             "default": "",
-            "type": "String"
+            "type": "Boolean"
           },
           {
-            "name": "preset",
-            "description": "Elementのプリセット名。 presetが指定されている場合、typeは無視される。",
+            "name": "lockPitch",
+            "description": "Elementのピッチを0に固定するか。",
+            "default": "",
+            "type": "Boolean"
+          },
+          {
+            "name": "name",
+            "description": "Elementの名前。",
             "default": "",
             "type": "String"
           },
@@ -790,6 +802,18 @@
             "description": "Elementの位置のオフセット。",
             "default": "",
             "type": "Vector"
+          },
+          {
+            "name": "parameters",
+            "description": "Elementのパラメータ。",
+            "default": "",
+            "type": "AdvancedConfigurationSection"
+          },
+          {
+            "name": "preset",
+            "description": "Elementのプリセット名。 presetが指定されている場合、typeは無視される。",
+            "default": "",
+            "type": "String"
           },
           {
             "name": "relativeOffset",
@@ -802,24 +826,6 @@
             "description": "Elementのクラス名。",
             "default": "",
             "type": "String"
-          },
-          {
-            "name": "parameters",
-            "description": "Elementのパラメータ。",
-            "default": "",
-            "type": "AdvancedConfigurationSection"
-          },
-          {
-            "name": "lockPitch",
-            "description": "Elementのピッチを0に固定するか。",
-            "default": "",
-            "type": "Boolean"
-          },
-          {
-            "name": "forceSync",
-            "description": "強制的に同期的に実行するか。",
-            "default": "",
-            "type": "Boolean"
           }
         ]
       },
@@ -828,10 +834,10 @@
         "description": "データを変更してアクションを実行する。",
         "parameters": [
           {
-            "name": "target",
-            "description": "変更する対象。プレイヤーのUUIDまたは名前を指定する。",
+            "name": "actions",
+            "description": "実行するアクションのリスト。",
             "default": "",
-            "type": "String"
+            "type": "Actions"
           },
           {
             "name": "location",
@@ -852,10 +858,10 @@
             "type": "Vector"
           },
           {
-            "name": "actions",
-            "description": "実行するアクションのリスト。",
+            "name": "target",
+            "description": "変更する対象。プレイヤーのUUIDまたは名前を指定する。",
             "default": "",
-            "type": "Actions"
+            "type": "String"
           }
         ]
       },
@@ -876,20 +882,14 @@
         "description": "対象にタイトルを送信する。",
         "parameters": [
           {
-            "name": "title",
-            "description": "送信するメッセージ。",
-            "default": "",
-            "type": "Component"
-          },
-          {
-            "name": "subtitle",
-            "description": "送信するサブタイトル。",
-            "default": "",
-            "type": "Component"
-          },
-          {
             "name": "fadeIn",
             "description": "フェードインの時間。tick単位。",
+            "default": "0",
+            "type": "Int"
+          },
+          {
+            "name": "fadeOut",
+            "description": "フェードアウトの時間。tick単位。",
             "default": "0",
             "type": "Int"
           },
@@ -900,10 +900,16 @@
             "type": "Int"
           },
           {
-            "name": "fadeOut",
-            "description": "フェードアウトの時間。tick単位。",
-            "default": "0",
-            "type": "Int"
+            "name": "subtitle",
+            "description": "送信するサブタイトル。",
+            "default": "",
+            "type": "Component"
+          },
+          {
+            "name": "title",
+            "description": "送信するメッセージ。",
+            "default": "",
+            "type": "Component"
           }
         ]
       },
@@ -917,28 +923,16 @@
         "description": "指定したコマンドが実行されるまで待機する。",
         "parameters": [
           {
+            "name": "cancelCommand",
+            "description": "コマンドの実行をキャンセルするか。",
+            "default": "",
+            "type": "Boolean"
+          },
+          {
             "name": "command",
             "description": "待機するコマンド。",
             "default": "",
             "type": "String"
-          },
-          {
-            "name": "then",
-            "description": "コマンドが実行された場合のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "else",
-            "description": "タイムアウトした場合のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "timeout",
-            "description": "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。",
-            "default": "",
-            "type": "Long"
           },
           {
             "name": "commandType",
@@ -947,10 +941,22 @@
             "type": "CommandType"
           },
           {
-            "name": "cancelCommand",
-            "description": "コマンドの実行をキャンセルするか。",
+            "name": "else",
+            "description": "タイムアウトした場合のアクション。",
             "default": "",
-            "type": "Boolean"
+            "type": "Actions"
+          },
+          {
+            "name": "then",
+            "description": "コマンドが実行された場合のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "timeout",
+            "description": "タイムアウトするまでの時間。単位はミリ秒。\n`infinity` で無限に待機する。",
+            "default": "",
+            "type": "Long"
           }
         ]
       }
@@ -970,16 +976,28 @@
             "type": "Block"
           },
           {
-            "name": "displayParameters.translation",
-            "description": "オフセット",
+            "name": "displayParameters.billboard",
+            "description": "ビルボード",
             "default": "",
-            "type": "Vector3f"
+            "type": "Billboard"
           },
           {
-            "name": "displayParameters.scale",
-            "description": "大きさ",
+            "name": "displayParameters.brightness",
+            "description": "明るさ",
             "default": "",
-            "type": "Vector3f"
+            "type": "Brightness"
+          },
+          {
+            "name": "displayParameters.interpolationDelay",
+            "description": "補間遅延",
+            "default": "",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.interpolationDuration",
+            "description": "補間時間",
+            "default": "",
+            "type": "Int"
           },
           {
             "name": "displayParameters.leftRotation",
@@ -994,28 +1012,10 @@
             "type": "Rotation"
           },
           {
-            "name": "displayParameters.billboard",
-            "description": "ビルボード",
+            "name": "displayParameters.scale",
+            "description": "大きさ",
             "default": "",
-            "type": "Billboard"
-          },
-          {
-            "name": "displayParameters.interpolationDuration",
-            "description": "補間時間",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.interpolationDelay",
-            "description": "補間遅延",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.teleportDuration",
-            "description": "テレポート時間",
-            "default": "",
-            "type": "Int"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.shadowRadius",
@@ -1030,100 +1030,16 @@
             "type": "Float"
           },
           {
-            "name": "displayParameters.brightness",
-            "description": "明るさ",
+            "name": "displayParameters.teleportDuration",
+            "description": "テレポート時間",
             "default": "",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
-            "name": "interactionScale",
-            "description": "クリックの判定範囲。",
-            "default": "1,1,1",
-            "type": "Vector"
-          },
-          {
-            "name": "onSpawn",
-            "description": "スポーン時のアクション。",
+            "name": "displayParameters.translation",
+            "description": "オフセット",
             "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onTick",
-            "description": "1Tick毎に実行されるアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onInteract",
-            "description": "クリック時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onHover",
-            "description": "ホバー時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onUnhover",
-            "description": "ホバー解除時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "interactionDistance",
-            "description": "クリックの判定距離。",
-            "default": "4",
-            "type": "Double"
-          },
-          {
-            "name": "switchHover",
-            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
-            "default": "true",
-            "type": "Boolean"
-          },
-          {
-            "name": "visualizeHitbox",
-            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
-            "default": "false",
-            "type": "Boolean"
-          },
-          {
-            "name": "visiblePlayers.allowedPlayers",
-            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "visiblePlayers.disallowedPlayers",
-            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "visiblePlayers",
-            "description": "表示するプレイヤーの制限。",
-            "default": "",
-            "type": "Unknown"
-          },
-          {
-            "name": "interactablePlayers.allowedPlayers",
-            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "interactablePlayers.disallowedPlayers",
-            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "interactablePlayers",
-            "description": "操作可能なプレイヤーの制限。",
-            "default": "",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "glow",
@@ -1144,10 +1060,100 @@
             "type": "StringList"
           },
           {
+            "name": "interactablePlayers",
+            "description": "操作可能なプレイヤーの制限。",
+            "default": "",
+            "type": "AllowedPlayers"
+          },
+          {
+            "name": "interactablePlayers.allowedPlayers",
+            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactablePlayers.disallowedPlayers",
+            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactionDistance",
+            "description": "クリックの判定距離。",
+            "default": "4",
+            "type": "Double"
+          },
+          {
+            "name": "interactionScale",
+            "description": "クリックの判定範囲。",
+            "default": "1,1,1",
+            "type": "Vector"
+          },
+          {
             "name": "onDetach",
             "description": "Elementが他のエンティティから外れた時のアクション。",
             "default": "",
             "type": "Actions"
+          },
+          {
+            "name": "onHover",
+            "description": "ホバー時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onInteract",
+            "description": "クリック時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onSpawn",
+            "description": "スポーン時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onTick",
+            "description": "1Tick毎に実行されるアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onUnhover",
+            "description": "ホバー解除時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "switchHover",
+            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+            "default": "true",
+            "type": "Boolean"
+          },
+          {
+            "name": "visiblePlayers",
+            "description": "表示するプレイヤーの制限。",
+            "default": "",
+            "type": "AllowedPlayers"
+          },
+          {
+            "name": "visiblePlayers.allowedPlayers",
+            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "visiblePlayers.disallowedPlayers",
+            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "visualizeHitbox",
+            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+            "default": "false",
+            "type": "Boolean"
           }
         ]
       },
@@ -1156,8 +1162,8 @@
         "description": "衝突判定を行うElement。",
         "parameters": [
           {
-            "name": "width",
-            "description": "判定する幅。",
+            "name": "depth",
+            "description": "判定する奥行。",
             "default": "1.0",
             "type": "Double"
           },
@@ -1168,19 +1174,13 @@
             "type": "Double"
           },
           {
-            "name": "depth",
-            "description": "判定する奥行。",
-            "default": "1.0",
-            "type": "Double"
-          },
-          {
             "name": "onCollide",
             "description": "衝突時に実行するアクション。",
             "default": "",
             "type": "Actions"
           },
           {
-            "name": "switchHover",
+            "name": "switchCollide",
             "description": "衝突時のアクションを切り替えた時のみに実行するか。",
             "default": "true",
             "type": "Boolean"
@@ -1190,6 +1190,12 @@
             "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
             "default": "false",
             "type": "Boolean"
+          },
+          {
+            "name": "width",
+            "description": "判定する幅。",
+            "default": "1.0",
+            "type": "Double"
           }
         ]
       },
@@ -1198,28 +1204,28 @@
         "description": "Elementのグループを管理する。\nElementの同時編集ができ、位置が同期される。",
         "parameters": [
           {
-            "name": "elements",
-            "description": "新規に追加するElement。",
-            "default": "",
-            "type": "AdvancedConfigurationSection"
-          },
-          {
             "name": "edit",
             "description": "Elementの編集内容。",
             "default": "",
             "type": "AdvancedConfigurationSection"
           },
           {
-            "name": "remove",
-            "description": "削除するElementの名前。",
+            "name": "elements",
+            "description": "新規に追加するElement。",
             "default": "",
-            "type": "StringList"
+            "type": "AdvancedConfigurationSection"
           },
           {
             "name": "onDetach",
             "description": "Elementが他のエンティティから外れた時のアクション。",
             "default": "",
             "type": "Actions"
+          },
+          {
+            "name": "remove",
+            "description": "削除するElementの名前。",
+            "default": "",
+            "type": "StringList"
           }
         ]
       },
@@ -1228,28 +1234,28 @@
         "description": "アイテムを表示するElement。",
         "parameters": [
           {
-            "name": "itemStack",
-            "description": "表示するアイテム。",
-            "default": "minecraft:stone",
-            "type": "ItemStack"
-          },
-          {
-            "name": "itemDisplayTransform",
-            "description": "アイテムの表示方法。",
-            "default": "FIXED",
-            "type": "ItemDisplayTransform"
-          },
-          {
-            "name": "displayParameters.translation",
-            "description": "オフセット",
+            "name": "displayParameters.billboard",
+            "description": "ビルボード",
             "default": "",
-            "type": "Vector3f"
+            "type": "Billboard"
           },
           {
-            "name": "displayParameters.scale",
-            "description": "大きさ",
+            "name": "displayParameters.brightness",
+            "description": "明るさ",
             "default": "",
-            "type": "Vector3f"
+            "type": "Brightness"
+          },
+          {
+            "name": "displayParameters.interpolationDelay",
+            "description": "補間遅延",
+            "default": "",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.interpolationDuration",
+            "description": "補間時間",
+            "default": "",
+            "type": "Int"
           },
           {
             "name": "displayParameters.leftRotation",
@@ -1264,28 +1270,10 @@
             "type": "Rotation"
           },
           {
-            "name": "displayParameters.billboard",
-            "description": "ビルボード",
+            "name": "displayParameters.scale",
+            "description": "大きさ",
             "default": "",
-            "type": "Billboard"
-          },
-          {
-            "name": "displayParameters.interpolationDuration",
-            "description": "補間時間",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.interpolationDelay",
-            "description": "補間遅延",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.teleportDuration",
-            "description": "テレポート時間",
-            "default": "",
-            "type": "Int"
+            "type": "Vector3f"
           },
           {
             "name": "displayParameters.shadowRadius",
@@ -1300,100 +1288,16 @@
             "type": "Float"
           },
           {
-            "name": "displayParameters.brightness",
-            "description": "明るさ",
+            "name": "displayParameters.teleportDuration",
+            "description": "テレポート時間",
             "default": "",
-            "type": "Unknown"
+            "type": "Int"
           },
           {
-            "name": "interactionScale",
-            "description": "クリックの判定範囲。",
-            "default": "1,1,1",
-            "type": "Vector"
-          },
-          {
-            "name": "onSpawn",
-            "description": "スポーン時のアクション。",
+            "name": "displayParameters.translation",
+            "description": "オフセット",
             "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onTick",
-            "description": "1Tick毎に実行されるアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onInteract",
-            "description": "クリック時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onHover",
-            "description": "ホバー時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onUnhover",
-            "description": "ホバー解除時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "interactionDistance",
-            "description": "クリックの判定距離。",
-            "default": "4",
-            "type": "Double"
-          },
-          {
-            "name": "switchHover",
-            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
-            "default": "true",
-            "type": "Boolean"
-          },
-          {
-            "name": "visualizeHitbox",
-            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
-            "default": "false",
-            "type": "Boolean"
-          },
-          {
-            "name": "visiblePlayers.allowedPlayers",
-            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "visiblePlayers.disallowedPlayers",
-            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "visiblePlayers",
-            "description": "表示するプレイヤーの制限。",
-            "default": "",
-            "type": "Unknown"
-          },
-          {
-            "name": "interactablePlayers.allowedPlayers",
-            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "interactablePlayers.disallowedPlayers",
-            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "interactablePlayers",
-            "description": "操作可能なプレイヤーの制限。",
-            "default": "",
-            "type": "Unknown"
+            "type": "Vector3f"
           },
           {
             "name": "glow",
@@ -1414,10 +1318,112 @@
             "type": "StringList"
           },
           {
+            "name": "interactablePlayers",
+            "description": "操作可能なプレイヤーの制限。",
+            "default": "",
+            "type": "AllowedPlayers"
+          },
+          {
+            "name": "interactablePlayers.allowedPlayers",
+            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactablePlayers.disallowedPlayers",
+            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactionDistance",
+            "description": "クリックの判定距離。",
+            "default": "4",
+            "type": "Double"
+          },
+          {
+            "name": "interactionScale",
+            "description": "クリックの判定範囲。",
+            "default": "1,1,1",
+            "type": "Vector"
+          },
+          {
+            "name": "itemDisplayTransform",
+            "description": "アイテムの表示方法。",
+            "default": "FIXED",
+            "type": "ItemDisplayTransform"
+          },
+          {
+            "name": "itemStack",
+            "description": "表示するアイテム。",
+            "default": "minecraft:stone",
+            "type": "ItemStack"
+          },
+          {
             "name": "onDetach",
             "description": "Elementが他のエンティティから外れた時のアクション。",
             "default": "",
             "type": "Actions"
+          },
+          {
+            "name": "onHover",
+            "description": "ホバー時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onInteract",
+            "description": "クリック時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onSpawn",
+            "description": "スポーン時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onTick",
+            "description": "1Tick毎に実行されるアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onUnhover",
+            "description": "ホバー解除時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "switchHover",
+            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+            "default": "true",
+            "type": "Boolean"
+          },
+          {
+            "name": "visiblePlayers",
+            "description": "表示するプレイヤーの制限。",
+            "default": "",
+            "type": "AllowedPlayers"
+          },
+          {
+            "name": "visiblePlayers.allowedPlayers",
+            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "visiblePlayers.disallowedPlayers",
+            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "visualizeHitbox",
+            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
+            "default": "false",
+            "type": "Boolean"
           }
         ]
       },
@@ -1426,10 +1432,10 @@
         "description": "テキストを表示するElement。",
         "parameters": [
           {
-            "name": "text",
-            "description": "表示するテキスト。",
-            "default": "undefined",
-            "type": "Component"
+            "name": "alignment",
+            "description": "テキストの配置。",
+            "default": "CENTER",
+            "type": "TextAlignment"
           },
           {
             "name": "backgroundColor",
@@ -1438,20 +1444,170 @@
             "type": "Color"
           },
           {
+            "name": "defaultBackground",
+            "description": "デフォルトの背景色を使用するか。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "displayParameters.billboard",
+            "description": "ビルボード",
+            "default": "",
+            "type": "Billboard"
+          },
+          {
+            "name": "displayParameters.brightness",
+            "description": "明るさ",
+            "default": "",
+            "type": "Brightness"
+          },
+          {
+            "name": "displayParameters.interpolationDelay",
+            "description": "補間遅延",
+            "default": "",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.interpolationDuration",
+            "description": "補間時間",
+            "default": "",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.leftRotation",
+            "description": "左回転",
+            "default": "",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.rightRotation",
+            "description": "右回転",
+            "default": "",
+            "type": "Rotation"
+          },
+          {
+            "name": "displayParameters.scale",
+            "description": "大きさ",
+            "default": "",
+            "type": "Vector3f"
+          },
+          {
+            "name": "displayParameters.shadowRadius",
+            "description": "影の半径",
+            "default": "",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.shadowStrength",
+            "description": "影の強さ",
+            "default": "",
+            "type": "Float"
+          },
+          {
+            "name": "displayParameters.teleportDuration",
+            "description": "テレポート時間",
+            "default": "",
+            "type": "Int"
+          },
+          {
+            "name": "displayParameters.translation",
+            "description": "オフセット",
+            "default": "",
+            "type": "Vector3f"
+          },
+          {
+            "name": "glow",
+            "description": "エンティティを光らせるか。",
+            "default": "false",
+            "type": "Boolean"
+          },
+          {
+            "name": "glowColor",
+            "description": "エンティティの光る色。",
+            "default": "#FFFFFF",
+            "type": "Color"
+          },
+          {
+            "name": "ignoreModifies",
+            "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactablePlayers",
+            "description": "操作可能なプレイヤーの制限。",
+            "default": "",
+            "type": "AllowedPlayers"
+          },
+          {
+            "name": "interactablePlayers.allowedPlayers",
+            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactablePlayers.disallowedPlayers",
+            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
+            "default": "",
+            "type": "StringList"
+          },
+          {
+            "name": "interactionDistance",
+            "description": "クリックの判定距離。",
+            "default": "4",
+            "type": "Double"
+          },
+          {
+            "name": "interactionScale",
+            "description": "クリックの判定範囲。",
+            "default": "1,1,1",
+            "type": "Vector"
+          },
+          {
             "name": "lineWidth",
             "description": "行の幅。",
             "default": "200",
             "type": "Int"
           },
           {
-            "name": "seeThrough",
-            "description": "透過するか。",
-            "default": "false",
-            "type": "Boolean"
+            "name": "onDetach",
+            "description": "Elementが他のエンティティから外れた時のアクション。",
+            "default": "",
+            "type": "Actions"
           },
           {
-            "name": "defaultBackground",
-            "description": "デフォルトの背景色を使用するか。",
+            "name": "onHover",
+            "description": "ホバー時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onInteract",
+            "description": "クリック時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onSpawn",
+            "description": "スポーン時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onTick",
+            "description": "1Tick毎に実行されるアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "onUnhover",
+            "description": "ホバー解除時のアクション。",
+            "default": "",
+            "type": "Actions"
+          },
+          {
+            "name": "seeThrough",
+            "description": "透過するか。",
             "default": "false",
             "type": "Boolean"
           },
@@ -1462,10 +1618,16 @@
             "type": "Boolean"
           },
           {
-            "name": "alignment",
-            "description": "テキストの配置。",
-            "default": "CENTER",
-            "type": "TextAlignment"
+            "name": "switchHover",
+            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
+            "default": "true",
+            "type": "Boolean"
+          },
+          {
+            "name": "text",
+            "description": "表示するテキスト。",
+            "default": "undefined",
+            "type": "Component"
           },
           {
             "name": "textOpacity",
@@ -1474,124 +1636,10 @@
             "type": "Int"
           },
           {
-            "name": "displayParameters.translation",
-            "description": "オフセット",
+            "name": "visiblePlayers",
+            "description": "表示するプレイヤーの制限。",
             "default": "",
-            "type": "Vector3f"
-          },
-          {
-            "name": "displayParameters.scale",
-            "description": "大きさ",
-            "default": "",
-            "type": "Vector3f"
-          },
-          {
-            "name": "displayParameters.leftRotation",
-            "description": "左回転",
-            "default": "",
-            "type": "Rotation"
-          },
-          {
-            "name": "displayParameters.rightRotation",
-            "description": "右回転",
-            "default": "",
-            "type": "Rotation"
-          },
-          {
-            "name": "displayParameters.billboard",
-            "description": "ビルボード",
-            "default": "",
-            "type": "Billboard"
-          },
-          {
-            "name": "displayParameters.interpolationDuration",
-            "description": "補間時間",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.interpolationDelay",
-            "description": "補間遅延",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.teleportDuration",
-            "description": "テレポート時間",
-            "default": "",
-            "type": "Int"
-          },
-          {
-            "name": "displayParameters.shadowRadius",
-            "description": "影の半径",
-            "default": "",
-            "type": "Float"
-          },
-          {
-            "name": "displayParameters.shadowStrength",
-            "description": "影の強さ",
-            "default": "",
-            "type": "Float"
-          },
-          {
-            "name": "displayParameters.brightness",
-            "description": "明るさ",
-            "default": "",
-            "type": "Unknown"
-          },
-          {
-            "name": "interactionScale",
-            "description": "クリックの判定範囲。",
-            "default": "1,1,1",
-            "type": "Vector"
-          },
-          {
-            "name": "onSpawn",
-            "description": "スポーン時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onTick",
-            "description": "1Tick毎に実行されるアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onInteract",
-            "description": "クリック時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onHover",
-            "description": "ホバー時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "onUnhover",
-            "description": "ホバー解除時のアクション。",
-            "default": "",
-            "type": "Actions"
-          },
-          {
-            "name": "interactionDistance",
-            "description": "クリックの判定距離。",
-            "default": "4",
-            "type": "Double"
-          },
-          {
-            "name": "switchHover",
-            "description": "ホバー時のアクションを切り替えた時のみに実行するか。",
-            "default": "true",
-            "type": "Boolean"
-          },
-          {
-            "name": "visualizeHitbox",
-            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
-            "default": "false",
-            "type": "Boolean"
+            "type": "AllowedPlayers"
           },
           {
             "name": "visiblePlayers.allowedPlayers",
@@ -1606,52 +1654,10 @@
             "type": "StringList"
           },
           {
-            "name": "visiblePlayers",
-            "description": "表示するプレイヤーの制限。",
-            "default": "",
-            "type": "Unknown"
-          },
-          {
-            "name": "interactablePlayers.allowedPlayers",
-            "description": "許可するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "interactablePlayers.disallowedPlayers",
-            "description": "拒否するプレイヤーのリスト。UUIDまたは名前を指定する。",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "interactablePlayers",
-            "description": "操作可能なプレイヤーの制限。",
-            "default": "",
-            "type": "Unknown"
-          },
-          {
-            "name": "glow",
-            "description": "エンティティを光らせるか。",
+            "name": "visualizeHitbox",
+            "description": "クリックの判定範囲を表示するか。 (デバッグ用)",
             "default": "false",
             "type": "Boolean"
-          },
-          {
-            "name": "glowColor",
-            "description": "エンティティの光る色。",
-            "default": "#FFFFFF",
-            "type": "Color"
-          },
-          {
-            "name": "ignoreModifies",
-            "description": "使用しない判定の範囲を変更する要素のリスト。\n使える要素\n- translation\n- right_rotation\n- scale\n- left_rotation",
-            "default": "",
-            "type": "StringList"
-          },
-          {
-            "name": "onDetach",
-            "description": "Elementが他のエンティティから外れた時のアクション。",
-            "default": "",
-            "type": "Actions"
           }
         ]
       }
@@ -1661,58 +1667,13 @@
     "name": "Type",
     "classes": [
       {
+        "name": "Any",
+        "description": "型を限定しない値\n\n例:\n文字列、数値、真偽値、リスト、セクションなど",
+        "parameters": []
+      },
+      {
         "name": "String",
         "description": "文字列\n\n例:\n\"example\"",
-        "parameters": []
-      },
-      {
-        "name": "Long",
-        "description": "整数\n\n例:\n1000",
-        "parameters": []
-      },
-      {
-        "name": "Number",
-        "description": "数値\n\n例:\n1000",
-        "parameters": []
-      },
-      {
-        "name": "Block",
-        "description": "ブロック\n\n例:\nminecraft:oak_stairs[shape\u003dstraight]",
-        "parameters": []
-      },
-      {
-        "name": "Boolean",
-        "description": "真偽値\n\n例:\ntrue/false",
-        "parameters": []
-      },
-      {
-        "name": "Billboard",
-        "description": "選択可能な値のリスト\n\n例:\nFIXED\nVERTICAL\nHORIZONTAL\nCENTER",
-        "parameters": []
-      },
-      {
-        "name": "Location",
-        "description": "位置\n\n例:\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
-        "parameters": []
-      },
-      {
-        "name": "StoreType",
-        "description": "選択可能な値のリスト\n\n例:\nRAW\nFILE\nDATABASE",
-        "parameters": []
-      },
-      {
-        "name": "CommandType",
-        "description": "選択可能な値のリスト\n\n例:\nTARGET\nSERVER\nANY_PLAYER",
-        "parameters": []
-      },
-      {
-        "name": "EquipmentSlot",
-        "description": "選択可能な値のリスト\n\n例:\nHAND\nOFF_HAND\nFEET\nLEGS\nCHEST\nHEAD\nBODY\nSADDLE",
-        "parameters": []
-      },
-      {
-        "name": "Vector3f",
-        "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
         "parameters": []
       },
       {
@@ -1721,8 +1682,28 @@
         "parameters": []
       },
       {
-        "name": "ItemDisplayTransform",
-        "description": "選択可能な値のリスト\n\n例:\nNONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "name": "ObjectList",
+        "description": "オブジェクトのリスト\n\n例:\n- key: example\n  value: 1",
+        "parameters": []
+      },
+      {
+        "name": "Brightness",
+        "description": "Display Entity のブロック光と空の明るさ。\n\n例:\nblock: 15\nsky: 15",
+        "parameters": []
+      },
+      {
+        "name": "UUID",
+        "description": "UUID\n\n例:\n00000000-0000-0000-0000-000000000000",
+        "parameters": []
+      },
+      {
+        "name": "Boolean",
+        "description": "真偽値\n\n例:\ntrue/false",
+        "parameters": []
+      },
+      {
+        "name": "Number",
+        "description": "数値\n\n例:\n1000",
         "parameters": []
       },
       {
@@ -1731,32 +1712,17 @@
         "parameters": []
       },
       {
-        "name": "Actions",
-        "description": "Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "AdvancedConfigurationSection",
-        "description": "セクション\n\n例:\nkey: value",
-        "parameters": []
-      },
-      {
-        "name": "AsyncActions",
-        "description": "非同期Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
-        "parameters": []
-      },
-      {
-        "name": "Scope",
-        "description": "選択可能な値のリスト\n\n例:\nGLOBAL\nLOCAL",
-        "parameters": []
-      },
-      {
-        "name": "TextAlignment",
-        "description": "選択可能な値のリスト\n\n例:\nCENTER\nLEFT\nRIGHT",
+        "name": "Long",
+        "description": "整数\n\n例:\n1000",
         "parameters": []
       },
       {
         "name": "Double",
+        "description": "実数\n\n例:\n1000.0",
+        "parameters": []
+      },
+      {
+        "name": "Float",
         "description": "実数\n\n例:\n1000.0",
         "parameters": []
       },
@@ -1771,8 +1737,13 @@
         "parameters": []
       },
       {
-        "name": "Float",
-        "description": "実数\n\n例:\n1000.0",
+        "name": "Location",
+        "description": "位置\n\n例:\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cworld\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cyaw\u003e,\u003cpitch\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Block",
+        "description": "ブロック\n\n例:\nminecraft:oak_stairs[shape\u003dstraight]",
         "parameters": []
       },
       {
@@ -1781,18 +1752,78 @@
         "parameters": []
       },
       {
-        "name": "Rotation",
-        "description": "回転\n\n例:\neuler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
-        "parameters": []
-      },
-      {
         "name": "Vector",
         "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
         "parameters": []
       },
       {
+        "name": "Vector3f",
+        "description": "ベクトル\n\n例:\n\u003cx\u003e,\u003cy\u003e,\u003cz\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Rotation",
+        "description": "回転\n\n例:\neuler,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e\neuler_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\naxis_radians,\u003cangle\u003e,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e\nquaternion_radians,\u003cx\u003e,\u003cy\u003e,\u003cz\u003e,\u003cw\u003e",
+        "parameters": []
+      },
+      {
+        "name": "Actions",
+        "description": "Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "AsyncActions",
+        "description": "非同期Actionのリスト\n\n例:\n- class: Message\n  message: \"Hello!\"",
+        "parameters": []
+      },
+      {
+        "name": "AdvancedConfigurationSection",
+        "description": "セクション\n\n例:\nkey: value",
+        "parameters": []
+      },
+      {
         "name": "Particle",
         "description": "選択可能な値のリスト\n\n例:\nPOOF\nEXPLOSION\nEXPLOSION_EMITTER\nFIREWORK\nBUBBLE\nSPLASH\nFISHING\nUNDERWATER\nCRIT\nENCHANTED_HIT\nSMOKE\nLARGE_SMOKE\nEFFECT\nINSTANT_EFFECT\nENTITY_EFFECT\nWITCH\nDRIPPING_WATER\nDRIPPING_LAVA\nANGRY_VILLAGER\nHAPPY_VILLAGER\nMYCELIUM\nNOTE\nPORTAL\nENCHANT\nFLAME\nLAVA\nCLOUD\nDUST\nITEM_SNOWBALL\nITEM_SLIME\nHEART\nITEM\nBLOCK\nRAIN\nELDER_GUARDIAN\nDRAGON_BREATH\nEND_ROD\nDAMAGE_INDICATOR\nSWEEP_ATTACK\nFALLING_DUST\nTOTEM_OF_UNDYING\nSPIT\nSQUID_INK\nBUBBLE_POP\nCURRENT_DOWN\nBUBBLE_COLUMN_UP\nNAUTILUS\nDOLPHIN\nSNEEZE\nCAMPFIRE_COSY_SMOKE\nCAMPFIRE_SIGNAL_SMOKE\nCOMPOSTER\nFLASH\nFALLING_LAVA\nLANDING_LAVA\nFALLING_WATER\nDRIPPING_HONEY\nFALLING_HONEY\nLANDING_HONEY\nFALLING_NECTAR\nSOUL_FIRE_FLAME\nASH\nCRIMSON_SPORE\nWARPED_SPORE\nSOUL\nDRIPPING_OBSIDIAN_TEAR\nFALLING_OBSIDIAN_TEAR\nLANDING_OBSIDIAN_TEAR\nREVERSE_PORTAL\nWHITE_ASH\nDUST_COLOR_TRANSITION\nVIBRATION\nFALLING_SPORE_BLOSSOM\nSPORE_BLOSSOM_AIR\nSMALL_FLAME\nSNOWFLAKE\nDRIPPING_DRIPSTONE_LAVA\nFALLING_DRIPSTONE_LAVA\nDRIPPING_DRIPSTONE_WATER\nFALLING_DRIPSTONE_WATER\nGLOW_SQUID_INK\nGLOW\nWAX_ON\nWAX_OFF\nELECTRIC_SPARK\nSCRAPE\nSONIC_BOOM\nSCULK_SOUL\nSCULK_CHARGE\nSCULK_CHARGE_POP\nSHRIEK\nCHERRY_LEAVES\nPALE_OAK_LEAVES\nTINTED_LEAVES\nEGG_CRACK\nDUST_PLUME\nWHITE_SMOKE\nGUST\nSMALL_GUST\nGUST_EMITTER_LARGE\nGUST_EMITTER_SMALL\nTRIAL_SPAWNER_DETECTION\nTRIAL_SPAWNER_DETECTION_OMINOUS\nVAULT_CONNECTION\nINFESTED\nITEM_COBWEB\nDUST_PILLAR\nBLOCK_CRUMBLE\nFIREFLY\nTRAIL\nOMINOUS_SPAWNING\nRAID_OMEN\nTRIAL_OMEN\nBLOCK_MARKER",
+        "parameters": []
+      },
+      {
+        "name": "Billboard",
+        "description": "選択可能な値のリスト\n\n例:\nFIXED\nVERTICAL\nHORIZONTAL\nCENTER",
+        "parameters": []
+      },
+      {
+        "name": "ItemDisplayTransform",
+        "description": "選択可能な値のリスト\n\n例:\nNONE\nTHIRDPERSON_LEFTHAND\nTHIRDPERSON_RIGHTHAND\nFIRSTPERSON_LEFTHAND\nFIRSTPERSON_RIGHTHAND\nHEAD\nGUI\nGROUND\nFIXED",
+        "parameters": []
+      },
+      {
+        "name": "TextAlignment",
+        "description": "選択可能な値のリスト\n\n例:\nCENTER\nLEFT\nRIGHT",
+        "parameters": []
+      },
+      {
+        "name": "EquipmentSlot",
+        "description": "選択可能な値のリスト\n\n例:\nHAND\nOFF_HAND\nFEET\nLEGS\nCHEST\nHEAD\nBODY\nSADDLE",
+        "parameters": []
+      },
+      {
+        "name": "Scope",
+        "description": "選択可能な値のリスト\n\n例:\nGLOBAL\nLOCAL",
+        "parameters": []
+      },
+      {
+        "name": "StoreType",
+        "description": "選択可能な値のリスト\n\n例:\nRAW\nFILE",
+        "parameters": []
+      },
+      {
+        "name": "CommandType",
+        "description": "選択可能な値のリスト\n\n例:\nTARGET\nSERVER\nANY_PLAYER",
+        "parameters": []
+      },
+      {
+        "name": "AllowedPlayers",
+        "description": "設定項目を持つセクション\n\n例:\nkey: value",
         "parameters": []
       }
     ]
@@ -1916,7 +1947,7 @@
           {
             "name": "0.listOrMap",
             "description": "要素数を取得するリストまたはマップの変数名。",
-            "type": "Unknown"
+            "type": "Any"
           }
         ]
       },
