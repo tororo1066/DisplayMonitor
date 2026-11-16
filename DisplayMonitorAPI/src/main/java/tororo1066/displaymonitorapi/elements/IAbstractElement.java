@@ -32,15 +32,15 @@ public interface IAbstractElement extends Cloneable {
 
     void move(@NotNull Location location);
 
-    default void prepare(@NotNull IAdvancedConfigurationSection configuration) {
+    default void prepare(@NotNull IAdvancedConfigurationSection configuration, @Nullable IActionContext actionContext) {
         ISettableProcessor processor = IDisplayMonitor.DisplayMonitorInstance.getInstance().getSettableProcessor();
         processor.prepareSettableFields(configuration, this);
     }
 
     void applyChanges();
 
-    default void edit(@NotNull IAdvancedConfigurationSection configuration) {
-        prepare(configuration);
+    default void edit(@NotNull IAdvancedConfigurationSection configuration, @Nullable IActionContext actionContext) {
+        prepare(configuration, actionContext);
         applyChanges();
     }
 

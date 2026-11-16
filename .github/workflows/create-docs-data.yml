@@ -31,7 +31,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew GenDocs:shadowJar
+        run: ./gradlew GenDocs:test GenDocs:shadowJar
 
       - name: Move Jar to root
         run: mv GenDocs/build/libs/GenDocs.jar GenDocs.jar
@@ -43,6 +43,10 @@ jobs:
         run: |
           git config --local user.name 'github-actions[bot]'
           git config --local user.email 'github-actions[bot]@users.noreply.github.com'
-          git add docs-data.json
-          git commit -m "Update docs-data.json"
+          git add docs-data.json json-schema.json
+          if git diff --cached --quiet; then
+            echo "Generated documentation is unchanged."
+            exit 0
+          fi
+          git commit -m "Update docs-data.json and json-schema.json"
           git push

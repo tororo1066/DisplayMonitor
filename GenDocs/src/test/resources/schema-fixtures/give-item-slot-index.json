@@ -1,0 +1,11 @@
+{
+  "giveItem": {
+    "actions": [
+      {
+        "class": "GiveItem",
+        "itemStack": "minecraft:stone",
+        "slot": 3
+      }
+    ]
+  }
+}

@@ -9,6 +9,7 @@ import tororo1066.displaymonitor.documentation.ClassDoc
 import tororo1066.displaymonitor.documentation.ParameterDoc
 import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitor.storage.ElementStorage
+import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.tororopluginapi.SJavaPlugin
@@ -46,7 +47,9 @@ open class GroupElement: DetachableElement() {
     private var centerEntityRef: WeakReference<Entity>? = null
     private var entityBySpawnRef: WeakReference<Entity>? = null
     private var locationBySpawn: Location? = null
-    var calledPrepare = false
+    var calledSpawn = false
+
+    val willSpawnElements = mutableListOf<IAbstractElement>()
 
     override val syncGroup = true
 
@@ -61,10 +64,23 @@ open class GroupElement: DetachableElement() {
     }
 
     override fun applyChanges() {
-        elements.values.forEach { it.applyChanges() }
+        elements.values.forEach {
+            if (it in willSpawnElements) {
+                val spawnLocation = locationBySpawn
+                val center = getCenterEntityOrNull()
+                if (spawnLocation != null && center != null) {
+                    it.spawn(getSpawnEntityOrNull(), spawnLocation)
+                    it.attachEntity(center)
+                }
+            } else {
+                it.applyChanges()
+            }
+        }
+        willSpawnElements.clear()
     }
 
     override fun spawn(entity: Entity?, location: Location) {
+        calledSpawn = true
         entityBySpawnRef = entity?.let { WeakReference(it) }
         locationBySpawn = location
 
@@ -110,8 +126,8 @@ open class GroupElement: DetachableElement() {
         super.attachEntity(entity)
     }
 
-    override fun prepare(section: IAdvancedConfigurationSection) {
-        super.prepare(section)
+    override fun prepare(section: IAdvancedConfigurationSection, actionContext: IActionContext?) {
+        super.prepare(section, actionContext)
         if (section.getBoolean("clear", false)) {
             elements.values.forEach { it.remove() }
             elements.clear()
@@ -124,20 +140,21 @@ open class GroupElement: DetachableElement() {
             val clazz = element.getString("type")
             val overrideParameters = element.getAdvancedConfigurationSection("parameters")
             ElementStorage.createElement(
-                presetName, clazz, overrideParameters, actionContext?.allParameters ?: emptyMap(), "GroupElement"
+                presetName, clazz, overrideParameters, actionContext, "GroupElement"
             )?.let {
                 if (this.elements.containsKey(evalKey)) {
                     this.elements[evalKey]?.remove()
                 }
                 this.elements[evalKey] = it
-                if (calledPrepare) {
+                if (calledSpawn) {
                     it.actionContext = actionContext
-                    val spawnLocation = locationBySpawn
-                    val center = getCenterEntityOrNull()
-                    if (spawnLocation != null && center != null) {
-                        it.spawn(getSpawnEntityOrNull(), spawnLocation)
-                        it.attachEntity(center)
-                    }
+                    willSpawnElements.add(it)
+//                    val spawnLocation = locationBySpawn
+//                    val center = getCenterEntityOrNull()
+//                    if (spawnLocation != null && center != null) {
+//                        it.spawn(getSpawnEntityOrNull(), spawnLocation)
+//                        it.attachEntity(center)
+//                    }
                 }
             }
         }
@@ -150,7 +167,7 @@ open class GroupElement: DetachableElement() {
 
             split.forEach second@ { name ->
                 val element = this.elements[name] ?: return@second
-                element.edit(editSection)
+                element.prepare(editSection, actionContext)
             }
         }
 
@@ -159,8 +176,6 @@ open class GroupElement: DetachableElement() {
             this.elements[it]?.remove()
             this.elements.remove(it)
         }
-
-        calledPrepare = true
     }
 
     override fun move(location: Location) {

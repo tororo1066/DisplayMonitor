@@ -20,6 +20,7 @@ import tororo1066.displaymonitor.documentation.StringList
 import tororo1066.displaymonitor.elements.AllowedPlayers
 import tororo1066.displaymonitor.elements.DisplayParameters
 import tororo1066.displaymonitor.hitbox.IgnoreModify
+import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.Execute
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.Settable
@@ -322,8 +323,8 @@ abstract class DisplayBaseElement<T: Display>: DetachableElement() {
         applyChangesToEntity(display)
     }
 
-    override fun prepare(configuration: IAdvancedConfigurationSection) {
-        super.prepare(configuration)
+    override fun prepare(configuration: IAdvancedConfigurationSection, actionContext: IActionContext?) {
+        super.prepare(configuration, actionContext)
         if (configuration.isSet("ignoreModifies")) {
             ignoreModifies = configuration.getStringList("ignoreModifies").mapNotNull {
                 try {

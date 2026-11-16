@@ -41,7 +41,7 @@ class GiveInteractableItemAction: GiveItemAction() {
     var targetOnly = false
     @ParameterDoc(
         name = "onInteract",
-        description = "アイテムを使用したときのアクション。"
+        description = "アイテムを使用したときのアクション。 isRightClickとisLeftClickのパラメータが追加される。"
     )
     var onInteract: Execute = Execute.empty()
     @ParameterDoc(
@@ -90,9 +90,11 @@ class GiveInteractableItemAction: GiveItemAction() {
                 .cooldownGroup(Key.key("displaymonitor", UUID.randomUUID().toString()))
         )
 
-        fun cloneContext(player: Player): IActionContext {
+        fun cloneContext(player: Player, additional: (IActionContext) -> Unit = {}): IActionContext {
             val cloneContext = context.clone()
             cloneContext.target = player
+            cloneContext.location = player.location
+            additional(cloneContext)
             return cloneContext
         }
 
@@ -105,7 +107,12 @@ class GiveInteractableItemAction: GiveItemAction() {
                 }
                 if (cancelInteract) e.isCancelled = true
                 if (targetOnly && e.player != context.target) return@setInteractEvent false
-                onInteract(cloneContext(e.player))
+                onInteract(cloneContext(e.player) {
+                    it.configuration?.parameters?.let { params ->
+                        params["isRightClick"] = e.action.isRightClick
+                        params["isLeftClick"] = e.action.isLeftClick
+                    }
+                })
                 true
             }
             .setDropEvent { e, item ->

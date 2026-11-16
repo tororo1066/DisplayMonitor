@@ -3,7 +3,9 @@ package tororo1066.displaymonitor.actions.builtin
 import org.bukkit.configuration.file.YamlConfiguration
 import tororo1066.displaymonitor.actions.AbstractAction
 import tororo1066.displaymonitor.documentation.ClassDoc
+import tororo1066.displaymonitor.documentation.ObjectList
 import tororo1066.displaymonitor.documentation.ParameterDoc
+import tororo1066.displaymonitor.documentation.ParameterItemDoc
 import tororo1066.displaymonitorapi.actions.ActionResult
 import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
@@ -27,10 +29,9 @@ class StoreDataAction: AbstractAction() {
         name = "storeType",
         description = "保存先の種類。\n" +
                 "RAW: メモリ上に保存される。サーバーを再起動すると消える。\n" +
-                "FILE: プラグインのStoreDataフォルダ内に保存される。\n" +
-                "DATABASE: 未対応。",
-//                "DATABASE: データベースに保存される。config/StoreData.ymlでデータベースの設定が必要。",
-        default = "RAW"
+                "FILE: プラグインのStoreDataフォルダ内に保存される。",
+        default = "RAW",
+        allowExpression = false,
     )
     var storeType: StoreType = StoreType.RAW
     @ParameterDoc(
@@ -41,7 +42,14 @@ class StoreDataAction: AbstractAction() {
                 "のように指定する。\n" +
                 "- key: 保存するキー\n" +
                 "  remove: true\n" +
-                "とするとそのキーのデータを削除できる。"
+                "とするとそのキーのデータを削除できる。",
+        type = ObjectList::class,
+        items = [
+            ParameterItemDoc(name = "key", description = "保存または削除するキー。", type = String::class, required = true),
+            ParameterItemDoc(name = "value", description = "保存する値。", type = Any::class),
+            ParameterItemDoc(name = "remove", description = "trueの場合、キーのデータを削除する。", type = Boolean::class),
+        ],
+        itemRequiredAnyOf = ["value", "remove"],
     )
     var data: HashMap<String, Any?> = HashMap()
 
@@ -79,9 +87,9 @@ class StoreDataAction: AbstractAction() {
                     } else {
                         rawDataMap[key] = formatValue(value)
                     }
-                    if (rawDataMap.isEmpty()) {
-                        rawData.remove(uuid)
-                    }
+                }
+                if (rawDataMap.isEmpty()) {
+                    rawData.remove(uuid)
                 }
             }
             StoreType.FILE -> {
@@ -108,45 +116,6 @@ class StoreDataAction: AbstractAction() {
                         }
                     }
                 }
-            }
-            //Json
-            StoreType.DATABASE -> {
-                throw NotImplementedError("Database store type is not implemented yet")
-//                checkAsync("StoreDataAction")
-//                val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
-//                val database = config.database ?: return ActionResult.noParameters("Database not found")
-//                val table = config.tableName
-//                val result = database.select(table, SDBCondition().equal("uuid", uuid.toString()))
-//                if (result.isEmpty()) {
-//                    val json = JsonConfiguration().apply {
-//                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-//                    }
-//                    data.forEach { (key, value) ->
-//                        json[key] = value
-//                    }
-//                    val jsonString = json.saveToString()
-//                    return if (database.insert(table, mapOf("uuid" to uuid.toString(), "data" to jsonString))) {
-//                        ActionResult.success()
-//                    } else {
-//                        ActionResult.failed("Insert failed")
-//                    }
-//                } else {
-//                    val json = JsonConfiguration().apply {
-//                        options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-//                    }
-//                    val row = result[0]
-//                    val jsonString = row.getString("data")
-//                    json.loadFromString(jsonString)
-//                    data.forEach { (key, value) ->
-//                        json[key] = value
-//                    }
-//                    val newJsonString = json.saveToString()
-//                    return if (database.update(table, mapOf("data" to newJsonString), SDBCondition().equal("uuid", uuid.toString()))) {
-//                        ActionResult.success()
-//                    } else {
-//                        ActionResult.failed("Update failed")
-//                    }
-//                }
             }
         }
 
@@ -179,6 +148,5 @@ class StoreDataAction: AbstractAction() {
     enum class StoreType {
         RAW,
         FILE,
-        DATABASE,
     }
 }

@@ -1,0 +1,10 @@
+{
+  "storeData": {
+    "actions": [
+      {
+        "class": "StoreData",
+        "data": { "score": 10 }
+      }
+    ]
+  }
+}

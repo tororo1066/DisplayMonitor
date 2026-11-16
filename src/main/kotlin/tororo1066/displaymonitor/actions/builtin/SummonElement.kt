@@ -65,7 +65,7 @@ class SummonElement: SuspendAction() {
         val location = context.location?.clone() ?: return ActionResult.locationRequired()
 
         val element = ElementStorage.createElement(
-            presetName, clazz, overrideParameters, context.allParameters, "SummonElement"
+            presetName, clazz, overrideParameters, context, "SummonElement"
         )
             ?: return ActionResult.noParameters(DisplayMonitor.translate("action.summonElement.noElement"))
 

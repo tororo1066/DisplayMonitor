@@ -1,0 +1,15 @@
+{
+  "storeData": {
+    "actions": [
+      {
+        "class": "StoreData",
+        "storeType": "FILE",
+        "data": [
+          { "key": "score", "value": 10 },
+          { "key": "old", "remove": true },
+          { "key": "profile", "value": { "name": "Alex", "tags": ["a", "b"] } }
+        ]
+      }
+    ]
+  }
+}

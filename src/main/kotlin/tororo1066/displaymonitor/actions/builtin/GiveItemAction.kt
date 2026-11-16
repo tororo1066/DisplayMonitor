@@ -31,6 +31,7 @@ open class GiveItemAction: AbstractAction() {
     @ParameterDoc(
         name = "slot",
         description = "付与するスロット、もしくは装備スロット。 指定されていない場合は空いているスロットに追加される。",
+        additionalTypes = [Int::class],
     )
     var slot: EquipmentSlot? = null
     var slotIndex: Int? = null
@@ -50,9 +51,7 @@ open class GiveItemAction: AbstractAction() {
     override fun run(context: IActionContext): ActionResult {
         val target = context.target as? Player ?: return ActionResult.targetRequired()
         val item = try {
-            createItemStack(context).apply {
-                this.amount = amount
-            }
+            createItemStack(context).also { it.amount = amount }
         } catch (e: Exception) {
             return ActionResult.failed("Failed to create item stack: ${e.message}")
         }

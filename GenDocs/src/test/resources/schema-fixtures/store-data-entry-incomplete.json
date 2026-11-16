@@ -1,0 +1,12 @@
+{
+  "storeData": {
+    "actions": [
+      {
+        "class": "StoreData",
+        "data": [
+          { "key": "score" }
+        ]
+      }
+    ]
+  }
+}

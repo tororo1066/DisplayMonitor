@@ -31,6 +31,12 @@ class RunAction: AbstractAction() {
     )
     var variables = mutableMapOf<String, String>()
     @ParameterDoc(
+        name = "globalVariables",
+        description = "実行時のグローバル変数。 コンテキストを複製していても終了後も保持される。",
+        type = IAdvancedConfigurationSection::class
+    )
+    var globalVariables = mutableMapOf<String, String>()
+    @ParameterDoc(
         name = "actionName",
         description = "実行中のActionの名前。 指定した場合必ずコンテキストが複製される。"
     )
@@ -48,6 +54,9 @@ class RunAction: AbstractAction() {
         variables.forEach { (key, value) ->
             newContext.configuration?.parameters?.put(key, value)
         }
+        globalVariables.forEach { (key, value) ->
+            newContext.publicContext.parameters[key] = value
+        }
         action.run(newContext, false, actionName.ifEmpty { null })
         return ActionResult.success()
     }
@@ -56,9 +65,15 @@ class RunAction: AbstractAction() {
         action = section.getString("action", "")!!
         cloneContext = section.getBoolean("cloneContext", false)
         variables.clear()
+        globalVariables.clear()
         section.getAdvancedConfigurationSection("variables")?.let { variablesSection ->
             variablesSection.getKeys(false).forEach { key ->
                 variables[key] = variablesSection.getString(key) ?: ""
+            }
+        }
+        section.getAdvancedConfigurationSection("globalVariables")?.let { globalVariablesSection ->
+            globalVariablesSection.getKeys(false).forEach { key ->
+                globalVariables[key] = globalVariablesSection.getString(key) ?: ""
             }
         }
         actionName = section.getString("actionName", "")!!

@@ -24,6 +24,8 @@ dependencies {
     implementation("tororo1066:tororopluginapi:$apiVersion")
     implementation("io.papermc.paper:paper-api:$pluginVersion-R0.1-SNAPSHOT")
     implementation("com.google.code.gson:gson:2.12.1")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("com.networknt:json-schema-validator:3.0.9")
 
 }
 kotlin {

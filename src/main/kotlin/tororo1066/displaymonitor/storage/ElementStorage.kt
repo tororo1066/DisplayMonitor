@@ -3,6 +3,7 @@ package tororo1066.displaymonitor.storage
 import tororo1066.displaymonitor.DisplayMonitor
 import tororo1066.displaymonitor.configuration.AdvancedConfiguration
 import tororo1066.displaymonitor.elements.builtin.*
+import tororo1066.displaymonitorapi.actions.IActionContext
 import tororo1066.displaymonitorapi.configuration.IAdvancedConfigurationSection
 import tororo1066.displaymonitorapi.elements.IAbstractElement
 import tororo1066.displaymonitorapi.events.ElementRegisteringEvent
@@ -72,20 +73,16 @@ object ElementStorage: IElementStorage {
         presetElements[section.name] = section
     }
 
-    override fun createElement(presetName: String?, clazz: String?, overrideParameters: IAdvancedConfigurationSection?, context: String): IAbstractElement? {
-        return createElement(presetName, clazz, overrideParameters, emptyMap(), context)
-    }
-
     override fun createElement(
         presetName: String?,
         clazz: String?,
         overrideParameters: IAdvancedConfigurationSection?,
-        variables: Map<String, Any>,
+        actionContext: IActionContext?,
         context: String
     ): IAbstractElement? {
         val presetElement = presetElements[presetName]
         if (presetElement != null) {
-            return presetElement.withParameters(variables) { section ->
+            return presetElement.withParameters(actionContext?.allParameters ?: emptyMap()) { section ->
                 val type = section.getString("type")
                 val elementClass = elementClasses[type]
                 if (elementClass == null) {
@@ -94,8 +91,8 @@ object ElementStorage: IElementStorage {
                 }
 
                 elementClass.getConstructor().newInstance().apply {
-                    prepare(section)
-                    prepare(overrideParameters ?: AdvancedConfiguration())
+                    prepare(section, actionContext)
+                    prepare(overrideParameters ?: AdvancedConfiguration(), actionContext)
                 }
             }
         }
@@ -107,7 +104,7 @@ object ElementStorage: IElementStorage {
         }
 
         return elementClass.getConstructor().newInstance().apply {
-            prepare(overrideParameters ?: AdvancedConfiguration())
+            prepare(overrideParameters ?: AdvancedConfiguration(), actionContext)
         }
     }
 

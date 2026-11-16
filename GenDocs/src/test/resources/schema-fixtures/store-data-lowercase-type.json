@@ -1,0 +1,11 @@
+{
+  "storeData": {
+    "actions": [
+      {
+        "class": "StoreData",
+        "storeType": "file",
+        "data": []
+      }
+    ]
+  }
+}

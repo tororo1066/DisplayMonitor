@@ -1,0 +1,11 @@
+{
+  "storeData": {
+    "actions": [
+      {
+        "class": "StoreData",
+        "storeType": "DATABASE",
+        "data": []
+      }
+    ]
+  }
+}

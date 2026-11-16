@@ -23,10 +23,9 @@ class RestoreDataAction: AbstractAction() {
         name = "storeType",
         description = "取得先の種類。\n" +
                 "RAW: メモリ上に保存される。サーバーを再起動すると消える。\n" +
-                "FILE: プラグインのStoreDataフォルダ内に保存される。\n" +
-                "DATABASE: 未対応。",
-//                "DATABASE: データベースに保存される。config/StoreData.ymlでデータベースの設定が必要。",
-        default = "RAW"
+                "FILE: プラグインのStoreDataフォルダ内に保存される。",
+        default = "RAW",
+        allowExpression = false,
     )
     var storeType: StoreDataAction.StoreType = StoreDataAction.StoreType.RAW
     @ParameterDoc(
@@ -47,6 +46,8 @@ class RestoreDataAction: AbstractAction() {
     )
     var uuid: UUID? = null
 
+    private var unsupportedStoreType: String? = null
+
     fun formatValue(value: Any): Any {
         return when (value) {
             is ConfigurationSection -> {
@@ -64,6 +65,9 @@ class RestoreDataAction: AbstractAction() {
     }
 
     override fun run(context: IActionContext): ActionResult {
+        unsupportedStoreType?.let {
+            return ActionResult.failed("Store type '$it' is no longer supported")
+        }
         val uuid = this.uuid ?: context.target?.uniqueId ?: return ActionResult.targetRequired()
         val configuration = context.configuration ?: return ActionResult.noParameters("Configuration not found")
 
@@ -98,35 +102,14 @@ class RestoreDataAction: AbstractAction() {
                     }
                 }
             }
-            StoreDataAction.StoreType.DATABASE -> {
-                throw NotImplementedError("Database store type is not implemented yet")
-//                checkAsync("RestoreDataAction")
-//                val config = Config.getConfig<StoreDataConfig>() ?: return ActionResult.noParameters("Config not found")
-//                val database = config.database ?: return ActionResult.noParameters("Database not found")
-//                val result = database.select(config.tableName, SDBCondition().equal("uuid", uuid.toString()))
-//                if (result.isEmpty()) {
-//                    return ActionResult.noParameters("Data not found")
-//                }
-//                val data = result[0].getNullableString("data") ?: return ActionResult.noParameters("Data not found")
-//                val json = JsonConfiguration().apply {
-//                    options().pathSeparator(IAdvancedConfiguration.SEPARATOR)
-//                }
-//                json.loadFromString(data)
-//                keys.forEach { key ->
-//                    val value = json.get(key) ?: return@forEach
-//                    if (scope == ModifyVariableAction.Scope.GLOBAL) {
-//                        context.publicContext.parameters[key] = value
-//                    } else {
-//                        configuration.parameters[key] = value
-//                    }
-//                }
-            }
         }
 
         return ActionResult.success()
     }
 
     override fun prepare(section: IAdvancedConfigurationSection) {
+        unsupportedStoreType = section.getString("storeType")
+            ?.takeIf { it.equals("DATABASE", ignoreCase = true) }
         storeType = section.getEnum("storeType", StoreDataAction.StoreType::class.java, StoreDataAction.StoreType.RAW)
         scope = section.getEnum("scope", ModifyVariableAction.Scope::class.java, ModifyVariableAction.Scope.LOCAL)
         keys = section.getStringList("keys")

@@ -1,0 +1,11 @@
+{
+  "restoreData": {
+    "actions": [
+      {
+        "class": "RestoreData",
+        "uuid": 123,
+        "keys": ["score"]
+      }
+    ]
+  }
+}

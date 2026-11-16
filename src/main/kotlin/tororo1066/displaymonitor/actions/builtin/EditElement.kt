@@ -45,11 +45,11 @@ class EditElement: SuspendAction() {
                 if (edit == null) {
                     element.applyChanges()
                 } else {
-                    element.edit(edit)
+                    element.edit(edit, context)
                 }
             } else {
                 if (edit != null) {
-                    element.prepare(edit)
+                    element.prepare(edit, context)
                 }
             }
         }
